@@ -11,13 +11,13 @@ die();
 */
 
 /** MySQL database username */
-define( 'DB_USER', 'database username' );
+define( 'DB_USER', 'root' );
 
 /** MySQL database password */
-define( 'DB_PASS', 'database password' );
+define( 'DB_PASS', '' );
 
 /** The name of the database */
-define( 'DB_NAME', 'name of the database' );
+define( 'DB_NAME', 'haberler' );
 
 /** MySQL hostname */
 define( 'DB_HOST', 'localhost' );
@@ -32,11 +32,13 @@ define( 'DB_CACHE', '12' );
 /* 
 ** Site options
 */
-/** License key for commercial use (if case!)  **/
-define( 'phpVibeKey', 'vibe-localhost-key' );
+/** License key 
+Create it freely at PHPVibe.com **/
+/** For localhost use this key: vibe-localhost-key **/
+define( 'phpVibeKey', 'vibe-localhost-key ' );
 
 /** Site url (with end slash, ex: http://www.domain.com/ ) **/
-define( 'SITE_URL', 'https://yoursiteurl.com/' );
+define( 'SITE_URL', 'https://localhost/' );
 
 /** Admin folder, rename it and change it here **/
 define( 'ADMINCP', 'moderator' );
@@ -69,61 +71,4 @@ $cachettl = 7200; /* $ttl = Expiry time in seconds for cache's static html pages
 /*
 ** Custom settings would go after here.
 */
-/*
-** Definitions needed by the CMS
-*/
-/** Arrays with options for logins **/
-$conf_facebook = array();
-$conf_google = array();
-//Callback url for facebook
-$conf_facebook['redirect_uri'] = SITE_URL.'callback.php?type=facebook';
-//Callback url for google
-$conf_google['return_url'] = SITE_URL.'callback.php?type=google';
-//Facebook callback fields
-$conf_facebook['fields'] = 'id,name,email,first_name,gender,last_name,location,about';
-//Facebook permissions(default values)
-$conf_facebook['permissions'] = 'public_profile,email';
-
-
-/* URL delimiter RULE for phpVibe */
-define( 'url_split', '/' );
-
-/* SEO url structure */
-define( 'trending', 'trending' );
-define( 'page', 'read' );
-define( 'blog', 'blog' );
-define( 'blogcat', 'articles' );
-define( 'blogpost', 'article' );
-define( 'embedcode', 'embed' );
-define( 'video', 'video' );
-define( 'videos', 'videos' );
-define( 'premiumhub', 'premiumhub' );
-define( 'channel', 'channel' );
-define( 'channels', 'channels' );
-define( 'playlist', 'playlist' );
-define( 'album', 'album' );
-define( 'playlists', 'lists' );
-define( 'albums', 'albums' );
-define( 'note', 'note' );
-define( 'profile', 'profile' );
-define( 'show', 'show' );
-define( 'thetags', 'tag' );
-define( 'members', 'users' );
-define( 'share', 'share' );
-define( 'add', 'add-video' );
-define( 'upmusic', 'add-music' );
-define( 'upimage', 'add-image' );
-define( 'subscriptions', 'subscriptions' );
-define( 'manage', 'manage' );
-define( 'me', 'me' );
-define( 'buzz', 'activity' );
-define( 'imgsearch', 'imgsearch' );
-define( 'pplsearch', 'pplsearch' );
-define( 'playlistsearch', 'playlistsearch' );
-// Mini video seo excerpts
-define( 'mostliked', 'most-liked' );
-define( 'mostviewed', 'most-viewed' );
-define( 'promoted', 'featured' );
-define( 'browse', 'browse' );
-define( 'mostcom', 'most-commented' );
 ?>
