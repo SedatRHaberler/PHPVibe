@@ -96,8 +96,13 @@ $fileName = $token;
 //die('{"jsonrpc" : "2.0", "error" : {"code": 107, "message": "'._lang("Oups! Something went wrong. Please refresh the page and try again <br> If this continues rename your video file simpler before uploading.").'"}, "id" : "id"}');
 }
   if(is_insecure_file(strtolower($fileName))){
-die('{"jsonrpc" : "2.0", "error" : {"code": 107, "message": "'._lang("Insecure file detected! This file has an high chance of being an hacking attempt!").'"}, "id" : "id"}');
-  
+      if (is_empty($token)) {
+          // Sanitize the token and pvo parameters to prevent XSS
+          $token = isset($_REQUEST['token']) ? htmlspecialchars($_REQUEST['token'], ENT_QUOTES, 'UTF-8') : '';
+          $pvo = isset($_REQUEST['pvo']) ? htmlspecialchars($_REQUEST['pvo'], ENT_QUOTES, 'UTF-8') : '';
+
+          die('{"jsonrpc" : "2.0", "error" : {"code": 107, "message": "' . _lang("Oups! Something went wrong. <br> Token was empty. [". $token . " / ". $pvo . "] Please refresh the page and try again") . '"}, "id" : "id"}');
+      }
   }
 $filePath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
 $ext = substr($fileName, strrpos($fileName, '.') + 1);

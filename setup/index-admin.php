@@ -40,49 +40,56 @@ ob_start();
 
 $base_href_path = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_DIRNAME);
 
-$base_href_protocol = ( array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http' ).'://';
-if( array_key_exists('HTTP_HOST', $_SERVER) && !empty($_SERVER['HTTP_HOST']) )
-{
-	$base_href_host = $_SERVER['HTTP_HOST'];
-}
-elseif( array_key_exists('SERVER_NAME', $_SERVER) && !empty($_SERVER['SERVER_NAME']) )
-{
-	$base_href_host = $_SERVER['SERVER_NAME'].( $_SERVER['SERVER_PORT'] !== 80 ? ':'.$_SERVER['SERVER_PORT'] : '' );
-}
-$base_href = rtrim( $base_href_protocol.$base_href_host.$base_href_path, "/" ).'/';
+$base_href_protocol = (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://';
 
-$site_url = str_replace("setup/","",$base_href);
+// Sanitize the host value from HTTP headers
+if (array_key_exists('HTTP_HOST', $_SERVER) && !empty($_SERVER['HTTP_HOST'])) {
+    $base_href_host = htmlspecialchars($_SERVER['HTTP_HOST'], ENT_QUOTES, 'UTF-8');
+} elseif (array_key_exists('SERVER_NAME', $_SERVER) && !empty($_SERVER['SERVER_NAME'])) {
+    // Sanitize SERVER_NAME as well
+    $base_href_host = htmlspecialchars($_SERVER['SERVER_NAME'], ENT_QUOTES, 'UTF-8') . ($_SERVER['SERVER_PORT'] !== 80 ? ':' . $_SERVER['SERVER_PORT'] : '');
+}
 
+// Construct base href with sanitized values
+$base_href = rtrim($base_href_protocol . $base_href_host . $base_href_path, "/") . '/';
+
+// Sanitize site URL as well
+$site_url = str_replace("setup/", "", $base_href);
+
+// Sanitize site_url for safe HTML output
+$sanitized_site_url = htmlspecialchars($site_url, ENT_QUOTES, 'UTF-8');
+
+// Output the sanitized URL in the HTML <link> tag
 echo '
-<!doctype html> 
-<html prefix="og: http://ogp.me/ns#"> 
- <html dir="ltr" lang="en-US">  
-<head>  
+<!doctype html>
+<html prefix="og: http://ogp.me/ns#">
+ <html dir="ltr" lang="en-US">
+<head>
 <meta http-equiv="content-type" content="text/html;charset=UTF-8">
 <title>PHPVibe 11 :: Setup</title>
-<meta charset="UTF-8">  
-<link rel="stylesheet" type="text/css" href="'.$site_url.ADMINCP.'/css/style.css" media="screen" />
-<link href="'.$site_url.ADMINCP.'/css/bootstrap.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="'.$site_url.ADMINCP.'/css/plugins.css"/>
-<link rel="stylesheet" href="'.$site_url.ADMINCP.'/css/font-awesome.css"/>
-    <link href=\'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800\' rel=\'stylesheet\' type=\'text/css\'>
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-	<style>
-	.panel-heading {padding:15px}
-	[class*="msg-"] {padding-left:45px;}
-	.msg-win {    font-size: 14px;}
-	.w-6, .h-6 {width:20px; height:20px}
- 	</style>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="' . $sanitized_site_url . ADMINCP . '/css/style.css" media="screen" />
+<link href="' . $sanitized_site_url . ADMINCP . '/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="' . $sanitized_site_url . ADMINCP . '/css/plugins.css"/>
+<link rel="stylesheet" href="' . $sanitized_site_url . ADMINCP . '/css/font-awesome.css"/>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet" type="text/css">
+<!--[if lt IE 9]>
+  <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<style>
+    .panel-heading {padding:15px}
+    [class*="msg-"] {padding-left:45px;}
+    .msg-win { font-size: 14px;}
+    .w-6, .h-6 {width:20px; height:20px}
+</style>
 </head>
 <body style="background: #fafafa">
 <div id="wrapper" class="container-fluid page" style="max-width:740px; margin:30px auto; padding:20px;">
 <div id="content">
 <div class="row">
+';
+?>
 
-'; ?>
 <div class="row" style="text-align:center;">
 <div style="display:block;padding:2%">
 <img src="https://phpvibe.com/assets/images/logobig.png"><br> 
@@ -104,12 +111,12 @@ echo "<div class=\"msg-info\">You have ".$checked." administrators so far</div>"
 }	
 if(isset($_POST['name']) && isset($_POST['email']) && isset($_POST['pass1']) && isset($_POST['pass2'])){
 if($_POST['pass1'] == $_POST['pass2']) {
-$msg = '<div class="msg-win">All done. Remember to remove the file called "hold.json" in root.</div>';
+$msg = '<div class="msg-win">All done. Remember to remove the file called "hold" in root.</div>';
 $sql = "INSERT INTO ".DB_PREFIX."users (name,email,type,lastlogin,date_registered,group_id,password,avatar)"
  . " VALUES ('" . $db->escape($_POST['name']) . "','" . $db->escape($_POST['email']) . "','core', now(), now(), '1', '".sha1($_POST['pass1'])."', 'storage/uploads/def-avatar.jpg')";
 $db->query($sql);
 $checked++; 
-do_remove_file_now(ABSPATH.'/hold.json'); 
+do_remove_file_now(ABSPATH.'/hold'); 
 } else {
 $msg = '<div class="msg-warning">Passwords do not match</div>';
 }
@@ -159,16 +166,16 @@ $msg = '<div class="msg-warning">Passwords do not match</div>';
 <?php
 if($checked > 0) { 
 echo '<div class="msg-hint">Seems there is already an admin user in the database, so you are pretty much done.</div>';
-if(is_readable(ABSPATH.'/hold.json')){
+if(is_readable(ABSPATH.'/hold')){
 echo '<section class="panel panel-danger">
 <span class="label label-danger">One last thing</span>
-<div style="padding:25px 15px;"> Remove the file called "hold.json" in the root for your website to be online.</div></section>';
+<div style="padding:25px 15px;"> Remove the file called "hold" in the root for your website to be online.</div></section>';
 }
 }
 if($checked > 0) {
 echo '<section id="done" class="panel panel-blue">
 <span class="label label-primary">Setup is done</span>
-<div style="padding:25px 15px;">Head to <a href="'.str_replace("setup", ADMINCP, $base_href).'">/'.ADMINCP.'</a> for the admin panel. <br> Thank you for choosing PHPVibe!';
+<div style="padding:25px 15px;">Head to <a href="'.str_replace("setup",ADMINCP,$base_href).'">/'.ADMINCP.'</a> for the admin panel. <br> Thank you for choosing PHPVibe!';
 echo '<div class="form-group form-material floating">
 <a class="btn btn-large btn-primary pull-right" href="'.$site_url.ADMINCP.'" target="_blank">Setup is complete. Continue</a>
 </div></div></section>';

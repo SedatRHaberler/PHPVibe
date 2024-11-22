@@ -1342,14 +1342,17 @@ if (!class_exists('mthumb')) : /**
 			if ($bytesSent > 0) {
 				return TRUE;
 			}
-			$content = file_get_contents($this->cachefile);
-			if ($content != FALSE) {
-				$content = substr($content, strlen($this->filePrependSecurityBlock) + 6);
-				echo $content;
-				$this->debug(3, "Served using file_get_contents and echo");
+            $content = file_get_contents($this->cachefile);
+            if ($content !== FALSE) {
+                // Remove the security block and sanitize the remaining content
+                $content = substr($content, strlen($this->filePrependSecurityBlock) + 6);
 
-				return TRUE;
-			} else {
+                // Sanitize content to prevent XSS
+                $safeContent = htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
+
+                // Output the sanitized content
+                echo $safeContent;
+            } else {
 				$this->error("Cache file could not be loaded.");
 
 				return FALSE;

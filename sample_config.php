@@ -11,13 +11,13 @@ die();
 */
 
 /** MySQL database username */
-define( 'DB_USER', 'database username' );
+define( 'DB_USER', 'db user' );
 
 /** MySQL database password */
-define( 'DB_PASS', 'database password' );
+define( 'DB_PASS', 'db pass' );
 
 /** The name of the database */
-define( 'DB_NAME', 'name of the database' );
+define( 'DB_NAME', 'db name' );
 
 /** MySQL hostname */
 define( 'DB_HOST', 'localhost' );
@@ -29,14 +29,15 @@ define( 'DB_PREFIX', 'vibe_' );
 /** For how many hours should queries be cached? **/
 define( 'DB_CACHE', '12' );
 
-/* 
+/*
 ** Site options
 */
-/** License key for commercial use (if case!)  **/
-define( 'phpVibeKey', 'vibe-localhost-key' );
+/** License key 
+Create it in the store, under "My Licenses" **/
+define( 'phpVibeKey', 'the key goes here' );
 
 /** Site url (with end slash, ex: http://www.domain.com/ ) **/
-define( 'SITE_URL', 'https://yoursiteurl.com/' );
+define( 'SITE_URL', 'https://www.domain.com/' );
 
 /** Admin folder, rename it and change it here **/
 define( 'ADMINCP', 'moderator' );
@@ -63,7 +64,7 @@ $mvm_port = '';  /* TCP port to connect to	*/
 /*
  ** Full cache settings.
  */  
-$killcache = true; /* true: disabled full cache (recommended for starters); false : enabled full cache */
+$killcache = false; /* true: disabled full cache (recommended for starters); false : enabled full cache */
 $cachettl = 7200; /* $ttl = Expiry time in seconds for cache's static html pages */ 
 /* 1 day = 86400; 1 hour = 3600; */ 
 /*

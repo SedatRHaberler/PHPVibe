@@ -4,13 +4,8 @@ if(!is_home()) {
 }
 
 /* register_style('roboto'); */
-if(_get('darkmode')) {
-    $_SESSION['darkmode'] = _get('darkmode');
-}
-if(isset( $_SESSION['darkmode']) && ( $_SESSION['darkmode'] == 1) ) {
-    register_style('dark');
-}
 register_style('https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700');
+
 
 if(not_empty(get_option('rtl_langs',''))) {
     //Rtl
@@ -27,18 +22,16 @@ function header_add(){
     $head = render_styles(0);
     $head .= extra_css().'
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-
 <script>
 if((typeof jQuery == "undefined") || !window.jQuery )
 {
    var script = document.createElement("script");
    script.type = "text/javascript";
-   script.src = "'.tpl().'scripts/jquery.min.js";
+   script.src = "'.tpl().'styles/js/jquery.js";
    document.getElementsByTagName(\'head\')[0].appendChild(script);
 }
 var acanceltext = "'._lang("Cancel").'";
 var startNextVideo,moveToNext,nextPlayUrl;
-
 </script>
 ';
     $head .=players_js();
@@ -168,6 +161,10 @@ function top_nav(){
         }
         $nav .= '<li class="my-buzz" role="presentation"><a href="'.site_url().'dashboard/"><i class="icon material-icons">&#xE031;</i> '. _lang('Media Studio').'</a> </li>
 	<li role="presentation"><a href="'.site_url().'dashboard/?sk=edit"><i class="icon material-icons">&#xE8B8;</i> '._lang("My Settings").'</a></li>
+	<li role="presentation"> <a href="'.site_url().me.'"> <i class="icon material-icons">&#xE04A;</i> '._lang("My Videos").' </a>       </li>
+	<li role="presentation"> <a href="'.site_url().me.'?sk=music"> <i class="icon material-icons">&#xE030;</i> '._lang("My Music").' </a>       </li>
+	<li role="presentation"> <a href="'.site_url().me.'?sk=images"> <i class="icon material-icons">&#xE413;</i> '._lang("My Images").' </a>       </li>
+
 	<li class="my-inbox" role="presentation"><a href="'.site_url().'conversation/0/"><i class="icon material-icons">&#xE0C9;</i> '. _lang('Messages').'</a> </li>';
         if(is_admin()){
             $nav .= '
@@ -190,24 +187,7 @@ function top_nav(){
 	<a href="javascript:showLogin()" class="btn btn-primary btn-small btn-block">'._lang("Join").'</a>
 	';
 	}
-    //if(_contains(canonical(), '?')) { $darklink = canonical().'&darkmode='; } else {$darklink = canonical().'?darkmode=';}
-    $darklink = canonical().'?darkmode=';
-    if(isset($_SESSION['darkmode']) &&  ($_SESSION['darkmode']== 1)) {
-
-        $nav .= '<a href="'.$darklink.'2" class="top-link">
-<svg id="theme-toggle-light-icon" class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M10 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0-11a1 1 0 0 0 1-1V1a1 1 0 0 0-2 0v2a1 1 0 0 0 1 1Zm0 12a1 1 0 0 0-1 1v2a1 1 0 1 0 2 0v-2a1 1 0 0 0-1-1ZM4.343 5.757a1 1 0 0 0 1.414-1.414L4.343 2.929a1 1 0 0 0-1.414 1.414l1.414 1.414Zm11.314 8.486a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414l-1.414-1.414ZM4 10a1 1 0 0 0-1-1H1a1 1 0 0 0 0 2h2a1 1 0 0 0 1-1Zm15-1h-2a1 1 0 1 0 0 2h2a1 1 0 0 0 0-2ZM4.343 14.243l-1.414 1.414a1 1 0 1 0 1.414 1.414l1.414-1.414a1 1 0 0 0-1.414-1.414ZM14.95 6.05a1 1 0 0 0 .707-.293l1.414-1.414a1 1 0 1 0-1.414-1.414l-1.414 1.414a1 1 0 0 0 .707 1.707Z"></path>
-        </svg>
-        </a> ';
-
-    } else {
-        $nav .= '<a href="'.$darklink.'1" class="top-link">
- <svg id="theme-toggle-dark-icon" class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
-          <path d="M17.8 13.75a1 1 0 0 0-.859-.5A7.488 7.488 0 0 1 10.52 2a1 1 0 0 0 0-.969A1.035 1.035 0 0 0 9.687.5h-.113a9.5 9.5 0 1 0 8.222 14.247 1 1 0 0 0 .004-.997Z"></path>
-        </svg>
-        </a> ';
-    }
-    $nav .= ' 
+    $nav .= '
 	<a data-target="#search-now" data-toggle="modal" href="javascript:void(0)" class="top-link" id="show-search"><i class="material-icons">&#xE8B6;</i></a>
 	</div>
 

@@ -33,7 +33,7 @@ $page = $db->get_row("select * from ".DB_PREFIX."posts where pid = '".$pid."'");
 
 ?>
 <div class="row">
-<form id="validate" class="form-horizontal styled" action="<?php echo canonical();?>" enctype="multipart/form-data" method="post">
+    <form id="validate" class="form-horizontal styled" action="<?php echo htmlspecialchars(canonical(), ENT_QUOTES, 'UTF-8'); ?>" enctype="multipart/form-data" method="post">
 <fieldset>
 <div class="form-group form-material">
 <label class="control-label"><i class="icon-text-height"></i>Title</label>

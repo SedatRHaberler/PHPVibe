@@ -105,7 +105,7 @@ function time_ago($date, $granularity = 2)
     if (nullval($date)) {
         return '';
     }
-    $periods = array("second","minute", "hour","day", "week","month","year", "decade");
+    $periods = array(_lang("second"), _lang("minute"), _lang("hour"), _lang("day"), _lang("week"), _lang("month"), _lang("year"), _lang("decade"));
     $lengths = array("60", "60", "24", "7", "4.35", "12", "10");
     $now = time();
     $unix_date = strtotime($date);
@@ -126,9 +126,9 @@ function time_ago($date, $granularity = 2)
     }
     $difference = round($difference);
     if ($difference != 1) {
-        $periods[$j] .= "s";
+        $periods[$j] .= _lang("s");
     }
-    return $difference . ' ' . _lang($periods[$j]) . ' ' . $tense;
+    return $difference . ' ' . _lang($periods[$j]) . ' ' . _lang($tense);
 }
 
 /* extracts domain from url */
@@ -362,7 +362,7 @@ function percent($first, $num_total, $precision = 0)
 //limit a string
 function _cut($str, $nb = 10)
 {
-    if (not_empty($str)) {
+    if(not_empty($str)){
         if (strlen($str) > $nb) {
             if (extension_loaded('mbstring')) {
                 mb_internal_encoding("UTF-8");
@@ -580,12 +580,8 @@ function right_sidebar()
 
 function vibe_headers()
 {
-	if(function_exists('meta_add')) {
     echo apply_filters('vibe_meta_filter', meta_add());
-	}
-	if(function_exists('header_add')) {
     echo apply_filters('vibe_header_filter', header_add());
-	}
 }
 
 function vibe_footers()
@@ -617,8 +613,7 @@ function site_copy()
     return apply_filters('tsitecopy', get_option('site-copyright'));
 }
 
-function video_time($sec, $padHours = false)
-{
+function video_time($sec, $padHours = false) {
     $hms = "";
 // there are 3600 seconds in an hour, so if we
 // divide total seconds by 3600 and throw away
@@ -626,7 +621,7 @@ function video_time($sec, $padHours = false)
     $hours = intval(intval($sec) / 3600);
     if ($hours > 0):
 // add to $hms, with a leading 0 if asked for
-        $hms .= ($padHours) ? str_pad($hours, 2, "0", STR_PAD_LEFT) . ':' : $hours . ':';
+        $hms .= ($padHours)? str_pad($hours, 2, "0", STR_PAD_LEFT). ':' : $hours. ':';
     endif;
 // dividing the total seconds by 60 will give us
 // the number of minutes, but we're interested in
@@ -634,7 +629,7 @@ function video_time($sec, $padHours = false)
 // divide by 60 again and keep the remainder
     $minutes = intval(intval($sec / 60) % 60);
 // then add to $hms (with a leading 0 if needed)
-    $hms .= str_pad($minutes, 2, "0", STR_PAD_LEFT) . ':';
+    $hms .= str_pad($minutes, 2, "0", STR_PAD_LEFT). ':';
 // seconds are simple - just divide the total
 // seconds by 60 and keep the remainder
     $seconds = intval($sec % 60);
@@ -642,7 +637,6 @@ function video_time($sec, $padHours = false)
     $hms .= str_pad($seconds, 2, "0", STR_PAD_LEFT);
     return $hms;
 }
-
 function sef_url()
 {
     $url = site_url();
@@ -720,11 +714,7 @@ function _count($table, $field = null, $sum = false)
     } else {
         $c = $db->get_row("SELECT count(*) as nr FROM " . DB_PREFIX . $table);
     }
-    if ($c && not_empty($c->nr)) {
-        return number_format($c->nr, 0);
-    } else {
-        return 0;
-    }
+    return number_format($c->nr, 0);
 }
 
 //Fb count
@@ -847,7 +837,7 @@ function subscribe_box($user, $btnc = '', $counter = true)
         } else {
 //It's you
             $btnc = "btn btn-default subscriber";
-            echo '<a href="' . site_url() . 'dashboard/?sk=edit" class="' . $btnc . '"><i class="icon icon-cogs"></i>' . _lang('Settings') . '</a>';
+            echo '<a href="' . site_url() . 'dashboard/" class="' . $btnc . '"><i class="icon icon-cogs"></i>' . _lang('Settings') . '</a>';
 
         }
     }
@@ -1034,17 +1024,15 @@ function delete_image($id)
         if ($image) {
 //try to delete file to
 //Remove thumb
-	if(isset($image->thumb) && not_empty($image->thumb)) {
-				$thumb = $image->thumb;
-				if ($thumb && ($thumb != "storage/storage/uploads/noimage.png") && ($thumb != "storage/media/thumbs/xmp3.jpg")) {
-					$vurl = parse_url(trim($thumb, '/'));
-					if (!isset($vurl['scheme']) || $vurl['scheme'] !== 'http') {
-						$thumb = ABSPATH . '/' . $thumb;
-						//remove thumb
-						remove_file($thumb);
-					}
-				}
-	}
+            $thumb = $image->thumb;
+            if ($thumb && ($thumb != "storage/storage/uploads/noimage.png") && ($thumb != "storage/media/thumbs/xmp3.jpg")) {
+                $vurl = parse_url(trim($thumb, '/'));
+                if (!isset($vurl['scheme']) || $vurl['scheme'] !== 'http') {
+                    $thumb = ABSPATH . '/' . $thumb;
+//remove thumb
+                    remove_file($thumb);
+                }
+            }
         }
         $db->query("DELETE from " . DB_PREFIX . "images where id='" . intval($id) . "'");
         $db->query("DELETE from " . DB_PREFIX . "playlist_data where video_id='" . intval($id) . "' and playlist in (SELECT id from " . DB_PREFIX . "playlists where ptype = '2')");
@@ -1093,7 +1081,7 @@ function remove_file($filename)
             echo '<div class="msg-info">' . $filename . ' removed.</div>';
         } else {
             echo '<div class="msg-warning">' . $filename . ' was not removed. Check server permisions for "unlink" function.</div>';
-        }
+        };
     }
 }
 
@@ -1526,7 +1514,7 @@ function get_soundcloud($url)
 function is_insecure_file($file)
 {
     $fa = explode(".", $file);
-    $bad = array("php", "php1", "php2", "php3", "php4", "php5", "phtml", "exe", "php6", "php7", "php8", "pl", "phar");
+    $bad = array("php", "php1", "php2", "php3", "php4", "php5", "phtml", "exe", "php6", "php7", "php8", "pl");
     $fa = array_map('strtolower', $fa);
     $a1_flipped = array_flip($fa);
     $a2_flipped = array_flip($bad);
@@ -1541,7 +1529,6 @@ function removeCommonWords($input)
     }
     return false;
 }
-
 function the_embed()
 {
     global $embedvideo;
@@ -1550,6 +1537,30 @@ function the_embed()
     }
 }
 
+function lang_menu()
+{
+    global $cachedb;
+    $row = $cachedb->get_results("SELECT `lang_code`, `lang_name` FROM " . DB_PREFIX . "languages order by `lang_name` asc  LIMIT 0,100");
+    $menu = '';
+    $cr = '';
+    if ($row) {
+        $menu .= '<h4 class="li-heading mtop10">
+' . _lang('Site language') . '
+</h4>
+<div class="sidebar-nav blc"><ul>';
+        foreach ($row as $l) {
+            if ($l->lang_code == current_lang()) {
+                $cr = $l->lang_name;
+                $ico = '<i class="material-icons">gps_fixed</i>';
+            } else {
+                $ico = '<i class="material-icons">gps_not_fixed</i>';
+            }
+            $menu .= '<li><a rel="nofollow" href="' . canonical() . '?clang=' . $l->lang_code . '"><span class="iconed">' . $ico . '</span> ' . $l->lang_name . '</a></li>';
+        }
+        $menu .= '</ul></div>';
+    }
+    return $menu;
+}
 
 function u_k($nr)
 {
@@ -1648,36 +1659,34 @@ function isJson($string)
 }
 
 /* Function to extract video data */
-function _get_va($video, $ffmpeg) {	
-	
-		$time = 0; $hours = 0; $mins = 0; $secs = 0;
-		$size = 0;
-    $command = $ffmpeg." -i '" . $video . "' 2>&1 | grep Duration | cut -d ' ' -f 4 | sed s/,//";    	
-    $time = exec($command);    
-	$regs = explode(":", $time);
-		if(isset($regs) && is_array($regs)) {
-		$hours = $regs [0] ? $regs [0] : null;
+function _get_va($video, $ffmpeg)
+{
+    $time = 0;
+    $hours = 0;
+    $mins = 0;
+    $secs = 0;
+    $size = 0;
+    $command = $ffmpeg . " -i '" . $video . "' 2>&1 | grep Duration | cut -d ' ' -f 4 | sed s/,//";
+    $time = exec($command);
+    $regs = explode(":", $time);
+    if (isset($regs) && is_array($regs)) {
+        $hours = $regs [0] ? $regs [0] : null;
         $mins = $regs [1] ? $regs [1] : null;
         $secs = $regs [2] ? $regs [2] : null;
         $secs = round($secs);
-		$timesec = $hours *  3600 + 	$mins * 60 + $secs;
-		} 
-	
-	$ffcommand = "ffprobe -v error -show_entries stream=width,height -of default=noprint_wrappers=1:nokey=1 " . $video ;	
-	$size = (int)exec($ffcommand); 
-	//* Fallback to ffmpeg raw */	
-	if(is_empty($size) || ($size < 1))	 {
-	$wcommand = $ffmpeg." -i '" . $video . "' 2>&1 | grep Video: | grep -Po '\d{3,5}x\d{3,5}' | cut -d'x' -f1";	
-	$size = exec($wcommand);  
-	}
-	
-    return array (            
-            'duration' => $timesec,
-			'durationreadable' => $time,
-            'height' => $size,
-			'hours' => $hours,
-            'mins' => $mins,
-            'secs' => $secs			
+        $timesec = $hours * 3600 + $mins * 60 + $secs;
+    }
+
+    $wcommand = $ffmpeg . " -i '" . $video . "' 2>&1 | grep Video: | grep -Po '\d{3,5}x\d{3,5}' | cut -d'x' -f1";
+    $size = exec($wcommand);
+
+    return array(
+        'duration' => $timesec,
+        'durationreadable' => $time,
+        'height' => $size,
+        'hours' => $hours,
+        'mins' => $mins,
+        'secs' => $secs
     );
 
 }
@@ -1904,7 +1913,7 @@ function get_activity($done)
             case 6:
                 $video = $cachedb->get_row("SELECT title,id from " . DB_PREFIX . "videos where id='" . intval($done->object) . "'");
                 if ($video) {
-                    $did["what"] = _lang("commented on the video") . ' <a class="text-primary" href="' . video_url($video->id, $video->title) . '" title="' . _html($video->title) . '">' . _html(_cut($video->title, 268)) . '</a>';
+                    $did["what"] = _lang("commented on the video") . ' <a class="text-primary" href="' . video_url($video->id, $video->title) . '" title="' . _html($video->title) . '">' . _html(_cut($video->title, 268)) . '</a>';;
                 }
                 break;
             case 7:
@@ -1913,7 +1922,7 @@ function get_activity($done)
                     $vid = intval(str_replace('video_', '', $com->object_id));
                     $video = $db->get_row("SELECT title,id from " . DB_PREFIX . "videos where id='" . $vid . "'");
                     if ($video) {
-                        $did["what"] = _lang("liked a comment on") . ' <a class="text-primary" href="' . video_url($video->id, $video->title) . '" title="' . _html($video->title) . '">' . _html(_cut($video->title, 268)) . '</a>';
+                        $did["what"] = _lang("liked a comment on") . ' <a class="text-primary" href="' . video_url($video->id, $video->title) . '" title="' . _html($video->title) . '">' . _html(_cut($video->title, 268)) . '</a>';;
                         $did["content"] = '<div class="content-filled">' . $com->comment_text . '</div>';
                     }
                 }
@@ -2212,14 +2221,5 @@ function get_album_img($pl)
         return false;
     }
 }
-function TokenCleaner($inputString) {
-    // Step 1: Remove non-alphanumeric characters except spaces
-    $cleanedString = preg_replace('/[^A-Za-z0-9\s]/', '', $inputString);
 
-    // Step 2: Remove specific words
-    $unwantedWords = ["php", "htaccess"];
-   $resultString =  str_replace($unwantedWords, array('',''), $cleanedString);
-
-    return $resultString;
-}
 ?>

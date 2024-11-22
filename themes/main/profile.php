@@ -17,12 +17,8 @@
        @<?php echo $profile->username;?>
       </p>
       <h1 class="playlist-listing-title full">
-       <?php if($myself) { ?>
-       <a href="#" data-pk="5" data-name="profiletitle" data-type="text" class="editable-click editable-empty" data-value="Your username" title="Edit"><?php echo _html($profile->name);  ?></a>
-       <?php } else { ?>
-           <?php echo _html($profile->name);  ?>
-          <?php } ?>
-          <div class="pull-right left30">
+        <a href="#" data-pk="5" data-name="profiletitle" data-type="text" class="editable-click editable-empty" data-value="Your username" title="Edit"><?php echo _html($profile->name);  ?></a>
+      <div class="pull-right left30">
 	  <?php subscribe_box($profile->id); ?>	
 	  <?php if (!$myself) { ?>
 	  <a href="<?php echo site_url();?>msg/<?php echo $profile->id;?>/" class="tipS left30" title="<?php echo _lang("Message"). ' '._html($profile->name); ?>"><i class="material-icons">chat</i> </a>
@@ -31,12 +27,8 @@
 	  </h1>
 	   
       <div class="playlist-listing-description">
-         <?php if($myself) { ?>
         <a href="#" data-pk="5" data-name="profileabout" data-type="text" class="editable-click editable-empty" data-value="Your about." title="Edit"><?php echo _html($profile->bio);  ?></a>
-         <?php } else { ?>
-             <?php echo _html($profile->bio);  ?>
-          <?php } ?>
-      </div>
+   </div>
       <div class="playlist-listing-btns">
 	  <?php if ($vd->nr > 1) { ?>
         <a class="playlist-listing-play tipS" title="<?php echo _lang("Play all media");?>" href="<?php site_url(); ?>forward/uvs-<?php echo $profile->id; ?>/">
@@ -52,14 +44,14 @@
 		<i class="material-icons">show_chart</i><?php echo $actives;?>
         </div>
 		<div class="playlist-listing-views">
-		<i class="material-icons">location_on</i> <?php if($profile->local) { ?>  <?php echo _html($profile->local);?>, <?php } ?> <?php if($profile->country) { ?> <?php echo _html($profile->country);?> <?php } else { echo _lang("Somewhere");} ?>
+		<i class="material-icons">location_on</i> <?php if($profile->local) { ?>  <?php echo _html($profile->local);?>, <?php } ?> <?php if($profile->country) { ?> <?php echo _html($profile->country);?> <?php } else { echo _lang("Unknown location");} ?> 
 		</div>
 	
       </div>
     </div>
   </div>
 
-    <?php if($myself) { ?>
+
 <script>
 $( document ).ready(function() {	
 	
@@ -85,7 +77,7 @@ $( document ).ready(function() {
 });
 
 </script>
-    <?php  } ?>
+
 <div class="profile-content">
 <div class="profile-hero">
       
@@ -106,7 +98,6 @@ $( document ).ready(function() {
   <ul>
     <li class="<?php echo aTab("profile");?>"><a href="<?php echo $canonical; ?>"><?php echo _lang("Channel"); ?></a></li>
 	<li class="<?php echo aTab("collections");?>"><a href="<?php echo $canonical; ?>?sk=collections"><?php echo _lang("Collections"); ?></a></li>
-      <?php if (($vd->nr > 0) || ($imgs->imgnr > 0)) { ?>
     <li class="<?php echo aTab("videos");?>"><a href="<?php echo $canonical; ?>?sk=videos"><?php echo _lang("Videos"); ?></a></li>
     <?php if(get_option('imagesmenu','1') == 1 ) { ?>
 	<li class="<?php echo aTab("images");?>"><a href="<?php echo $canonical; ?>?sk=images"><?php echo _lang("Images"); ?></a></li>
@@ -114,12 +105,9 @@ $( document ).ready(function() {
 	 <?php if(get_option('musicmenu','1') == 1 ) { ?>
 	<li class="<?php echo aTab("music");?>"><a href="<?php echo $canonical; ?>?sk=music"><?php echo _lang("Music"); ?></a></li>
    <?php } ?>
-      <?php } ?>
    
-   <?php if($myself ) { ?>
-       <li class="<?php echo aTab("activity");?>"><a href="<?php echo $canonical; ?>?sk=activity"><?php echo _lang("Activity"); ?></a></li>
-       <li class="<?php echo aTab("activity");?>"><a href="<?php echo $canonical; ?>?sk=subscribed"><?php echo _lang("Following"); ?></a></li>
-       <li class="<?php echo aTab("activity");?>"><a href="<?php echo $canonical; ?>?sk=subscribers"><?php echo _lang("Followers"); ?></a></li>
+   <?php if(($profile->hideactivity == 0) || $myself ) { ?>
+   <li class="<?php echo aTab("activity");?>"><a href="<?php echo $canonical; ?>?sk=activity"><?php echo _lang("Activity"); ?></a></li>
   <?php } ?>
  </ul>
 </nav>
@@ -146,14 +134,10 @@ $( document ).ready(function() {
               $bp = bpp();
               break;
           case 'activity':
-              if($myself) {
               $sort =(isset($_GET['sort']) && (intval($_GET['sort']) > 0) ) ? "and type='".intval($_GET['sort'])."'" : "";
               $count = $cachedb->get_row("Select count(*) as nr from ".DB_PREFIX."activity where user='".$profile->id."' ".$sort);
               $vq = "Select * from ".DB_PREFIX."activity where user='".$profile->id."' ".$sort." ORDER BY id DESC ".this_offset(45);
-              include_once(TPL.'/profile/activity.php');
-              } else {
-          echo _lang('This part is private');
-          }
+              include_once(TPL.'/profile/activity.php');	
               break;	
           case 'videos':
               $pagestructure = $canonical.'?sk=videos&p=';

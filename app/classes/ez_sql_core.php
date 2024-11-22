@@ -549,7 +549,7 @@
 			}
 		}
 		/* Remove css cache */
-		$csslist = glob($css_dir."{*.css*}", GLOB_BRACE);
+		$csslist = glob($css_dir."{[^\.]}", GLOB_BRACE);
 		if($csslist) {
 			foreach ($csslist as $filename)  {
 				if($filename){

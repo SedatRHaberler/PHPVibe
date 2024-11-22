@@ -521,7 +521,7 @@ class user
     public static function generateRandomNumber($length = 9)
     {
         $random = "";
-        //srand((double)microtime() * 1000000);
+        srand((double)microtime() * 1000000);
         $data = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         $data .= "abcdefghijklmnopqrstuvwxyz";
         $data .= "0123456789";
@@ -568,17 +568,8 @@ class user
             $userData['oauth_token'] = '';
         }
         if (!isset($userData['password']) || nullval($userData['password'])) {
-            $upassword = '';
-        } else {
-             $upassword = $userData['password'];
-            if(preg_match('/^[0-9a-f]{40}$/i', $upassword)){
-                /* already encrypoted with sha1 */
-            $upassword = toDb($upassword);
-               } else {
-              $upassword = sha1($upassword);
-            }
+            $userData['password'] = '';
         }
-        
         if (!isset($userData['local']) || nullval($userData['local'])) {
             $userData['local'] = '';
         }
@@ -590,7 +581,7 @@ class user
         }
 //insert to db
         $sql = "INSERT INTO " . DB_PREFIX . "users (name,username,email,type,lastlogin,date_registered,gid,fid,oauth_token,avatar,local,country,group_id,pass,password,bio)"
-            . " VALUES ('" . toDb($userData['name']) . "','" . toDb($userData['username']) . "','" . esc_attr($userData['email']) . "','" . $userData['type'] . "', now(), now(), '" . $userData['gid'] . "', '" . $userData['fid'] . "', '" . $userData['oauth_token'] . "', '" . $userData['avatar'] . "', '" . toDb($userData['local']) . "', '" . toDb($userData['country']) . "', '4', '" . $pass . "','" . $upassword . "', '" . toDb($userData['bio']) . "')";
+            . " VALUES ('" . toDb($userData['name']) . "','" . toDb($userData['username']) . "','" . esc_attr($userData['email']) . "','" . $userData['type'] . "', now(), now(), '" . $userData['gid'] . "', '" . $userData['fid'] . "', '" . $userData['oauth_token'] . "', '" . $userData['avatar'] . "', '" . toDb($userData['local']) . "', '" . toDb($userData['country']) . "', '4', '" . $pass . "','" . toDb($userData['password']) . "', '" . toDb($userData['bio']) . "')";
         $db->query($sql);
         $tid = user::checkUser($userData);
         return $tid;
