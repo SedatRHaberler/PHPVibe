@@ -6,11 +6,27 @@ if(isset($_POST['checkRow'])) {
 foreach ($_POST['checkRow'] as $del) {
 delete_image(intval($del));
 }
-echo '<div class="msg-info">Images #'.implode(',', $_POST['checkRow']).' removed permanently.</div>';
+// Check if 'checkRow' is set and is an array
+    if (isset($_POST['checkRow']) && is_array($_POST['checkRow'])) {
+        // Sanitize each value in the 'checkRow' array
+        $sanitized_checkRow = array_map(function($item) {
+            return htmlspecialchars($item, ENT_QUOTES, 'UTF-8');
+        }, $_POST['checkRow']);
+
+        // Safely output the sanitized values
+        echo '<div class="msg-info">Images #' . implode(',', $sanitized_checkRow) . ' removed permanently.</div>';
+    }
 }
 if(isset($_GET['pub-image'])) {
 publish_image(intval($_GET['pub-image']));
-echo '<div class="msg-info">Video #'.$_GET['pub-image'].' published.</div>';
+// Ensure 'pub-image' parameter exists in the query string
+    if (isset($_GET['pub-image'])) {
+        // Sanitize and escape the 'pub-image' parameter to prevent XSS
+        $pub_image = htmlspecialchars($_GET['pub-image'], ENT_QUOTES, 'UTF-8');
+
+        // Safely output the sanitized value
+        echo '<div class="msg-info">Video #' . $pub_image . ' published.</div>';
+    }
 } 
 $count = $db->get_row("Select count(*) as nr from ".DB_PREFIX."images where pub < 1");
 $images = $db->get_results("select id,title,source, views, liked from ".DB_PREFIX."images where pub < 1 ORDER BY ".DB_PREFIX."images.id DESC ".this_limit()."");

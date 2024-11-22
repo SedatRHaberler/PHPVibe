@@ -9,7 +9,11 @@ $ch = $_POST['categ'.$_POST['type']];if(is_array($ch)) { $ch = $ch[0];}
 }
 
 $db->query("INSERT INTO ".DB_PREFIX."channels (`sub`,`type`,`child_of`, `cat_name`, `picture`, `cat_desc`) VALUES ('".$_POST['sub']."','".$_POST['type']."','".$ch."','".toDb($_POST['play-name'])."', '".toDb($picture)."' , '".toDb($_POST['play-desc'])."')");$db->clean_cache();
-echo '<div class="msg-info">Channel '.$_POST['play-name'].' created</div>';
+// Sanitize the user input to prevent XSS
+    $play_name = htmlspecialchars($_POST['play-name'], ENT_QUOTES, 'UTF-8');
+
+// Safely output the sanitized value
+    echo '<div class="msg-info">Channel ' . $play_name . ' created</div>';
 }
 
 ?>

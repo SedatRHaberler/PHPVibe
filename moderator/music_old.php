@@ -225,20 +225,20 @@ echo '</div>';
                                   <span class="badge"><i class="material-icons">&#xE417;</i> <?php echo _html($video->views); ?></span>
 
                                       <span class="badge">
-                                        <?php if ($video->featured < 1) { ?>
-                                            <a class="tipS"
-                                               title="<?php echo htmlspecialchars(_lang("Not featured. Click to feature video"), ENT_QUOTES, 'UTF-8'); ?>"
-                                               href="<?php echo htmlspecialchars(canonical(), ENT_QUOTES, 'UTF-8'); ?>&feature-video=<?php echo htmlspecialchars($video->id, ENT_QUOTES, 'UTF-8'); ?>">
-                                               <i class="material-icons" style="color: #76838f;">&#xE838;</i>
-                                            </a>
-                                        <?php } else { ?>
-                                            <a class="tipS"
-                                               title="<?php echo htmlspecialchars(_lang("Featured video! Click to remove"), ENT_QUOTES, 'UTF-8'); ?>"
-                                               href="<?php echo htmlspecialchars(canonical(), ENT_QUOTES, 'UTF-8'); ?>&unfeature-video=<?php echo htmlspecialchars($video->id, ENT_QUOTES, 'UTF-8'); ?>">
-                                               <i class="material-icons">&#xE838;</i>
-                                            </a>
-                                        <?php } ?>
-                                    </span>
+                            <?php if ($video->featured < 1) { ?>
+                                <a class="tipS"
+                                   title="<?php echo htmlspecialchars(_lang("Not featured. Click to feature video"), ENT_QUOTES, 'UTF-8'); ?>"
+                                   href="<?php echo htmlspecialchars(canonical(), ENT_QUOTES, 'UTF-8'); ?>&feature-video=<?php echo htmlspecialchars($video->id, ENT_QUOTES, 'UTF-8'); ?>">
+                                   <i class="material-icons" style="color: #76838f;">&#xE838;</i>
+                                </a>
+                            <?php } else { ?>
+                                <a class="tipS"
+                                   title="<?php echo htmlspecialchars(_lang("Featured video! Click to remove"), ENT_QUOTES, 'UTF-8'); ?>"
+                                   href="<?php echo htmlspecialchars(canonical(), ENT_QUOTES, 'UTF-8'); ?>&unfeature-video=<?php echo htmlspecialchars($video->id, ENT_QUOTES, 'UTF-8'); ?>">
+                                   <i class="material-icons">&#xE838;</i>
+                                </a>
+                            <?php } ?>
+                        </span>
 
                                   </td>
                               </tr>

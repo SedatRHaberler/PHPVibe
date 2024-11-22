@@ -227,8 +227,8 @@ include_once('setheader.php');
 	<div class="form-group">
 <label class="control-label"><i class="icon-font"></i>Copyright</label>
 <div class="controls">
-<input type="text" name="site-copyright" class=" col-md-12" value="<?php echo get_option('site-copyright'); ?>" /> 
-<span class="help-block" id="limit-text">Ex: &copy; 2013 <?php echo ucfirst(ltrim(cookiedomain(),".")); ?></span>						
+<input type="text" name="site-copyright" class=" col-md-12" value="<?php echo get_option('site-copyright'); ?>" />
+    <span class="help-block" id="limit-text">Ex: &copy; 2013 <?php echo htmlspecialchars(ucfirst(ltrim(cookiedomain(), ".")), ENT_QUOTES, 'UTF-8'); ?></span>
 </div>	
 </div>	
 </div>	
@@ -238,8 +238,8 @@ include_once('setheader.php');
 	<div class="form-group">
 <label class="control-label"><i class="icon-tint"></i>Custom licensing</label>
 <div class="controls">
-<input type="text" name="licto" class=" col-md-12" value="<?php echo get_option('licto'); ?>" /> 
-<span class="help-block" id="limit-text">Ex: Licensed to <?php echo ucfirst(ltrim(cookiedomain(),".")); ?></span>						
+<input type="text" name="licto" class=" col-md-12" value="<?php echo get_option('licto'); ?>" />
+    <span class="help-block" id="limit-text">Ex: Licensed to <?php echo htmlspecialchars(ucfirst(ltrim(cookiedomain(), ".")), ENT_QUOTES, 'UTF-8'); ?></span>
 </div>	
 </div>
 </div>	

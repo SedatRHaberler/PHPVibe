@@ -1,16 +1,24 @@
 <?php /* We build it on top of Enghlish */
-$en_terms = $db->get_results("SELECT DISTINCT term from ".DB_PREFIX."langs limit 0,100000", ARRAY_A );
-if(isset($_POST["this-langShortcode"])) {
-$orlang = $_POST["this-langShortcode"];
-$ar = array();
-$ar["language-name"] = $_POST["this-language-name"];
-foreach ($_POST["term"] as $key=>$value) {
-$ar[$key] = $value;
+$en_terms = $db->get_results("SELECT DISTINCT term from ".DB_PREFIX."langs limit 0,100000", ARRAY_A );if (isset($_POST["this-langShortcode"])) {
+    $orlang = $_POST["this-langShortcode"];
+    $ar = array();
+
+    // Sanitize the language name input
+    $ar["language-name"] = htmlspecialchars($_POST["this-language-name"], ENT_QUOTES, 'UTF-8'); // Escape user input
+
+    // Sanitize all terms
+    foreach ($_POST["term"] as $key => $value) {
+        $ar[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8'); // Escape each term input
+    }
+
+    add_language($orlang, $ar);
+
+    // Output the sanitized language name in the message
+    echo '<div class="msg-info">Language ' . $ar["language-name"] . ' was created.</div>';
+
+    unset($ar);
 }
-add_language($orlang ,$ar );
-echo '<div class="msg-info">Language '.$ar["language-name"].' was created.</div>';
-unset($ar);
-}
+
 
 if (!is_writable(ABSPATH.'/storage/langs')) {
 echo '<div class="msg-warning">Languages folder (/storage/langs) is not writeable. Langs can\'t be stored. </div>';

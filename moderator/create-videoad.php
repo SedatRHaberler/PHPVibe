@@ -9,7 +9,7 @@ $content['end'] = $_POST['end'];
 $db->query("INSERT INTO ".DB_PREFIX."jads (`jad_start`,`jad_end`,`jad_type`, `jad_box`, `jad_body`, `jad_title`, `jad_pos`) VALUES
 ('".$content['sec']."','".$content['end']."','".$spot."', '".intval($content['box'])."', '".$content['body']."', '".$db->escape($_POST['name'])."', '".$db->escape($_POST['pos'])."')
 ");
-echo '<div class="msg-info">Ad '.$_POST['name'].' created</div>';
+    echo '<div class="msg-info">Ad ' . htmlspecialchars($_POST['name'], ENT_QUOTES, 'UTF-8') . ' created</div>';
  $db->clean_cache();
 }
 $adtype = array("3" => "Pre/Post-Roll","1" => "Overlay","2" => "Annotation" );

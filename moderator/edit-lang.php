@@ -13,7 +13,12 @@ $ar[$key] = $value;
 }
 delete_language($lang);
 add_language($lang ,$ar );
-echo '<div class="msg-info">Language '.$lang.' was updated.</div>';
+// Sanitize the $lang variable to prevent XSS
+    $lang = htmlspecialchars($lang, ENT_QUOTES, 'UTF-8');
+
+// Safely output the sanitized value
+    echo '<div class="msg-info">Language ' . $lang . ' was updated.</div>';
+
 $db->clean_cache();
 $translated = lang_terms($the_lang);
 }
@@ -22,15 +27,23 @@ echo '<div class="msg-warning">Languages folder (/lib/langs) is not writeable. L
 }
 $lang_file = ABSPATH.'/storage/langs/'.$the_lang.'.json';
 if (!file_exists($lang_file)) {
-echo '<div class="msg-warning">Language '.$lang_file.' doesn\'t exist yet.</div>';	
+// Sanitize the $lang_file variable to prevent XSS
+    $lang_file = htmlspecialchars($lang_file, ENT_QUOTES, 'UTF-8');
+
+// Safely output the sanitized value
+    echo '<div class="msg-warning">Language ' . $lang_file . ' doesn\'t exist yet.</div>';
 }
 ?>
-<div class="cleafix row">
-<form id="validate" class="form-horizontal styled" action="<?php echo admin_url('edit-lang');?>&id=<?php echo $the_lang; ?>" enctype="multipart/form-data" method="post">
-<div class="form-group form-material">
+    <div class="cleafix row">
+        <form id="validate" class="form-horizontal styled" action="<?php echo admin_url('edit-lang'); ?>&id=<?php echo htmlspecialchars($the_lang, ENT_QUOTES, 'UTF-8'); ?>" enctype="multipart/form-data" method="post">
+            <div class="form-group form-material">
+
 <label class="control-label"><i class="icon-globe"></i>Language code</label>
 <div class="controls">
-<input type="text" name="lang-code" class=" col-md-1" value="<?php echo $the_lang; ?>" /> 
+    <label>
+        <input type="text" name="lang-code" class=" col-md-1" value="<?php echo htmlspecialchars($the_lang, ENT_QUOTES, 'UTF-8'); ?>" />
+    </label>
+
 </div>	
 </div>
 <div class="form-group form-material">

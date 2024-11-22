@@ -2,7 +2,12 @@
 if(isset($_POST['add_group'])) {
 $db->query("INSERT INTO ".DB_PREFIX."users_groups (`name`,`group_creative`) VALUES ('".$db->escape($_POST['group-name'])."','".$db->escape($_POST['group-creative'])."')
 ");
-echo '<div class="msg-win">Usergroup "'.$_POST['group-name'].'" was created.</div>';
+// Sanitize the group name to prevent XSS
+    $groupName = htmlspecialchars($_POST['group-name'], ENT_QUOTES, 'UTF-8');
+
+// Output the sanitized group name
+    echo '<div class="msg-win">Usergroup "' . $groupName . '" was created.</div>';
+
 }
 if(isset($_GET['delete'])) {
 if(intval($_GET['delete']) > 4) {
@@ -29,10 +34,16 @@ $a->set_first_page(true);
 $a->set_pages_items(7);
 $a->set_per_page(bpp());
 $a->set_values($count->nr);
+// Ensure $ps is sanitized to prevent XSS
+$safe_ps = htmlspecialchars($ps, ENT_QUOTES, 'UTF-8');
+
+// Now safely use the sanitized $safe_ps in the show_pages method
+$a->show_pages($safe_ps);
 $a->show_pages($ps);
 ?>
 
-<form class="form-horizontal styled" action="<?php echo $ps;?><?php echo this_page();?>" enctype="multipart/form-data" method="post">
+<form class="form-horizontal styled" action="<?php echo htmlspecialchars($ps, ENT_QUOTES, 'UTF-8'); ?><?php echo this_page(); ?>" enctype="multipart/form-data" method="post">
+
 
 <div class="cleafix full"></div>
 <div class="cleafix full"></div>
@@ -77,7 +88,8 @@ $a->show_pages($ps);
 </table>
 </div>	
 <h3>Add group</h3>
-<form class="form-horizontal styled" action="<?php echo $ps;?><?php echo this_page();?>" enctype="multipart/form-data" method="post">
+    <form class="form-horizontal styled" action="<?php echo htmlspecialchars($ps, ENT_QUOTES, 'UTF-8'); ?><?php echo this_page(); ?>" enctype="multipart/form-data" method="post">
+
 
 <div class="cleafix full"></div>
 <fieldset>		
@@ -102,7 +114,16 @@ $a->show_pages($ps);
 </div>		
 </fieldset>					
 </form>
-<?php  $a->show_pages($ps); } else {
+<?php  // Sanitize the $ps input to prevent XSS attacks
+$safe_ps = htmlspecialchars($ps, ENT_QUOTES, 'UTF-8');
+
+// Optionally, validate $ps if it's supposed to be a valid URL or integer
+// Example for URL validation:
+// if (!filter_var($safe_ps, FILTER_VALIDATE_URL)) {
+//     $safe_ps = ''; // Or handle the error as needed
+// }
+
+$a->show_pages($safe_ps); } else {
 $db->query("INSERT INTO `".DB_PREFIX."users_groups` (`id`, `name`, `admin`, `default_value`, `access_level`) VALUES
 (1, 'Administrators', 1, 0, 3),
 (4, 'Members', 0, 1, 1),

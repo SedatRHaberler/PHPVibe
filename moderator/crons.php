@@ -40,10 +40,16 @@ if (isset($_POST['checkRow'])) {
 
     // Output sanitized and validated values to prevent XSS
     if (count($valid_crons) > 0) {
-        echo '<div class="msg-info">Crons #' . implode(',', $valid_crons) . ' deleted.</div>';
+        // Sanitize the cron IDs before outputting them
+        $sanitized_crons = array_map('intval', $valid_crons); // Ensure they are integers
+        $cron_list = implode(',', $sanitized_crons);
+
+        // Escape the cron list to prevent XSS
+        echo '<div class="msg-info">Crons #' . htmlspecialchars($cron_list, ENT_QUOTES, 'UTF-8') . ' deleted.</div>';
     } else {
         echo '<div class="msg-error">No valid cron IDs provided.</div>';
     }
+
 }
 
 if(isset($_GET["docreate"])) {

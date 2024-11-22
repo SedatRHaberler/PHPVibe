@@ -20,7 +20,13 @@ if (isset($_GET['delete'])) {
     if (in_array($lang, $allowed_languages)) {
         $file_path = ABSPATH . '/' . ADMINCP . '/cache/' . $lang;
 
-        // Ensure the file exists before attempting to delete
+        // Sanitize the $lang parameter to prevent directory traversal or other malicious input
+        $lang = basename($_GET['lang']);  // Extracts the file name only, removing any path traversal attempts
+
+// Construct the file path
+        $file_path = ABSPATH . '/' . ADMINCP . '/cache/' . $lang;
+
+// Ensure the file exists before attempting to delete
         if (file_exists($file_path)) {
             remove_file($file_path);
         }
@@ -66,7 +72,12 @@ if(isset($_GET['delete-lang'])) {
 $lang = $_GET['delete-lang'];
 if($lang) {
 delete_language($lang);
-echo '<div class="msg-info">Language #'.$lang.' was deleted.</div>';
+// Sanitize the $lang variable to prevent XSS
+    $lang = htmlspecialchars($lang, ENT_QUOTES, 'UTF-8');
+
+// Safely output the sanitized value
+    echo '<div class="msg-info">Language #' . $lang . ' was deleted.</div>';
+
 } 
 }
 if(isset($_POST['checkRow'])) {
@@ -82,7 +93,14 @@ if(isset($_POST['checkRow'])) {
     }, $_POST['checkRow']);
 
 // Output the sanitized message
+// Sanitize each language in the $sanitized_languages array before using implode
+    $sanitized_languages = array_map(function($language) {
+        return htmlspecialchars($language, ENT_QUOTES, 'UTF-8');
+    }, $sanitized_languages);
+
+// Safely output the sanitized values
     echo '<div class="msg-info">Languages #' . implode(',', $sanitized_languages) . ' deleted.</div>';
+
 }
 //Upload lang file
 if(isset($_FILES['language']) && !empty($_FILES['language']['name'])){

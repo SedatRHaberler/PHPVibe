@@ -5,13 +5,24 @@ $id = intval($_GET['delete-com']);
 $db->query("DELETE FROM ".DB_PREFIX."em_comments where id='".$id."'");
 $db->query("DELETE FROM ".DB_PREFIX."activity where type = '7' and object='".$id."'");
 echo '<div class="msg-info">Comment #'.$id.' deleted.</div>';
-}  
-if(isset($_POST['checkRow'])) {
-foreach ($_POST['checkRow'] as $del) {
-$db->query("DELETE FROM ".DB_PREFIX."em_comments where id in (".implode(',', $_POST['checkRow']).")");
 }
-echo '<div class="msg-info">Comments #'.implode(',', $_POST['checkRow']).' deleted.</div>';
+if (isset($_POST['checkRow'])) {
+    // Sanitize user input: Ensure IDs are integers
+    $checkRow = array_map('intval', $_POST['checkRow']);
+
+    // Prepare placeholders for the parameterized query
+    $placeholders = implode(',', array_fill(0, count($checkRow), '?'));
+
+    // Prepare and execute the SQL query with sanitized input
+    $stmt = $db->prepare("DELETE FROM ".DB_PREFIX."em_comments WHERE id IN ($placeholders)");
+    $stmt->execute($checkRow);
+
+    // Sanitize the output for XSS protection
+    $deletedComments = implode(',', $checkRow);
+    // Escape the comment IDs before displaying them
+    echo '<div class="msg-info">Comments #' . htmlspecialchars($deletedComments, ENT_QUOTES, 'UTF-8') . ' deleted.</div>';
 }
+
 $count = $db->get_row("Select count(*) as nr from ".DB_PREFIX."em_comments");
 $comments   = $db->get_results("SELECT ".DB_PREFIX."em_comments . * , ".DB_PREFIX."em_likes.vote , ".DB_PREFIX."users.name, ".DB_PREFIX."users.avatar
 FROM ".DB_PREFIX."em_comments
