@@ -827,9 +827,19 @@ function subscribe_box($user, $btnc = '', $counter = true)
 
         if (is_video()) {
             global $video;
+
+            // Sanitize the class name and URL parameters
             $btnc = "btn btn-default subscriber";
-            echo '<a target="_blank" href="' . site_url() . me . '?sk=edit-video&vid=' . $video->id() . '" class="' . $btnc . '"><i class="icon icon-cogs"></i>' . _lang('Edit media') . '</a>';
-        } elseif (is_picture()) {
+            $video_id = htmlspecialchars($video->id(), ENT_QUOTES, 'UTF-8');
+            $site_url = htmlspecialchars(site_url(), ENT_QUOTES, 'UTF-8');
+            $me = htmlspecialchars(me, ENT_QUOTES, 'UTF-8');  // Ensure 'me' is sanitized if it's coming from user input
+
+            // Generate the sanitized link
+            $url = $site_url . $me . '?sk=edit-video&vid=' . urlencode($video_id);
+
+            // Output the sanitized HTML
+            echo '<a target="_blank" href="' . $url . '" class="' . $btnc . '"><i class="icon icon-cogs"></i>' . _lang('Edit media') . '</a>';
+        }elseif (is_picture()) {
             global $image;
             $btnc = "btn btn-default subscriber";
             echo '<a target="_blank" href="' . site_url() . me . '?sk=edit-image&vid=' . $image->id . '" class="' . $btnc . '"><i class="icon icon-cogs"></i>' . _lang('Edit media') . '</a>';

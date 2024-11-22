@@ -1,8 +1,10 @@
 <?php
-if(isset($_POST['opt']) && isset($_POST['val']) && !empty($_POST['opt'])){
-add_option($_POST['opt'],$_POST['val']);
-echo '<div class="msg-info">'.$_POST['opt'].' added.</div>';
-$db->clean_cache();
+if (isset($_POST['opt']) && isset($_POST['val']) && !empty($_POST['opt'])) {
+    // Sanitize output to prevent XSS
+    $opt = htmlspecialchars($_POST['opt'], ENT_QUOTES, 'UTF-8');
+    add_option($opt, $_POST['val']);
+    echo '<div class="msg-info">' . $opt . ' added.</div>';
+    $db->clean_cache();
 }
 $list_options = $db->get_results("SELECT option_name,autoload from ".DB_PREFIX."options limit 0,10000000");
 $all_options = get_all_options();

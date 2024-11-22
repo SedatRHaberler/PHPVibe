@@ -57,8 +57,37 @@
     <div class="page-main">
 	<?php if($cid > 0) { ?>
       <!-- Chat Box -->
-      <div class="app-message-chats">	  
-        <div id="conv-<?php echo $_conv->c_id; ?>" class="chats">		<div class="conv-user-header row text-left">		<h1>		<a href="<?php echo $us[$other]['profile'];?>">		<img src="<?php echo $us[$other]['avatar'];?>">		<span><?php echo $us[$other]['name'];?> </span>		</a>				<?php if(is_empty($_conv->closedby)) { ?>			<button class="btn btn-sm btn-icon btn-default pull-right" rel="popover" data-content="<a class='btn btn-sm btn-danger' href='<?php echo canonical();?>?close=1'><?php echo _lang("Yes, close it! I am aware I need to reopen it if I want to continue it.");?></a>" data-html="true" data-toggle="popover" data-placement="bottom" tabindex="0" title="<?php echo _lang("Close conversation");?>" type="button">   <i class="icon icon-lock"></i> <?php echo _lang("End");?> </button>		<?php } ?>		</h1>		</div>		
+      <div class="app-message-chats">
+          <div class="page-main">
+              <?php if ($cid > 0) { ?>
+                  <!-- Chat Box -->
+                  <div class="app-message-chats">
+                      <div id="conv-<?php echo htmlspecialchars($_conv->c_id, ENT_QUOTES, 'UTF-8'); ?>" class="chats">
+                          <div class="conv-user-header row text-left">
+                              <h1>
+                                  <a href="<?php echo htmlspecialchars($us[$other]['profile'], ENT_QUOTES, 'UTF-8'); ?>">
+                                      <img src="<?php echo htmlspecialchars($us[$other]['avatar'], ENT_QUOTES, 'UTF-8'); ?>">
+                                      <span><?php echo htmlspecialchars($us[$other]['name'], ENT_QUOTES, 'UTF-8'); ?> </span>
+                                  </a>
+                                  <?php if (is_empty($_conv->closedby)) { ?>
+                                      <button class="btn btn-sm btn-icon btn-default pull-right"
+                                              rel="popover"
+                                              data-content="<a class='btn btn-sm btn-danger' href='<?php echo htmlspecialchars(canonical(), ENT_QUOTES, 'UTF-8'); ?>?close=1'><?php echo htmlspecialchars(_lang('Yes, close it! I am aware I need to reopen it if I want to continue it.'), ENT_QUOTES, 'UTF-8'); ?></a>"
+                                              data-html="true"
+                                              data-toggle="popover"
+                                              data-placement="bottom"
+                                              tabindex="0"
+                                              title="<?php echo htmlspecialchars(_lang('Close conversation'), ENT_QUOTES, 'UTF-8'); ?>"
+                                              type="button">
+                                          <i class="icon icon-lock"></i> <?php echo htmlspecialchars(_lang('End'), ENT_QUOTES, 'UTF-8'); ?>
+                                      </button>
+                                  <?php } ?>
+                              </h1>
+                          </div>
+                      </div>
+                  </div>
+              <?php } ?>
+          </div>
 		<!-- First is fake & hidden -->
 		 <div class="chat dummy-chat chat-left hidden">
             <div class="chat-avatar">

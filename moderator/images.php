@@ -207,11 +207,12 @@ filter_list
         <i class="material-icons">&#xE417;</i> <?php echo htmlspecialchars(_html($image->views), ENT_QUOTES, 'UTF-8'); ?>
 
         <?php if ($image->featured < 1) { ?>
-        <a class="tipS couldhide"
-           title="<?php echo htmlspecialchars(_lang("Not featured. Click to feature image"), ENT_QUOTES, 'UTF-8'); ?>"
-           href="<?php echo canonical(); ?>&feature-image=<?php echo htmlspecialchars($image->id, ENT_QUOTES, 'UTF-8'); ?>">
+            <a class="tipS couldhide"
+               title="<?php echo htmlspecialchars(_lang("Not featured. Click to feature image"), ENT_QUOTES, 'UTF-8'); ?>"
+               href="<?php echo htmlspecialchars(canonical() . '&feature-image=' . urlencode($image->id), ENT_QUOTES, 'UTF-8'); ?>">
                 <i class="material-icons">&#xE417;</i>
-            </a><?php } else { ?>
+            </a>
+        <?php } else { ?>
 	<a class="tipS couldhide" title="<?php echo _lang("Featured image! Click to remove"); ?>" href="<?php echo canonical(); ?>&unfeature-image=<?php echo $image->id;?>"><i class="material-icons">&#xE838;</i></a>
 	<?php } ?>
 	</div>

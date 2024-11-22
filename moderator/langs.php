@@ -11,11 +11,20 @@ update_option('rtl_langs',$rlang);
 $db->clean_cache();
 $all_options = get_all_options();
 }
-if(isset($_GET['delete'])) {
-$lang = $_GET['delete'];
-if($lang) {
-remove_file(ABSPATH.'/'.ADMINCP.'/cache/'.$lang);
-}
+if (isset($_GET['delete'])) {
+    // Sanitize the input to prevent malicious values
+    $lang = basename($_GET['delete']);  // Use basename to avoid directory traversal
+    $allowed_languages = ['en', 'fr', 'de']; // Example allowed languages list
+
+    // Check if the language is valid
+    if (in_array($lang, $allowed_languages)) {
+        $file_path = ABSPATH . '/' . ADMINCP . '/cache/' . $lang;
+
+        // Ensure the file exists before attempting to delete
+        if (file_exists($file_path)) {
+            remove_file($file_path);
+        }
+    }
 }
 if(isset($_GET['import'])) {
 $lang = $_GET['import'];
@@ -45,7 +54,11 @@ add_language($code ,$zip );
 echo '<div class="msg-warning">'.$file.' was returned empty or read incorect from server.</div>';	
 }
 } else {
-echo '<div class="msg-warning">'.$file.' was not found.</div>';	
+    // Sanitize the $file variable to prevent XSS
+    $sanitized_file = htmlspecialchars($file, ENT_QUOTES, 'UTF-8');
+
+    // Output the sanitized message
+    echo '<div class="msg-warning">' . $sanitized_file . ' was not found.</div>';
 }
 }
 }
@@ -57,12 +70,19 @@ echo '<div class="msg-info">Language #'.$lang.' was deleted.</div>';
 } 
 }
 if(isset($_POST['checkRow'])) {
-foreach ($_POST['checkRow'] as $del) {
-if($del !== "en") {
-delete_language($del);
-} 
-}
-echo '<div class="msg-info">Languages #'.implode(',', $_POST['checkRow']).' deleted.</div>';
+    foreach ($_POST['checkRow'] as $del) {
+        if ($del !== "en") {
+            delete_language($del);
+        }
+    }
+
+// Sanitize the checkRow data before echoing it
+    $sanitized_languages = array_map(function($lang) {
+        return htmlspecialchars($lang, ENT_QUOTES, 'UTF-8');
+    }, $_POST['checkRow']);
+
+// Output the sanitized message
+    echo '<div class="msg-info">Languages #' . implode(',', $sanitized_languages) . ' deleted.</div>';
 }
 //Upload lang file
 if(isset($_FILES['language']) && !empty($_FILES['language']['name'])){

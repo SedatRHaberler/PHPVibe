@@ -46,14 +46,20 @@ $a->set_values($count->nr);
 ?>
 <div class="row">
 
-<div class="block full mar20_top mar10_bottom">
- <ul class="nav nav-tabs nav-tabs-line">
- <li class="disabled" role="presentation"><a href="javascript:void(0)">#<?php echo $key; ?></a></li>
-                    <li class="active"><a href="<?php echo $ps;?>"> Videos & Music</a></li>
-                   <li><a href="<?php echo str_replace('sk=search-videos','sk=search-images',canonical());?>">Images</a></li>
-				   </ul>
+    <div class="block full mar20_top mar10_bottom">
+        <ul class="nav nav-tabs nav-tabs-line">
+            <li class="disabled" role="presentation">
+                <a href="javascript:void(0)">#<?php echo htmlspecialchars($key, ENT_QUOTES, 'UTF-8'); ?></a>
+            </li>
+            <li class="active">
+                <a href="<?php echo htmlspecialchars($ps, ENT_QUOTES, 'UTF-8'); ?>"> Videos & Music</a>
+            </li>
+            <li>
+                <a href="<?php echo htmlspecialchars(str_replace('sk=search-videos', 'sk=search-images', canonical()), ENT_QUOTES, 'UTF-8'); ?>">Images</a>
+            </li>
+        </ul>
+    </div>
 
-</div>
 <form class="form-horizontal styled" action="<?php echo $ps;?>&p=<?php echo this_page();?>" enctype="multipart/form-data" method="post">
 
 <div class="cleafix full"></div>

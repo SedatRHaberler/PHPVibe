@@ -71,9 +71,13 @@ $token = toDb($_REQUEST['pvo']);
 }	
 }
 
- if(is_empty($token)){
-die('{"jsonrpc" : "2.0", "error" : {"code": 107, "message": "'._lang("Oups! Something went wrong. <br> Token was empty. [".@$_REQUEST['token']. " / ".@$_REQUEST['pvo']. "] Please refresh the page and try again").'"}, "id" : "id"}');
-  }
+if (is_empty($token)) {
+    $token = isset($_REQUEST['token']) ? htmlspecialchars($_REQUEST['token'], ENT_QUOTES, 'UTF-8') : '';
+    $pvo = isset($_REQUEST['pvo']) ? htmlspecialchars($_REQUEST['pvo'], ENT_QUOTES, 'UTF-8') : '';
+
+    die('{"jsonrpc" : "2.0", "error" : {"code": 107, "message": "' . _lang("Oups! Something went wrong. <br> Token was empty. [") . $token . " / " . $pvo . "] " . _lang("Please refresh the page and try again") . '"}, "id" : "id"}');
+}
+
 //$targetDir = 'uploads';
 $cleanupTargetDir = true; // Remove old files
 $maxFileAge = 5 * 3600; // Temp file age in seconds

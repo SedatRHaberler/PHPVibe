@@ -72,16 +72,22 @@ Take me to login</a></p> </div>
 		if(isset($purl_pies['query'])) {
 		$query_sks = $purl_pies['query'];
 		parse_str($query_sks, $query_sk);
-			if(isset($query_sk['sk']) && not_empty($query_sk['sk'])){
-				$pastest = str_replace("-"," ",$query_sk['sk']);
-				
-				if(isset($descrie[$pastest])){ $pastest = $descrie[$pastest];  }
-					
-				echo  '<li class="inline inline-block pull-right"> 
-				<i class="material-icons"> 
-				keyboard_return</i> <a href="'.$_SERVER['HTTP_REFERER'].'"> 
-				'.ucwords($pastest).'</a></li>';
-							}	
+            if (isset($query_sk['sk']) && not_empty($query_sk['sk'])) {
+                $pastest = str_replace("-", " ", $query_sk['sk']);
+
+                if (isset($descrie[$pastest])) {
+                    $pastest = $descrie[$pastest];
+                }
+
+                // Sanitize HTTP_REFERER and $pastest
+                $referer = isset($_SERVER['HTTP_REFERER']) ? htmlspecialchars($_SERVER['HTTP_REFERER'], ENT_QUOTES, 'UTF-8') : '#';
+                $safePastest = htmlspecialchars(ucwords($pastest), ENT_QUOTES, 'UTF-8');
+
+                echo '<li class="inline inline-block pull-right"> 
+            <i class="material-icons">keyboard_return</i> 
+            <a href="' . $referer . '">' . $safePastest . '</a>
+          </li>';
+            }
 				}
 		}
 echo  '<li class="inline inline-block"> 

@@ -1,8 +1,16 @@
-<?php 
-if(isset($_GET['delete'])) {
-$db->query( "DELETE FROM  ".DB_PREFIX."reports WHERE r_id = '".$_GET['delete']."'" );
-echo '<div class="msg-info">Report #'.$_GET['delete'].' removed.</div>';
-} 
+<?php
+if (isset($_GET['delete'])) {
+    // Sanitize the input for XSS protection in output
+    $delete_id = htmlspecialchars($_GET['delete'], ENT_QUOTES, 'UTF-8');
+
+    // Prevent SQL injection by using prepared statements
+    $stmt = $db->prepare("DELETE FROM " . DB_PREFIX . "reports WHERE r_id = :delete_id");
+    $stmt->bindParam(':delete_id', $delete_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    // Safely echo the sanitized output
+    echo '<div class="msg-info">Report #' . $delete_id . ' removed.</div>';
+}
 if(isset($_GET['unvid'])) {
 unpublish_video(intval($_GET['unvid']));
 echo '<div class="msg-info">Video #'.intval($_GET['unvid']).' unpublished.</div>';

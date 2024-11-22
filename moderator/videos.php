@@ -261,14 +261,25 @@ sort
 	<h4><a target="_blank" href="<?php echo video_url($video->id, $video->title);?>"><?php echo _html($video->title); ?> </a></h4>
 	<div class="cmd-holder">
 		
-		<a class="cmd-link tipS" title="Edit media" href="<?php echo admin_url('edit-video');?>&vid=<?php echo $video->id;?>">
-		<i class="material-icons"> edit </i> 
-		</a>
-		<?php if($video->featured < 1) { ?>
-	<a  class="tipS" title="<?php echo _lang("Not featured. Click to feature"); ?>" href="<?php echo canonical(); ?>&feature-video=<?php echo $video->id;?>"><i class="material-icons" style="color: #76838f;">&#xE838;</i></a>
-	<?php } else { ?>
-	<a class="tipS featured-video" title="<?php echo _lang("Featured video! Click to undo"); ?>" href="<?php echo canonical(); ?>&unfeature-video=<?php echo $video->id;?>"><i class="material-icons">&#xE838;</i></a>
-	<?php } ?>
+	<a class="cmd-link tipS"
+   title="<?php echo htmlspecialchars('Edit media', ENT_QUOTES, 'UTF-8'); ?>"
+   href="<?php echo htmlspecialchars(admin_url('edit-video') . '&vid=' . $video->id, ENT_QUOTES, 'UTF-8'); ?>">
+    <i class="material-icons">edit</i>
+</a>
+<?php if ($video->featured < 1) { ?>
+    <a class="tipS"
+       title="<?php echo htmlspecialchars(_lang('Not featured. Click to feature'), ENT_QUOTES, 'UTF-8'); ?>"
+       href="<?php echo htmlspecialchars(canonical() . '&feature-video=' . $video->id, ENT_QUOTES, 'UTF-8'); ?>">
+        <i class="material-icons" style="color: #76838f;">&#xE838;</i>
+    </a>
+<?php } else { ?>
+    <a class="tipS featured-video"
+       title="<?php echo htmlspecialchars(_lang('Featured video! Click to undo'), ENT_QUOTES, 'UTF-8'); ?>"
+       href="<?php echo htmlspecialchars(canonical() . '&unfeature-video=' . $video->id, ENT_QUOTES, 'UTF-8'); ?>">
+        <i class="material-icons">&#xE838;</i>
+    </a>
+<?php } ?>
+
 <?php if(get_domain($video->source) == "youtube") {
 	preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $video->source, $match);
 

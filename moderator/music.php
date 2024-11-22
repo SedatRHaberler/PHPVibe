@@ -206,11 +206,19 @@ filter_list
 	<i class="material-icons">&#xE8DC;</i><?php echo intval($video->liked); ?>
 	<span class="couldhide"><i class="material-icons">&#xE8DB;</i><?php echo intval($video->disliked); ?></span>
 	<i class="material-icons">&#xE417;</i> <?php echo _html($video->views); ?>
-	<?php if($video->featured < 1) { ?>
-	<a  class="tipS couldhide" title="<?php echo _lang("Not featured. Click to feature video"); ?>" href="<?php echo canonical(); ?>&feature-video=<?php echo $video->id;?>"><i class="material-icons" style="color: #76838f;">&#xE838;</i></a>
-	<?php } else { ?>
-	<a class="tipS couldhide" title="<?php echo _lang("Featured video! Click to remove"); ?>" href="<?php echo canonical(); ?>&unfeature-video=<?php echo $video->id;?>"><i class="material-icons">&#xE838;</i></a>
-	<?php } ?>
+        <?php if ($video->featured < 1) { ?>
+            <a class="tipS couldhide"
+               title="<?php echo htmlspecialchars(_lang("Not featured. Click to feature video"), ENT_QUOTES, 'UTF-8'); ?>"
+               href="<?php echo htmlspecialchars(canonical() . '&feature-video=' . urlencode($video->id), ENT_QUOTES, 'UTF-8'); ?>">
+                <i class="material-icons" style="color: #76838f;">&#xE838;</i>
+            </a>
+        <?php } else { ?>
+            <a class="tipS couldhide"
+               title="<?php echo htmlspecialchars(_lang("Featured video! Click to remove"), ENT_QUOTES, 'UTF-8'); ?>"
+               href="<?php echo htmlspecialchars(canonical() . '&unfeature-video=' . urlencode($video->id), ENT_QUOTES, 'UTF-8'); ?>">
+                <i class="material-icons">&#xE838;</i>
+            </a>
+        <?php } ?>
 	</div>
 	
 	

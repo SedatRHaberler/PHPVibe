@@ -35,47 +35,44 @@ $file = ABSPATH.'/storage/'.$media.'/'.$_GET["sk"].'-'.$q.$ext;
 }
 
 if (is_file($file)) {
+    // Sanitize file extension and mime type
+    $ext = pathinfo($file, PATHINFO_EXTENSION);
+    $mime_type = str_replace(array(".","ogv"), array("","ogg"), $ext);
 
-//NOT IOS
-$mime_type = str_replace(array(".","ogv"),array("","ogg"),$ext); 
-header("Content-type: video/$mime_type");	
- 
-	if (isset($_SERVER['HTTP_RANGE']))  { /* do it for any device that supports byte-ranges not only iPhone */
-	
-		rangeDownload($file);
-		
-	}	else {
-		
-		header('Content-Length: ' . filesize($file));
-		header("Content-Type: application/octet-stream");
-        header('Content-Disposition:  attachment; filename="phpvibevideo"');
+    // Ensure valid mime type
+    if (!in_array($mime_type, ['mp4', 'ogg', 'webm'])) {
+        die('{"jsonrpc" : "2.0", "error" : {"code": 400, "message": "Invalid video format."}, "id" : "id"}');
+    }
+
+    header("Content-type: video/$mime_type");
+
+    // Handle byte-range requests (for streaming)
+    if (isset($_SERVER['HTTP_RANGE'])) {
+        rangeDownload($file);
+    } else {
+        // Send headers for regular download
+        header('Content-Length: ' . filesize($file));
+        header("Content-Type: application/octet-stream");
+
+        // Sanitize filename
+        $filename = basename($file);  // Remove path info to get the filename
+        $filename = htmlspecialchars($filename, ENT_QUOTES, 'UTF-8');  // Sanitize filename
+
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
         header('Accept-Ranges: bytes');
-		
-		$handle = fopen($file, "rb");
-		while (!feof($handle)){			
-			echo fread($handle, 8192);
-		}
-		fclose($handle);
-		exit;
-		/*
-		//Alternative
-		set_time_limit(0);
-		$stdout = fopen('php://output', 'w');
-		$bfname = basename($file);
 
-		header("Content-type: application/octet-stream");
-		header("Content-Disposition: attachment; filename=\"$bfname\"");
+        // Open the file safely and output its contents
+        $handle = fopen($file, "rb");
+        if ($handle === false) {
+            die('{"jsonrpc" : "2.0", "error" : {"code": 500, "message": "Error reading the file."}, "id" : "id"}');
+        }
 
-		$filein = fopen($file, 'r');
-		stream_copy_to_stream($filein, $stdout);
-
-		fclose($filein);
-		fclose($stdout);
-		exit;
-		*/
-		
-	}
- 
+        while (!feof($handle)) {
+            echo fread($handle, 8192);
+        }
+        fclose($handle);
+        exit;
+    }
 } else {
  
 	// some error...
@@ -159,21 +156,18 @@ function rangeDownload($file) {
 	// Notify the client the byte range we'll be outputting
 	header("Content-Range: bytes $start-$end/$size");
 	header("Content-Length: $length");
- 
-	// Start buffered download
-	$buffer = 1024 * 8;
-	while(!feof($fp) && ($p = ftell($fp)) <= $end) {
- 
-		if ($p + $buffer > $end) {
- 
-			// In case we're only outputtin a chunk, make sure we don't
-			// read past the length
-			$buffer = $end - $p + 1;
-		}
-		set_time_limit(0); // Reset time limit for big files
-		echo fread($fp, $buffer);
-		flush(); // Free up memory. Otherwise large files will trigger PHP's memory limit.
-	}
+
+    $buffer = 1024 * 8;
+    while(!feof($fp) && ($p = ftell($fp)) <= $end) {
+        if ($p + $buffer > $end) {
+            $buffer = $end - $p + 1;
+        }
+        set_time_limit(0); // Reset time limit for big files
+
+        // Sanitize the output to prevent XSS
+        echo htmlspecialchars(fread($fp, $buffer), ENT_QUOTES, 'UTF-8');
+        flush(); // Free up memory
+    }
  
 	fclose($fp);
  
