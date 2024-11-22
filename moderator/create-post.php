@@ -1,9 +1,46 @@
 <?php
-if(isset($_POST['play-name'])) {
-if(isset($_FILES['play-img']) && !empty($_FILES['play-img']['name'])){$endextens = explode('.', $_FILES['play-img']['name']);$extension = end($endextens);$thumb = ABSPATH.'/storage/uploads/'.nice_url($_FILES['play-img']['name']).uniqid().'.'.$extension;if (move_uploaded_file($_FILES['play-img']['tmp_name'], $thumb)) {   $picture = str_replace(ABSPATH.'/' ,'',$thumb);   } else { $picture = '';}	}  else { $picture = '';}
-$db->query("INSERT INTO ".DB_PREFIX."posts (`date`, `ch`, `pic`, `title`, `content`, `tags`)
- VALUES (now(),'".intval($_POST['ch'])."', '".$picture."', '".$db->escape($_POST['play-name'])."', '".$db->escape(htmlentities($_POST['content']))."', '".$db->escape($_POST['tags'])."')");
-echo '<div class="msg-info">Post '.$_POST['play-name'].' created</div>';
+if (isset($_POST['play-name'])) {
+    // Sanitize the 'play-name' to prevent XSS
+    $play_name = htmlspecialchars($_POST['play-name'], ENT_QUOTES, 'UTF-8');
+
+    // Process file upload (with validation)
+    if (isset($_FILES['play-img']) && !empty($_FILES['play-img']['name'])) {
+        $endextens = explode('.', $_FILES['play-img']['name']);
+        $extension = strtolower(end($endextens));
+
+        // Validate the file extension (allow only specific image types)
+        $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+        if (in_array($extension, $allowed_extensions)) {
+            $thumb = ABSPATH . '/storage/uploads/' . nice_url($_FILES['play-img']['name']) . uniqid() . '.' . $extension;
+            if (move_uploaded_file($_FILES['play-img']['tmp_name'], $thumb)) {
+                $picture = str_replace(ABSPATH . '/', '', $thumb);
+            } else {
+                $picture = '';
+            }
+        } else {
+            // If the file is not allowed, set picture to an empty string
+            $picture = '';
+        }
+    } else {
+        $picture = '';
+    }
+
+    // Use prepared statements to prevent SQL injection
+    $stmt = $db->prepare("INSERT INTO " . DB_PREFIX . "posts (`date`, `ch`, `pic`, `title`, `content`, `tags`)
+                          VALUES (now(), :ch, :pic, :title, :content, :tags)");
+
+    // Bind parameters safely
+    $stmt->bindParam(':ch', intval($_POST['ch']), PDO::PARAM_INT);
+    $stmt->bindParam(':pic', $picture, PDO::PARAM_STR);
+    $stmt->bindParam(':title', $play_name, PDO::PARAM_STR);
+    $stmt->bindParam(':content', htmlentities($_POST['content'], ENT_QUOTES, 'UTF-8'), PDO::PARAM_STR);
+    $stmt->bindParam(':tags', $_POST['tags'], PDO::PARAM_STR);
+
+    // Execute the query
+    $stmt->execute();
+
+    // Output sanitized message
+    echo '<div class="msg-info">Post ' . $play_name . ' created</div>';
 }
 
 ?>

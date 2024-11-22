@@ -11,7 +11,7 @@ echo '<div class="msg-win">Usergroup #'.intval($_GET['delete']).' was removed.</
 } else {
 echo '<div class="msg-warning">Usergroup #'.intval($_GET['delete']).' was not removed : Reason protected group</div>';
 }
-} 
+}
 $count = $db->get_row("Select count(*) as nr from ".DB_PREFIX."users_groups");
 $users = $db->get_results("select * from ".DB_PREFIX."users_groups order by id ASC ".this_limit()."");
 
@@ -23,7 +23,7 @@ $ps = admin_url('usergroups').'&sort='.$_GET['sort'].'&p=';
 } else {
 $ps = admin_url('usergroups').'&p=';
 }
-$a = new pagination;	
+$a = new pagination;
 $a->set_current(this_page());
 $a->set_first_page(true);
 $a->set_pages_items(7);

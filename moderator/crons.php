@@ -1,9 +1,17 @@
 <?php
-if(isset($_GET['delete-cron'])) {
-$cron = $_GET['delete-cron'];
-delete_cron($cron);
-echo '<div class="msg-info">Cron #'.$cron.' deleted.</div>';
+if (isset($_GET['delete-cron'])) {
+    // Sanitize the 'delete-cron' parameter to prevent XSS
+    $cron = htmlspecialchars($_GET['delete-cron'], ENT_QUOTES, 'UTF-8');
 
+    // Validate that the cron parameter is safe and corresponds to a valid cron job
+    // For example, check if the cron parameter is a valid cron job ID (e.g., integer, alphanumeric, etc.)
+    // You should implement your own validation logic based on your application's requirements
+    if (is_valid_cron($cron)) {
+        delete_cron($cron);
+        echo '<div class="msg-info">Cron #' . $cron . ' deleted.</div>';
+    } else {
+        echo '<div class="msg-error">Invalid cron job ID.</div>';
+    }
 }
 
 function getListChName($id) {
@@ -14,12 +22,30 @@ return 	$result->name;
 }
 return '';
 }
-if(isset($_POST['checkRow'])) {
-foreach ($_POST['checkRow'] as $del) {
-delete_cron($del);
+if (isset($_POST['checkRow'])) {
+    // Sanitize each value in 'checkRow' to prevent XSS
+    $safe_checkRow = array_map(function($del) {
+        return htmlspecialchars($del, ENT_QUOTES, 'UTF-8');
+    }, $_POST['checkRow']);
+
+    // Example validation: Ensure 'checkRow' contains only valid cron IDs (e.g., integers)
+    $valid_crons = array_filter($safe_checkRow, function($del) {
+        return is_numeric($del); // Only allow numeric cron IDs
+    });
+
+    // Perform deletion of crons
+    foreach ($valid_crons as $del) {
+        delete_cron($del);
+    }
+
+    // Output sanitized and validated values to prevent XSS
+    if (count($valid_crons) > 0) {
+        echo '<div class="msg-info">Crons #' . implode(',', $valid_crons) . ' deleted.</div>';
+    } else {
+        echo '<div class="msg-error">No valid cron IDs provided.</div>';
+    }
 }
-echo '<div class="msg-info">Crons #'.implode(',', $_POST['checkRow']).' deleted.</div>';
-}
+
 if(isset($_GET["docreate"])) {
 add_cron($_GET);
 
