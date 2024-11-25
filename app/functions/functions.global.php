@@ -494,11 +494,24 @@ function get_language($lang_code, $default = false)
 
 }
 
+
+/**
+ * Function to sanitize the language code input
+ * @param string $input
+ * @return string
+ */
+function sanitize_language_code($input): string
+{
+    // Remove any malicious characters like ../
+    $sanitized_input = basename($input);  // basename ensures the filename is safe
+    return preg_replace('/[^a-zA-Z0-9_-]/', '', $sanitized_input);  // Allow only alphanumeric, underscore, and hyphen
+}
+
 /**
  * Add an language to the DB
  *
  */
-function add_language($code, $value = '')
+function add_language($code, $value = ''): void
 {
     global $db;
     $code = escape($code);
@@ -922,6 +935,14 @@ function add_activity($type, $obj, $extra = '')
         $db->query("INSERT INTO " . DB_PREFIX . "activity (`user`, `type`, `object`, `extra`) VALUES ('" . user_id() . "', '" . toDb($type) . "', '" . toDb($obj) . "', '" . toDb($extra) . "')");
         do_action('add-activity');
     }
+}
+// Function to sanitize file path input
+function sanitize_file_path($input) {
+    // Remove any malicious characters like '../' that could attempt to traverse directories
+    $sanitized_input = basename($input);  // basename ensures that the input is treated as a filename, no path allowed
+    // Further sanitize by removing any characters that could be used to break out of the folder
+    $sanitized_input = preg_replace('/[^a-zA-Z0-9_-]/', '', $sanitized_input);  // Allow only alphanumeric, underscore, and hyphen
+    return $sanitized_input;
 }
 
 function has_activity($type, $obj, $extra = '')

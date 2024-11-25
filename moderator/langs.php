@@ -42,23 +42,29 @@ if(is_readable($file)) {
 $zip = file_get_contents($file);
 //var_dump($zip);
 $zip = json_decode($zip,true);
-if(not_empty($zip)){
-if(not_empty($zip["language-code"])) {	
-$code = $zip["language-code"];
-$language = $db->get_row( "SELECT count(*) as nr FROM  ".DB_PREFIX."languages WHERE `lang_code` like '$code%'" );
-if ( $language) {
-if ( $language->nr > 0 ) {
-/* Language code already exists */	
-$nx = $language->nr + 1;	
-$code .= '-'.$nx;
-}
-}
-} else {
-$code = strtolower(substr($zip["language-name"], 0, 2 ));
-}	
-	
-add_language($code ,$zip );
-} else {
+    if (not_empty($zip)) {
+        if (not_empty($zip["language-code"])) {
+            // Sanitize the language code to ensure it doesn't contain invalid characters like slashes
+            $code = preg_replace('/[^a-zA-Z0-9_-]/', '', $zip["language-code"]); // Allow only alphanumeric characters, underscores, and hyphens
+
+            // Check if the language code exists in the database
+            $language = $db->get_row("SELECT count(*) as nr FROM ".DB_PREFIX."languages WHERE `lang_code` LIKE ?", [$code.'%']);
+            if ($language) {
+                if ($language->nr > 0) {
+                    // If language code already exists, append a number to make it unique
+                    $nx = $language->nr + 1;
+                    $code .= '-' . $nx;
+                }
+            }
+        } else {
+            // Generate code from the language name (ensure only the first 2 letters are taken)
+            $code = strtolower(substr($zip["language-name"], 0, 2));
+        }
+
+        // Add the new language (ensure safe input)
+        add_language($code, $zip);
+    }
+ else {
 echo '<div class="msg-warning">'.$file.' was returned empty or read incorect from server.</div>';	
 }
 } else {

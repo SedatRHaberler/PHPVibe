@@ -113,27 +113,7 @@ if (!$out = @fopen("{$filePath}.part", $chunks ? "ab" : "wb")) {
 	die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
 }
 
-if (!empty($_FILES)) {
-	if ($_FILES["file"]["error"] || !is_uploaded_file($_FILES["file"]["tmp_name"])) {
-		die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
-	}
-
-	// Read binary input stream and append it to temp file
-	if (!$in = @fopen($_FILES["file"]["tmp_name"], "rb")) {
-		die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
-	}
-} else {	
-	if (!$in = @fopen("php://input", "rb")) {
-		die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
-	}
-}
-
-while ($buff = fread($in, 4096)) {
-	fwrite($out, $buff);
-}
-
-@fclose($out);
-@fclose($in);
+extracted($out);
 
 // Check if file has been uploaded
 if (!$chunks || $chunk == $chunks - 1) {

@@ -1,39 +1,48 @@
-<?php $the_lang = (isset($_POST["lang-code"])) ? $_POST["lang-code"] : escape($_GET['id']);
-$en_terms = $db->get_results("SELECT DISTINCT term from ".DB_PREFIX."langs limit 0,100000", ARRAY_A );
-//$db->debug();
-if($en_terms) {
-$translated = lang_terms($the_lang);
-//var_dump($translated);
-if(isset($_POST["lang-code"])) {
-$lang = $the_lang;
-$ar = array();
-$ar["language-name"] = $_POST["language-name"];
-foreach ($_POST["term"] as $key=>$value) {
-$ar[$key] = $value;
-}
-delete_language($lang);
-add_language($lang ,$ar );
-// Sanitize the $lang variable to prevent XSS
-    $lang = htmlspecialchars($lang, ENT_QUOTES, 'UTF-8');
+<?php
+// Sanitize the lang-code or fallback to escaped GET parameter
+$the_lang = (isset($_POST["lang-code"])) ? sanitize_language_code($_POST["lang-code"]) : sanitize_language_code(escape($_GET['id']));
 
-// Safely output the sanitized value
-    echo '<div class="msg-info">Language ' . $lang . ' was updated.</div>';
+// Fetch terms from the database
+$en_terms = $db->get_results("SELECT DISTINCT term from " . DB_PREFIX . "langs limit 0,100000", ARRAY_A);
 
-$db->clean_cache();
-$translated = lang_terms($the_lang);
-}
-if (!is_writable(ABSPATH.'/storage/langs')) {
-echo '<div class="msg-warning">Languages folder (/lib/langs) is not writeable. Langs can\'t be edited. </div>';
-}
-$lang_file = ABSPATH.'/storage/langs/'.$the_lang.'.json';
-if (!file_exists($lang_file)) {
-// Sanitize the $lang_file variable to prevent XSS
-    $lang_file = htmlspecialchars($lang_file, ENT_QUOTES, 'UTF-8');
+if ($en_terms) {
+    $translated = lang_terms($the_lang);
 
-// Safely output the sanitized value
-    echo '<div class="msg-warning">Language ' . $lang_file . ' doesn\'t exist yet.</div>';
-}
+    if (isset($_POST["lang-code"])) {
+        $lang = $the_lang;
+        $ar = array();
+        $ar["language-name"] = htmlspecialchars($_POST["language-name"], ENT_QUOTES, 'UTF-8');  // Sanitize language name
+
+        foreach ($_POST["term"] as $key => $value) {
+            $ar[$key] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');  // Sanitize term values
+        }
+
+        delete_language($lang);
+        add_language($lang, $ar);
+
+        // Output safely
+        echo '<div class="msg-info">Language ' . htmlspecialchars($lang, ENT_QUOTES, 'UTF-8') . ' was updated.</div>';
+
+        // Clean the cache
+        $db->clean_cache();
+        $translated = lang_terms($the_lang);
+    }
+
+    // Check if the languages directory is writable
+    if (!is_writable(ABSPATH . '/storage/langs')) {
+        echo '<div class="msg-warning">Languages folder (/lib/langs) is not writable. Langs can\'t be edited. </div>';
+    }
+
+    // Secure the language file path to prevent path traversal
+    $lang_file = ABSPATH . '/storage/langs/' . basename($the_lang) . '.json';  // Prevent path traversal by using basename
+
+    // Check if the language file exists
+    if (!file_exists($lang_file)) {
+        echo '<div class="msg-warning">Language ' . htmlspecialchars($lang_file, ENT_QUOTES, 'UTF-8') . ' doesn\'t exist yet.</div>';
+    }
+
 ?>
+
     <div class="cleafix row">
         <form id="validate" class="form-horizontal styled" action="<?php echo admin_url('edit-lang'); ?>&id=<?php echo htmlspecialchars($the_lang, ENT_QUOTES, 'UTF-8'); ?>" enctype="multipart/form-data" method="post">
             <div class="form-group form-material">
