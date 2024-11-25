@@ -811,7 +811,27 @@ function the_nav($type = 1)
     }
     return apply_filters('the_navigation', $nav);
 }
+// Function to sanitize the file name
+function sanitizeFileName($filename) {
+    // Remove any characters that are not alphanumeric or allowed
+    $filename = preg_replace('/[^a-zA-Z0-9_-]/', '', basename($filename));
+    return $filename;
+}
+// Function to sanitize the file name and path
+function sanitizeFilePath($path) {
+    // Remove any sequences that could lead to path traversal
+    // This prevents any `../` from escaping the intended directory
+    return basename($path);  // Ensures only the base filename is returned
+}
 
+// Function to validate that the target path is within the allowed directory
+function isValidTargetPath($path, $allowedDirectory) {
+    // Resolve the absolute path
+    $realPath = realpath($path);
+
+    // Ensure the real path is within the allowed directory
+    return strpos($realPath, realpath($allowedDirectory)) === 0;
+}
 function subscribe_box($user, $btnc = '', $counter = true)
 {
     global $db;
@@ -944,7 +964,19 @@ function sanitize_file_path($input) {
     $sanitized_input = preg_replace('/[^a-zA-Z0-9_-]/', '', $sanitized_input);  // Allow only alphanumeric, underscore, and hyphen
     return $sanitized_input;
 }
-
+// Function to sanitize the user input for the file path
+function sanitize_input($input) {
+    // Remove any dangerous directory traversal characters (e.g., ../)
+    $sanitized_input = basename($input);  // basename ensures it's a safe filename
+    // Further sanitize by removing any non-alphanumeric characters except for specific ones
+    $sanitized_input = preg_replace('/[^a-zA-Z0-9_-]/', '', $sanitized_input);
+    return $sanitized_input;
+}
+// Function to sanitize the video ID input
+function sanitize_video_id($input) {
+    // Remove any dangerous characters like ../ that could cause path traversal issues
+    return preg_replace('/[^a-zA-Z0-9_-]/', '', $input);  // Allow only alphanumeric characters, underscores, and hyphens
+}
 function has_activity($type, $obj, $extra = '')
 {
     global $db;

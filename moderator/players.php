@@ -14,22 +14,46 @@ if(($key !== "player-logo") && !empty($key)) {
 }
 }
   echo '<div class="msg-info">Configuration options have been updated.</div>';
-  
 
-//Set logo
-if(isset($_FILES['player-logo']) && !empty($_FILES['player-logo']['name'])){
-$nn = explode('.', $_FILES['player-logo']['name']);	
-$extension = end($nn);
-$thumb = ABSPATH.'/storage/uploads/'.nice_url($_FILES['player-logo']['name']).uniqid().'.'.$extension;
-if (move_uploaded_file($_FILES['player-logo']['tmp_name'], $thumb)) {
-     $sthumb = str_replace(ABSPATH.'/' ,'',$thumb);
-    update_option('player-logo', $sthumb);
-	 
-	} else {
-	echo '<div class="msg-warning">Logo upload failed.</div>';
-	}
-	
-}
+// Set logo
+    if (isset($_FILES['player-logo']) && !empty($_FILES['player-logo']['name'])) {
+        // Sanitize the file name to avoid path traversal
+        $fileName = basename(urldecode($_FILES['player-logo']['name'])); // Get only the file name (no path)
+        $fileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $fileName); // Remove unsafe characters
+
+        // Get the file extension and validate it
+        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif']; // Allowed extensions
+        if (!in_array($extension, $allowedExtensions)) {
+            echo '<div class="msg-warning">Invalid file type for logo upload.</div>';
+            return;
+        }
+
+        // Generate a unique name for the file to avoid overwriting
+        $newFileName = 'player-logo-' . uniqid() . '.' . $extension;
+
+        // Define the target directory for uploads
+        $targetDir = ABSPATH . '/storage/uploads/';
+
+        // Construct the full path for the uploaded file
+        $thumb = $targetDir . $newFileName;
+
+        // Verify that the file path is within the target directory
+        if (realpath($thumb) !== false && strpos(realpath($thumb), realpath($targetDir)) === 0) {
+            // Attempt to move the uploaded file
+            if (move_uploaded_file($_FILES['player-logo']['tmp_name'], $thumb)) {
+                // Update the logo option with the relative file path
+                $sthumb = str_replace(ABSPATH . '/', '', $thumb);
+                update_option('player-logo', $sthumb);
+                echo '<div class="msg-info">Logo uploaded successfully.</div>';
+            } else {
+                echo '<div class="msg-warning">Logo upload failed.</div>';
+            }
+        } else {
+            echo '<div class="msg-warning">Invalid file path. Upload failed.</div>';
+        }
+    }
+
 $db->clean_cache();
 }
 

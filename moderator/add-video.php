@@ -10,8 +10,20 @@ $formInputName   = 'play-img';
 $uploader = new FileUploader($formInputName, $savePath, $saveName , $allowedExtArray);
 if ($uploader->getIsSuccessful()) {
 //$uploader -> resizeImage(200, 200, 'crop');
-$uploader -> saveImage($uploader->getTargetPath(), $imageQuality);
-$thumb  = $uploader->getTargetPath();
+// Example usage in your uploader code
+
+// Get the target path and sanitize it
+    $targetPath = $uploader->getTargetPath();
+    $sanitizedPath = sanitizeFilePath($targetPath);
+
+// Validate the target path to ensure it is inside the allowed directory
+    if (isValidTargetPath($sanitizedPath, $savePath)) {
+        // Proceed with saving the image
+        $uploader->saveImage($sanitizedPath, $imageQuality);
+    } else {
+        // If the path is invalid, prevent the file from being saved and handle the error
+        echo '{"success":false, "details": "Invalid file path."}';
+    }$thumb  = $uploader->getTargetPath();
 $thumbz  = str_replace(ABSPATH.'/' ,'',$thumb);
 }
 } else {

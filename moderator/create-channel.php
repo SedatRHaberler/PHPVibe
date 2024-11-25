@@ -1,7 +1,44 @@
 <?php
 if(isset($_POST['play-name'])) {
 $picture ='';
-if(isset($_FILES['play-img']) && !empty($_FILES['play-img']['name'])){$thumb = ABSPATH.'/storage/uploads/'.$_FILES['play-img']['name'];if (move_uploaded_file($_FILES['play-img']['tmp_name'], $thumb)) {     $picture = str_replace(ABSPATH.'/' ,'',$thumb);   	} else {	echo '<div class="msg-warning">Image upload failed.</div>';	}	}
+// Set image upload path
+    if (isset($_FILES['play-img']) && !empty($_FILES['play-img']['name'])) {
+        // Sanitize the file name to prevent path traversal
+        $fileName = basename(urldecode($_FILES['play-img']['name'])); // Get only the file name (no path)
+        $fileName = preg_replace('/[^a-zA-Z0-9_-]/', '', $fileName); // Remove unsafe characters
+
+        // Get the file extension and validate it
+        $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif']; // Allowed extensions
+        if (!in_array($extension, $allowedExtensions)) {
+            echo '<div class="msg-warning">Invalid file type for image upload.</div>';
+            return;
+        }
+
+        // Generate a unique name for the file to avoid overwriting
+        $newFileName = 'play-img-' . uniqid() . '.' . $extension;
+
+        // Define the target directory for uploads
+        $targetDir = ABSPATH . '/storage/uploads/';
+
+        // Construct the full path for the uploaded file
+        $thumb = $targetDir . $newFileName;
+
+        // Verify that the file path is within the target directory
+        if (realpath($thumb) !== false && strpos(realpath($thumb), realpath($targetDir)) === 0) {
+            // Attempt to move the uploaded file
+            if (move_uploaded_file($_FILES['play-img']['tmp_name'], $thumb)) {
+                // Update the picture option with the relative file path
+                $picture = str_replace(ABSPATH . '/', '', $thumb);
+                echo '<div class="msg-info">Image uploaded successfully.</div>';
+            } else {
+                echo '<div class="msg-warning">Image upload failed.</div>';
+            }
+        } else {
+            echo '<div class="msg-warning">Invalid file path. Upload failed.</div>';
+        }
+    }
+
 
 $ch = 0;
 if($_POST['subz'] > 1) {

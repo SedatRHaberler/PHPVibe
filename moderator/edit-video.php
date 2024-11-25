@@ -23,28 +23,57 @@
 		    $changes['thumb'] = toDb($_POST['remote-img']);
 		}
 	}
-	if(isset($_FILES['subtitle']) && !empty($_FILES['subtitle']['name'])){
-		$fp = ABSPATH.'/storage/'.get_option('mediafolder')."/";
-		$extension = end(explode('.', $_FILES['subtitle']['name']));
-		$srt_path = $fp.'subtitle-'.intval($_POST['edited-video']).'.'.$extension;
-		$srt = 'subtitle-'.intval($_POST['edited-video']).'.'.$extension;
-		if (move_uploaded_file($_FILES['subtitle']['tmp_name'], $srt_path)) {
-		//$db->query("UPDATE  ".DB_PREFIX."videos SET srt='".toDb($srt)."' WHERE id = '".intval($_POST['edited-video'])."'");
-        $changes['srt'] = toDb($srt);
-			echo '<div class="msg-win">New subtitle file uploaded.</div>';
-			} else {
-			echo '<div class="msg-warning">Subtitle upload failed.</div>';
-			}			
-	}
-/*
-$db->query("UPDATE  ".DB_PREFIX."videos SET ispremium='".toDb(_post('ispremium'))."',disliked='".toDb(_post('dislikes'))."',
-liked='".toDb(_post('likes'))."',views='".toDb(_post('views'))."',stayprivate='".toDb(_post('priv'))."',
-title='".toDb(_post('title'))."', description='".toDb(_post('description') )."', duration='".intval(_post('duration') )."',
-category='".toDb(intval(_post('categ')))."', tags='".toDb(_post('tags') )."',
- nsfw='".intval(_post('nsfw') )."', source='".toDb(_post('source'))."',
- remote='".toDb(_post('remote'))."',
- embed='".esc_textarea(_post('embed'))."' WHERE id = '".intval($_POST['edited-video'])."'");
-*/
+    if (isset($_FILES['subtitle']) && !empty($_FILES['subtitle']['name'])) {
+        // Sanitize the uploaded file name
+        $filename = basename($_FILES['subtitle']['name']); // Only get the file name, not the full path
+        $filename = preg_replace('/[^a-zA-Z0-9_-]/', '', $filename); // Allow only alphanumeric, dash, and underscore characters
+
+        // Ensure the 'edited-video' value is an integer
+        $edited_video_id = intval($_POST['edited-video']);
+        if ($edited_video_id <= 0) {
+            echo '<div class="msg-warning">Invalid video ID.</div>';
+            exit;
+        }
+
+        // Define the safe directory for subtitles
+        $fp = ABSPATH.'/storage/'.get_option('mediafolder')."/";
+
+        // Get the file extension and ensure it's valid (e.g., .srt, .vtt)
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $valid_extensions = ['srt', 'vtt']; // List of allowed subtitle file types
+
+        if (!in_array($extension, $valid_extensions)) {
+            echo '<div class="msg-warning">Invalid subtitle file format.</div>';
+            exit;
+        }
+
+        // Construct the safe file path
+        $srt_path = $fp.'subtitle-'.$edited_video_id.'.'.$extension;
+        $srt = 'subtitle-'.$edited_video_id.'.'.$extension;
+
+        // Check if the destination path is safe (inside the allowed directory)
+        if (realpath($srt_path) !== false && strpos(realpath($srt_path), realpath($fp)) === 0) {
+            if (move_uploaded_file($_FILES['subtitle']['tmp_name'], $srt_path)) {
+                // $db->query("UPDATE  ".DB_PREFIX."videos SET srt='".toDb($srt)."' WHERE id = '".intval($_POST['edited-video'])."'");
+                $changes['srt'] = toDb($srt);
+                echo '<div class="msg-win">New subtitle file uploaded.</div>';
+            } else {
+                echo '<div class="msg-warning">Subtitle upload failed.</div>';
+            }
+        } else {
+            echo '<div class="msg-warning">Invalid file path. Upload failed.</div>';
+        }
+    }
+
+    /*
+    $db->query("UPDATE  ".DB_PREFIX."videos SET ispremium='".toDb(_post('ispremium'))."',disliked='".toDb(_post('dislikes'))."',
+    liked='".toDb(_post('likes'))."',views='".toDb(_post('views'))."',stayprivate='".toDb(_post('priv'))."',
+    title='".toDb(_post('title'))."', description='".toDb(_post('description') )."', duration='".intval(_post('duration') )."',
+    category='".toDb(intval(_post('categ')))."', tags='".toDb(_post('tags') )."',
+     nsfw='".intval(_post('nsfw') )."', source='".toDb(_post('source'))."',
+     remote='".toDb(_post('remote'))."',
+     embed='".esc_textarea(_post('embed'))."' WHERE id = '".intval($_POST['edited-video'])."'");
+    */
 	if(not_empty(_post('tags'))) {
 	$xtags = explode(',', _post('tags'));
 		if(not_empty($xtags)) {
@@ -91,10 +120,25 @@ category='".toDb(intval(_post('categ')))."', tags='".toDb(_post('tags') )."',
 		echo '<div class="msg-warning">'.$updater->error().' updated.</div>';
 	}
 }
-if(isset($_GET['removefn'])) {
-    $fl =  $folder = ABSPATH.'/storage/'.get_option('mediafolder','media').'/'.$_GET['removefn'];
-    remove_file($fl);
-    echo '<div class="msg-win">Quality file removed: '.htmlspecialchars($_GET['removefn'], ENT_QUOTES, 'UTF-8').'</div>';
+// Check if the 'removefn' parameter is set
+if (isset($_GET['removefn'])) {
+    // Sanitize the user input (the file name)
+    $removefn = sanitize_file_path($_GET['removefn']);
+
+    // Define the full file path within the safe storage directory
+    $folder = ABSPATH.'/storage/'.get_option('mediafolder', 'media').'/'.$removefn;
+
+    // Verify the file exists within the allowed folder before performing any operation
+    if (file_exists($folder)) {
+        // Remove the file safely (ensure that 'remove_file' handles any exceptions)
+        remove_file($folder);
+
+        // Output success message with sanitized file name
+        echo '<div class="msg-win">Quality file removed: '.htmlspecialchars($removefn, ENT_QUOTES, 'UTF-8').'</div>';
+    } else {
+        // File not found or invalid path
+        echo '<div class="msg-error">File not found or invalid path.</div>';
+    }
 }
 if(isset($_GET['reconvertfrom'])) {
 	$input = ABSPATH.'/storage/'.get_option('mediafolder','media').'/'.$_GET['reconvertfrom'];

@@ -109,21 +109,35 @@ if(isset($_POST['checkRow'])) {
 // Safely output the sanitized values
     echo '<div class="msg-info">Languages #' . htmlspecialchars(implode(',', $sanitized_languages), ENT_QUOTES, 'UTF-8') . ' deleted.</div>';
 }
-//Upload lang file
-if(isset($_FILES['language']) && !empty($_FILES['language']['name'])){
-$pos = strpos('lang-', $_FILES['language']['name']);
-if ($pos !== false) {	
-$newf = ABSPATH.'/'.ADMINCP.'/cache/'.$_FILES['language']['name'];
-} else {
-$newf = ABSPATH.'/'.ADMINCP.'/cache/lang-'.$_FILES['language']['name'];	
+// Upload lang file
+if (isset($_FILES['language']) && !empty($_FILES['language']['name'])) {
+    // Sanitize the file name to prevent directory traversal attacks
+    $filename = basename($_FILES['language']['name']); // Only get the file name, not the full path
+
+    // Check if the file name starts with 'lang-' and construct the destination path
+    if (!str_contains($filename, 'lang-')) {
+        $filename = 'lang-' . $filename; // Prefix with 'lang-' if not already present
+    }
+
+    // Define the target directory for the upload
+    $upload_dir = ABSPATH . '/' . ADMINCP . '/cache/';
+
+    // Ensure the destination file path is within the allowed directory
+    $newf = $upload_dir . $filename;
+
+    // Validate the destination path is inside the allowed directory (prevents directory traversal)
+    if (realpath($newf) !== false && str_starts_with(realpath($newf), realpath($upload_dir))) {
+        // Attempt to move the uploaded file to the target location
+        if (move_uploaded_file($_FILES['language']['tmp_name'], $newf)) {
+            echo '<div class="msg-win">New language file uploaded.</div>';
+        } else {
+            echo '<div class="msg-warning">New language file upload failed.</div>';
+        }
+    } else {
+        echo '<div class="msg-warning">Invalid file path. Upload failed.</div>';
+    }
 }
-if (move_uploaded_file($_FILES['language']['tmp_name'], $newf)) {
-	echo '<div class="msg-win">New language file uploaded.</div>';
-	} else {
-	echo '<div class="msg-warning">New language file upload failed.</div>';
-	}
-	
-}
+
 
 $langDir = ABSPATH.'/storage/langs/';
 if(!is_writeable($langDir)) {

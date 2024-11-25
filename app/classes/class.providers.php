@@ -571,8 +571,18 @@ function PHPVibeSources() {
 			
             
              case 'soundcloud':
-                 $video = get_soundcloud($this->link);
-                 return $video;
+                 // Sanitize the link to prevent any unsafe characters or paths
+                 $link = sanitize_input($this->link);
+
+                 // Optionally, validate the link or ensure it matches a SoundCloud URL pattern
+                 if (filter_var($link, FILTER_VALIDATE_URL) && strpos($link, 'soundcloud.com') !== false) {
+                     // Proceed with getting content if it's a valid SoundCloud URL
+                     $video = get_soundcloud($link);
+                     return $video;
+                 } else {
+                     // Handle invalid input or URL
+                     die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Invalid SoundCloud URL."}, "id" : "id"}');
+                 }
                  break;
              case 'vimeo':
                  $json_url              = "https://vimeo.com/api/v2/video/" . $this->getLastNr($this->link) . ".json";
@@ -596,94 +606,151 @@ function PHPVibeSources() {
                      }
                  break;
              case 'metacafe':
-                 $idvid                = $this->getVideoId("watch/", "/");
-                 $file_data            = "https://www.metacafe.com/api/item/" . $idvid;
-                 $video                = array();
-                 $xml                  = new SimpleXMLElement(file_get_contents($file_data));
-                 $title_query          = $xml->xpath('/rss/channel/item/title');
-                 $video['title']       = $title_query ? strval($title_query[0]) : '';
-                 $description_query    = $xml->xpath('/rss/channel/item/media:description');
+                 // Sanitize the video ID before using it
+                 $idvid = $this->getVideoId("watch/", "/");
+                 $sanitized_idvid = sanitize_video_id($idvid);  // Sanitize the video ID
+
+                 // Ensure that the sanitized video ID is properly formatted (e.g., valid URL)
+                 if (empty($sanitized_idvid)) {
+                     die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Invalid video ID."}, "id" : "id"}');
+                 }
+
+                 // Construct the file URL safely using the sanitized video ID
+                 $file_data = "https://www.metacafe.com/api/item/" . $sanitized_idvid;
+
+                 // Initialize an empty array for the video data
+                 $video = array();
+
+                 // Try to get the XML data from the URL
+                 try {
+                     $xml = new SimpleXMLElement(file_get_contents($file_data));
+                 } catch (Exception $e) {
+                     die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to retrieve video data."}, "id" : "id"}');
+                 }
+
+                 // Extract video details from the XML
+                 $title_query = $xml->xpath('/rss/channel/item/title');
+                 $video['title'] = $title_query ? strval($title_query[0]) : '';
+                 $description_query = $xml->xpath('/rss/channel/item/media:description');
                  $video['description'] = $description_query ? strval($description_query[0]) : '';
-                 $tags_query           = $xml->xpath('/rss/channel/item/media:keywords');
-                 $video['tags']        = $tags_query ? explode(',', strval(trim($tags_query[0]))) : null;
-                 if (isset($video['tags']) && !empty($video['tags']))
-                     {
+                 $tags_query = $xml->xpath('/rss/channel/item/media:keywords');
+                 $video['tags'] = $tags_query ? explode(',', strval(trim($tags_query[0]))) : null;
+
+                 if (isset($video['tags']) && !empty($video['tags'])) {
                      $video['tags'] = implode(', ', $video['tags']);
-                     }
-                 else
-                     {
+                 } else {
                      $video['tags'] = '';
-                     }
+                 }
+
                  $date_published_query = $xml->xpath('/rss/channel/item/pubDate');
-                 $video['uploaded']    = $date_published_query ? ($date_published_query[0]) : null;
-                 $thumbnails_query     = $xml->xpath('/rss/channel/item/media:thumbnail/@url');
-                 if (isset($thumbnails_query[0]))
-                     {
+                 $video['uploaded'] = $date_published_query ? ($date_published_query[0]) : null;
+                 $thumbnails_query = $xml->xpath('/rss/channel/item/media:thumbnail/@url');
+                 if (isset($thumbnails_query[0])) {
                      $video['thumbnail'] = strval($thumbnails_query[0]);
-                     }
-                 else
-                     {
+                 } else {
                      $video['thumbnail'] = '';
-                     }
+                 }
+
                  $video['duration'] = null;
+
                  return $video;
                  break;
              case 'dailymotion':
-                 if (preg_match('#https://www.dailymotion.com/video/([A-Za-z0-9]+)#s', $this->link, $match))
-                     {
-                     $idvid = $match[1];
-                     }
-                 $file_data            = "https://www.dailymotion.com/rss/video/" . $idvid;
-                 $video                = array();
-                 $xml                  = new SimpleXMLElement(file_get_contents($file_data));
-                 $title_query          = $xml->xpath('/rss/channel/item/title');
-                 $video['title']       = $title_query ? strval($title_query[0]) : '';
-                 $description_query    = $xml->xpath('/rss/channel/item/description');
-                 $video['description'] = $description_query ? strval($description_query[0]) : '';
-                 $tags_query           = $xml->xpath('/rss/channel/item/media:keywords');
-                 if (!empty($tags_query) && $tags_query)
-                     {
-                     $video['tags'] = $tags_query ? explode(',', strval(trim($tags_query[0]))) : null;
-                     $video['tags'] = implode(', ', $video['tags']);
-                     }
-                 else
-                     {
-                     $video['tags'] = '';
-                     }
-                 $date_published_query = $xml->xpath('/rss/channel/item/pubDate');
-                 $video['uploaded']    = $date_published_query ? ($date_published_query[0]) : null;
-                 $thumbnails_query     = $xml->xpath('/rss/channel/item/media:thumbnail/@url');
-                 $video['thumbnail']   = strval($thumbnails_query[0]);
-                 $duration_query       = $xml->xpath('/rss/channel/item/media:group/media:content/@duration');
-                 $video['duration']    = $duration_query ? intval($duration_query[0]) : null;
-                 return $video;
+if (preg_match('#https://www.dailymotion.com/video/([A-Za-z0-9]+)#s', $this->link, $match)) {
+    $idvid = $match[1];
+
+    // Sanitize the video ID to prevent any malicious input
+    $sanitized_idvid = sanitize_video_id($idvid);
+
+    // Validate the sanitized video ID (e.g., ensure it's not empty)
+    if (empty($sanitized_idvid)) {
+        die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Invalid video ID."}, "id" : "id"}');
+    }
+
+    // Construct the URL with the sanitized video ID
+    $file_data = "https://www.dailymotion.com/rss/video/" . $sanitized_idvid;
+
+    // Initialize an empty array for video data
+    $video = array();
+
+    // Fetch XML from the constructed URL (ensure it's a valid URL)
+    try {
+        $xml = new SimpleXMLElement(file_get_contents($file_data));
+    } catch (Exception $e) {
+        die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to retrieve video data."}, "id" : "id"}');
+    }
+
+    // Extract video details from the XML
+    $title_query = $xml->xpath('/rss/channel/item/title');
+    $video['title'] = $title_query ? strval($title_query[0]) : '';
+    $description_query = $xml->xpath('/rss/channel/item/description');
+    $video['description'] = $description_query ? strval($description_query[0]) : '';
+    $tags_query = $xml->xpath('/rss/channel/item/media:keywords');
+    $video['tags'] = $tags_query ? implode(', ', explode(',', strval(trim($tags_query[0])))) : '';
+
+    $date_published_query = $xml->xpath('/rss/channel/item/pubDate');
+    $video['uploaded'] = $date_published_query ? ($date_published_query[0]) : null;
+    $thumbnails_query = $xml->xpath('/rss/channel/item/media:thumbnail/@url');
+    $video['thumbnail'] = isset($thumbnails_query[0]) ? strval($thumbnails_query[0]) : '';
+
+    $duration_query = $xml->xpath('/rss/channel/item/media:group/media:content/@duration');
+    $video['duration'] = $duration_query ? intval($duration_query[0]) : null;
+
+    return $video;
+}
+break;
+
              case 'myspace':
-                 # Get XML data URL
-                 $file_data            = "https://mediaservices.myspace.com/services/rss.ashx?type=video&videoID=" . $this->getLastNr($this->link);
-                 # XML
-                 $xml                  = new SimpleXMLElement(file_get_contents($file_data));
-                 $video                = array();
-                 # Get video title
-                 $title_query          = $xml->xpath('/rss/channel/item/title');
-                 $video['title']       = $title_query ? strval($title_query[0]) : '';
-                 # Get video description
-                 $description_query    = $xml->xpath('/rss/channel/item/media:content/media:description');
+                 // Function to sanitize the video ID input
+                 function sanitize_video_id($input) {
+                     // Allow only alphanumeric characters, which are typically used in IDs
+                     return preg_replace('/[^a-zA-Z0-9]/', '', $input);  // Allow only alphanumeric characters
+                 }
+
+// Assume $this->link contains the input URL, which we need to extract the video ID from
+                 $video_id = $this->getLastNr($this->link);
+
+// Sanitize the video ID
+                 $sanitized_video_id = sanitize_video_id($video_id);
+
+// Validate the sanitized video ID (ensure it's not empty)
+                 if (empty($sanitized_video_id)) {
+                     die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Invalid video ID."}, "id" : "id"}');
+                 }
+
+// Construct the URL with the sanitized video ID
+                 $file_data = "https://mediaservices.myspace.com/services/rss.ashx?type=video&videoID=" . $sanitized_video_id;
+
+// Attempt to fetch the XML from the safe URL
+                 try {
+                     $xml = new SimpleXMLElement(file_get_contents($file_data));
+                 } catch (Exception $e) {
+                     die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to retrieve video data."}, "id" : "id"}');
+                 }
+
+                 $video = array();
+
+// Extract video details from the XML
+                 $title_query = $xml->xpath('/rss/channel/item/title');
+                 $video['title'] = $title_query ? strval($title_query[0]) : '';
+
+                 $description_query = $xml->xpath('/rss/channel/item/media:content/media:description');
                  $video['description'] = $description_query ? strval($description_query[0]) : '';
-                 # Get video tags
-                 $tags_query           = $xml->xpath('/rss/channel/item/media:keywords');
-                 $video['tags']        = $tags_query ? explode(',', strval(trim($tags_query[0]))) : null;
-                 $video['tags']        = implode(', ', $video['tags']);
-                 # Fet video duration
-                 $duration_query       = $xml->xpath('/rss/channel/item/media:content/@duration');
-                 $video['duration']    = $duration_query ? intval($duration_query[0]) : null;
-                 # Get video publication date
+
+                 $tags_query = $xml->xpath('/rss/channel/item/media:keywords');
+                 $video['tags'] = $tags_query ? explode(',', strval(trim($tags_query[0]))) : null;
+                 $video['tags'] = implode(', ', $video['tags']);
+
+                 $duration_query = $xml->xpath('/rss/channel/item/media:content/@duration');
+                 $video['duration'] = $duration_query ? intval($duration_query[0]) : null;
+
                  $date_published_query = $xml->xpath('/rss/channel/item/pubDate');
-                 $video['uploaded']    = $date_published_query ? ($date_published_query[0]) : null;
-                 # Get video thumbnails
-                 $thumbnails_query     = $xml->xpath('/rss/channel/item/media:thumbnail/@url');
-                 $video['thumbnail']   = strval($thumbnails_query[0]);
+                 $video['uploaded'] = $date_published_query ? ($date_published_query[0]) : null;
+
+                 $thumbnails_query = $xml->xpath('/rss/channel/item/media:thumbnail/@url');
+                 $video['thumbnail'] = isset($thumbnails_query[0]) ? strval($thumbnails_query[0]) : '';
+
                  return $video;
-                 break;
              default:
            
                  $video                = array();

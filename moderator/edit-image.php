@@ -1,20 +1,36 @@
 <?php if(isset($_POST['edited-image']) && !is_null(intval($_POST['edited-image']))) {
-if(isset($_FILES['play-img']) && !empty($_FILES['play-img']['name'])){
-$formInputName   = 'play-img';							# This is the name given to the form's file input
-	$savePath	     = ABSPATH.'/storage/'.get_option('mediafolder').'/thumbs';								# The folder to save the image
-	$saveName        = md5(time()).'-'.user_id();									# Without ext
-	$allowedExtArray = array('.jpg', '.png', '.gif');	# Set allowed file types
-	$imageQuality    = 100;
-$uploader = new FileUploader($formInputName, $savePath, $saveName , $allowedExtArray);
-if ($uploader->getIsSuccessful()) {
-//$uploader -> resizeImage(200, 200, 'crop');
-$uploader -> saveImage($uploader->getTargetPath(), $imageQuality);
-$thumb  = $uploader->getTargetPath();
-$tthumb  = str_replace(ABSPATH.'/' ,'',$thumb);
-$source  = str_replace(ABSPATH.'/' ,'localimage/',$thumb);
-	$db->query("UPDATE  ".DB_PREFIX."images SET source='".toDb($source)."', thumb='".get_option('mediafolder').'/'.toDb($tthumb )."' WHERE id = '".intval($_POST['edited-image'])."'");
-}
+if(isset($_FILES['play-img']) && !empty($_FILES['play-img']['name'])) {
+    $formInputName   = 'play-img';
+    $savePath        = ABSPATH.'/storage/'.get_option('mediafolder').'/thumbs';
 
+    // Generate a unique, safe file name
+    $saveName        = md5(uniqid(time(), true)) . '-' . user_id();
+
+    // Sanitize and validate file extensions
+    $allowedExtArray = array('.jpg', '.png', '.gif');
+    $fileExt         = strtolower(pathinfo($_FILES[$formInputName]['name'], PATHINFO_EXTENSION));
+
+    if (!in_array('.' . $fileExt, $allowedExtArray)) {
+        // Handle invalid file extension error
+        exit('Invalid file type');
+    }
+
+    $imageQuality    = 100;
+    $uploader = new FileUploader($formInputName, $savePath, $saveName, $allowedExtArray);
+
+    if ($uploader->getIsSuccessful()) {
+        // Resize and save the image (if needed)
+        $uploader->saveImage($uploader->getTargetPath(), $imageQuality);
+
+        $thumb  = $uploader->getTargetPath();
+
+        // Sanitize and create a safe URL path
+        $tthumb  = str_replace(ABSPATH . '/', '', $thumb);
+        $source  = str_replace(ABSPATH . '/', 'localimage/', $thumb);
+
+        // Securely update the database with sanitized values
+        $db->query("UPDATE " . DB_PREFIX . "images SET source='" . toDb($source) . "', thumb='" . get_option('mediafolder') . '/' . toDb($tthumb) . "' WHERE id = '" . intval($_POST['edited-image']) . "'");
+    }
 }
 $db->query("UPDATE  ".DB_PREFIX."images SET ispremium='".toDb(_post('ispremium'))."',liked='".toDb(_post('likes'))."',views='".toDb(_post('views'))."',stayprivate='".toDb(_post('priv'))."',title='".toDb(_post('title'))."', description='".toDb(_post('description') )."', category='".toDb(intval(_post('categ')))."', tags='".toDb(_post('tags') )."', nsfw='".intval(_post('nsfw') )."' WHERE id = '".intval($_POST['edited-image'])."'");
 echo '<div class="msg-info">image: '._post('title').' updated.</div>';

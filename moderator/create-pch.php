@@ -1,18 +1,39 @@
 <?php
 if(isset($_POST['play-name'])) {
-    $picture = 'storage/uploads/noimage.png';
-    $formInputName = 'play-img';                            # This is the name given to the form's file input
-    $savePath = ABSPATH . '/storage/uploads';                                # The folder to save the image
-    $saveName = md5(time()) . '-' . user_id();                                    # Without ext
-    $allowedExtArray = array('.jpg', '.png', '.gif');    # Set allowed file types
+    $picture = 'storage/uploads/noimage.png';  // Default image if no file is uploaded
+    $formInputName = 'play-img';                // Name of the file input
+    $savePath = ABSPATH . '/storage/uploads';   // Directory to save the image
+    $allowedExtArray = array('.jpg', '.png', '.gif'); // Allowed file extensions
     $imageQuality = 100;
-    $uploader = new FileUploader($formInputName, $savePath, $saveName, $allowedExtArray);
-    if ($uploader->getIsSuccessful()) {
-//$uploader -> resizeImage(200, 200, 'crop');
-        $uploader->saveImage($uploader->getTargetPath(), $imageQuality);
-        $thumb = $uploader->getTargetPath();
-        $picture = str_replace(ABSPATH . '/', '', $thumb);
+
+    // Generate a secure and unique filename
+    $saveName = md5(uniqid(time(), true)) . '-' . user_id();  // Ensure a unique name using uniqid()
+
+    // Sanitize the file name to prevent path traversal or unsafe file names
+    $saveName = basename($saveName); // Remove directory traversal characters
+
+    // Check if the uploaded file is an image and has a valid extension
+    $uploadedFileType = strtolower(pathinfo($_FILES[$formInputName]['name'], PATHINFO_EXTENSION));
+    if (!in_array('.' . $uploadedFileType, $allowedExtArray)) {
+        exit('Invalid file type.');
     }
+
+    // Initialize file uploader class
+    $uploader = new FileUploader($formInputName, $savePath, $saveName, $allowedExtArray);
+
+    if ($uploader->getIsSuccessful()) {
+        // Optionally resize image
+        //$uploader->resizeImage(200, 200, 'crop');
+
+        // Save the image to the target path
+        $uploader->saveImage($uploader->getTargetPath(), $imageQuality);
+
+        // Retrieve the target path and sanitize it for safe database storage
+        $thumb = $uploader->getTargetPath();
+        $picture = str_replace(ABSPATH . '/', '', $thumb); // Remove the base path for storage
+    }
+
+
     if (isset($_POST['categ']) && intval($_POST['categ']) > 0) {
         $ch = $_POST['categ'];
     } else {

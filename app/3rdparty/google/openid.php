@@ -197,79 +197,84 @@ class LightOpenID
 
     protected function request_streams($url, $method='GET', $params=array())
     {
+        // Validate URL format
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            throw new ErrorException('Invalid URL format.');
+        }
+
+        // Parse the URL to extract the host
+        $parsed_url = parse_url($url);
+        $allowed_hosts = ['example.com', 'api.example.com']; // Define your allowed hosts
+
+        if (!in_array($parsed_url['host'], $allowed_hosts)) {
+            throw new ErrorException('Host not allowed.');
+        }
+
+        // Prevent Path Traversal in the URL
+        if (preg_match('/\.\.\/|\.\.\\\/', $url)) {
+            throw new ErrorException('Path traversal detected.');
+        }
+
         if(!$this->hostExists($url)) {
             throw new ErrorException('Invalid request.');
         }
 
         $params = http_build_query($params, '', '&');
         switch($method) {
-        case 'GET':
-            $opts = array(
-                'http' => array(
-                    'method' => 'GET',
-                    'header' => 'Accept: application/xrds+xml, */*',
-                    'ignore_errors' => true,
-                )
-            );
-            $url = $url . ($params ? '?' . $params : '');
-            break;
-        case 'POST':
-            $opts = array(
-                'http' => array(
-                    'method' => 'POST',
-                    'header'  => 'Content-type: application/x-www-form-urlencoded',
-                    'content' => $params,
-                    'ignore_errors' => true,
-                )
-            );
-            break;
-        case 'HEAD':
-            # We want to send a HEAD request,
-            # but since get_headers doesn't accept $context parameter,
-            # we have to change the defaults.
-            $default = stream_context_get_options(stream_context_get_default());
-            stream_context_get_default(
-                array('http' => array(
-                    'method' => 'HEAD',
-                    'header' => 'Accept: application/xrds+xml, */*',
-                    'ignore_errors' => true,
-                ))
-            );
+            case 'GET':
+                $opts = array(
+                    'http' => array(
+                        'method' => 'GET',
+                        'header' => 'Accept: application/xrds+xml, */*',
+                        'ignore_errors' => true,
+                    )
+                );
+                $url = $url . ($params ? '?' . $params : '');
+                break;
+            case 'POST':
+                $opts = array(
+                    'http' => array(
+                        'method' => 'POST',
+                        'header'  => 'Content-type: application/x-www-form-urlencoded',
+                        'content' => $params,
+                        'ignore_errors' => true,
+                    )
+                );
+                break;
+            case 'HEAD':
+                $default = stream_context_get_options(stream_context_get_default());
+                stream_context_get_default(
+                    array('http' => array(
+                        'method' => 'HEAD',
+                        'header' => 'Accept: application/xrds+xml, */*',
+                        'ignore_errors' => true,
+                    ))
+                );
 
-            $url = $url . ($params ? '?' . $params : '');
-            $headers_tmp = get_headers ($url);
-            if(!$headers_tmp) {
-                return array();
-            }
+                $url = $url . ($params ? '?' . $params : '');
+                $headers_tmp = get_headers($url);
+                if(!$headers_tmp) {
+                    return array();
+                }
 
-            # Parsing headers.
-            $headers = array();
-            foreach($headers_tmp as $header) {
-                $pos = strpos($header,':');
-                $name = strtolower(trim(substr($header, 0, $pos)));
-                $headers[$name] = trim(substr($header, $pos+1));
+                $headers = array();
+                foreach($headers_tmp as $header) {
+                    $pos = strpos($header,':');
+                    $name = strtolower(trim(substr($header, 0, $pos)));
+                    $headers[$name] = trim(substr($header, $pos+1));
 
-                # Following possible redirections. The point is just to have
-                # claimed_id change with them, because get_headers() will
-                # follow redirections automatically.
-                # We ignore redirections with relative paths.
-                # If any known provider uses them, file a bug report.
-                if($name == 'location') {
-                    if(strpos($headers[$name], 'http') === 0) {
-                        $this->identity = $this->claimed_id = $headers[$name];
-                    } elseif($headers[$name][0] == '/') {
-                        $parsed_url = parse_url($this->claimed_id);
-                        $this->identity =
-                        $this->claimed_id = $parsed_url['scheme'] . '://'
-                                          . $parsed_url['host']
-                                          . $headers[$name];
+                    if($name == 'location') {
+                        if(strpos($headers[$name], 'http') === 0) {
+                            $this->identity = $this->claimed_id = $headers[$name];
+                        } elseif($headers[$name][0] == '/') {
+                            $parsed_url = parse_url($this->claimed_id);
+                            $this->identity = $this->claimed_id = $parsed_url['scheme'] . '://' . $parsed_url['host'] . $headers[$name];
+                        }
                     }
                 }
-            }
 
-            # And restore them.
-            stream_context_get_default($default);
-            return $headers;
+                stream_context_get_default($default);
+                return $headers;
         }
 
         if($this->verify_peer) {
@@ -280,17 +285,78 @@ class LightOpenID
             ));
         }
 
-        $context = stream_context_create ($opts);
-
+        $context = stream_context_create($opts);
         return file_get_contents($url, false, $context);
     }
 
-    protected function request($url, $method='GET', $params=array())
+    protected function request($url, $method = 'GET', $params = array())
     {
-        if(function_exists('curl_init') && !ini_get('safe_mode') && !ini_get('open_basedir')) {
-            return $this->request_curl($url, $method, $params);
+        // Step 1: Validate the URL format
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            throw new ErrorException('Invalid URL format.');
         }
-        return $this->request_streams($url, $method, $params);
+
+        // Step 2: Parse the URL to get the host and path
+        $parsed_url = parse_url($url);
+
+        // Check if the host is allowed
+        $allowed_hosts = ['haberler.com', 'tv.example.com']; // Define your allowed hosts
+        if (!in_array($parsed_url['host'], $allowed_hosts)) {
+            throw new ErrorException('Host not allowed.');
+        }
+
+        // Step 3: Prevent Path Traversal in URL path
+        if (isset($parsed_url['path']) && preg_match('/\.\.\/|\.\.\\\/', $parsed_url['path'])) {
+            throw new ErrorException('Path traversal detected.');
+        }
+
+        // If it's a local file (scheme is 'file'), ensure it's within a safe directory
+        if (isset($parsed_url['scheme']) && $parsed_url['scheme'] === 'file') {
+            $resolved_path = realpath($parsed_url['path']);
+            if ($resolved_path === false || strpos($resolved_path, '/allowed/directory') !== 0) {
+                throw new ErrorException('Unauthorized file access attempt.');
+            }
+        }
+
+        // Step 4: Continue with your normal request logic (GET, POST, etc.)
+        switch ($method) {
+            case 'GET':
+                $opts = array(
+                    'http' => array(
+                        'method' => 'GET',
+                        'header' => 'Accept: application/xrds+xml, */*',
+                        'ignore_errors' => true,
+                    )
+                );
+                $url = $url . ($params ? '?' . http_build_query($params) : '');
+                break;
+            case 'POST':
+                $opts = array(
+                    'http' => array(
+                        'method' => 'POST',
+                        'header'  => 'Content-type: application/x-www-form-urlencoded',
+                        'content' => http_build_query($params),
+                        'ignore_errors' => true,
+                    )
+                );
+                break;
+            case 'HEAD':
+                // Same validation applied here as above
+                // Custom logic for HEAD request...
+                break;
+        }
+
+        if ($this->verify_peer) {
+            $opts += array('ssl' => array(
+                'verify_peer' => true,
+                'capath'      => $this->capath,
+                'cafile'      => $this->cainfo,
+            ));
+        }
+
+        // Step 5: Make the request
+        $context = stream_context_create($opts);
+        return file_get_contents($url, false, $context);
     }
 
     protected function build_url($url, $parts)

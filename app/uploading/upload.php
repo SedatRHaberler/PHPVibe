@@ -7,41 +7,12 @@ $token = toDb($_GET['token']);
 $new_name = $token;
 
 
-function ByteSize($bytes) { 
-    $size = $bytes / 1024; 
-    if($size < 1024) 
-        { 
-        $size = number_format($size, 2); 
-        $size .= ' KB'; 
-        }  
-    else  
-        { 
-        if($size / 1024 < 1024)  
-            { 
-            $size = number_format($size / 1024, 2); 
-            $size .= ' MB'; 
-            }  
-        else if ($size / 1024 / 1024 < 1024)   
-            { 
-            $size = number_format($size / 1024 / 1024, 2); 
-            $size .= ' GB'; 
-            }  
-        } 
-    return $size; 
-    } 
+function ByteSize($bytes) {
+    return byte($bytes);
+}
 
 function getHeaders() {
-    $headers = array();
-    foreach ($_SERVER as $k => $v)
-	{
-        if (substr($k, 0, 5) == "HTTP_")
-		{
-            $k = str_replace('_', ' ', substr($k, 5));
-            $k = str_replace(' ', '-', ucwords(strtolower($k)));
-            $headers[$k] = $v;
-		}
-	}
-    return $headers;
+    return headers();
 }  
 
 function vinsert($file) {
@@ -85,32 +56,45 @@ if ($headers['X-Requested-With']=='XMLHttpRequest') {
 		echo('{"success":false, "details": "File type '.$ext.' not allowed."}');
 		}
 } else {
-	if ($_FILES['file']['name']!='') {
-	$fileName= $_FILES['file']['name'];
-   if(is_insecure_file($fileName)){
-   echo '{"success":false, "details": "Insecure file detected."}';
-   die();
-   }
-	$fileSize = $_FILES['file']['size'];
-	$ext = substr($fileName, strrpos($fileName, '.') + 1);
-	if (in_array($ext,$allowedExts) or empty($allowedExts)) {
-		if ($fileSize<$maxFileSize or empty($maxFileSize)) {
-	$target_path = $target_path . $new_name.'.'.$ext;
-	if(move_uploaded_file($_FILES['file']['tmp_name'], $target_path)) {
-		echo '{"success":true, "file": "OK"}';
-			vinsert($new_name.'.'.$ext);
-	} else{
-		echo '{"success":false, "details": "move_uploaded_file failed"}';
-	}
-} else { echo('{"success":false, "details": "Maximum file size: '.ByteSize($maxFileSize).'."}'); };
-} else {
-		// Sanitize the file extension to prevent XSS
-		$sanitizedExt = htmlspecialchars($ext, ENT_QUOTES, 'UTF-8');
-		echo '{"success":false, "details": "File type ' . $sanitizedExt . ' not allowed."}';
-	}
-} else echo '{"success":false, "details": "No file received."}';
+    if ($_FILES['file']['name'] != '') {
+        $fileName = $_FILES['file']['name'];
+        if (is_insecure_file($fileName)) {
+            echo '{"success":false, "details": "Insecure file detected."}';
+            die();
+        }
 
-	
+        $fileSize = $_FILES['file']['size'];
+        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));  // Dosya uzantısını küçük harfe dönüştür
+        if (in_array($ext, $allowedExts) || empty($allowedExts)) {
+            if ($fileSize < $maxFileSize || empty($maxFileSize)) {
+                // Yalnızca geçerli dosya adları kullan
+                $newFileName = preg_replace("/[^a-zA-Z0-9_-]/", "", $new_name); // Geçersiz karakterleri temizleyin
+                $target_path = $target_path . $newFileName . '.' . $ext;
+
+                // Dosya yolunda traversal saldırılarını engellemek için güvenlik önlemleri
+                if (realpath($target_path) !== false && strpos(realpath($target_path), $target_path) === 0) {
+                    if (move_uploaded_file($_FILES['file']['tmp_name'], $target_path)) {
+                        echo '{"success":true, "file": "OK"}';
+                        vinsert($newFileName . '.' . $ext);
+                    } else {
+                        echo '{"success":false, "details": "move_uploaded_file failed"}';
+                    }
+                } else {
+                    echo '{"success":false, "details": "Invalid file path."}';
+                }
+            } else {
+                echo '{"success":false, "details": "Maximum file size: ' . ByteSize($maxFileSize) . '.';
+        }
+    } else {
+        // Uzantı kontrolü sırasında sanitize işlemi
+        $sanitizedExt = htmlspecialchars($ext, ENT_QUOTES, 'UTF-8');
+        echo '{"success":false, "details": "File type ' . $sanitizedExt . ' not allowed."}';
+    }
+} else {
+    echo '{"success":false, "details": "No file received."}';
+}
+
+
 	}
 }
-?>
+
