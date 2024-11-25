@@ -25,19 +25,37 @@ if (!isset($_SESSION)) { session_start(); }
 	$killcache = true;
 	}
 /* Serve static pages for visitors */
-	if (isset($killcache) && !$killcache) {
-		$a = strip_tags($_SERVER['REQUEST_URI']);
-		if(($a === '/') || ($a === '/index.php')) { $a = '/index.php'; }
-		/* Exclude specific pages */
-		if((strpos($a,'register') == false) && (strpos($a,'dashboard') == false) && (strpos($a,'login') == false) && (strpos($a,'moderator') == false) && (strpos($a,'setup') == false) && !isset($_GET['clang'])) {
-			require_once( ABSPATH.'/lib/fullcache.php' );
-		/* Create cache token for this page */
-			$token = (isset($_SESSION['phpvibe-language'])) ? $a.$_SESSION['phpvibe-language'] : $a;
-		/* Run static caching and serving */
-			FullCache::Encode($token);
-			FullCache::Live();
-		}
+if (isset($killcache) && !$killcache) {
+	// Sanitize the request URI to avoid path traversal
+	$a = filter_var($_SERVER['REQUEST_URI'], FILTER_SANITIZE_URL);
+
+	// Normalize the URI if it's root or index.php
+	if ($a === '/' || $a === '/index.php') {
+		$a = '/index.php';
 	}
+
+	// Exclude specific pages by checking for keywords in the URI
+	if (strpos($a, 'register') === false &&
+		strpos($a, 'dashboard') === false &&
+		strpos($a, 'login') === false &&
+		strpos($a, 'moderator') === false &&
+		strpos($a, 'setup') === false &&
+		!isset($_GET['clang'])) {
+
+		// Include the cache library
+		require_once(ABSPATH . '/lib/fullcache.php');
+
+		// Sanitize the session language and URI to prevent malicious input
+		$language = isset($_SESSION['phpvibe-language']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_SESSION['phpvibe-language']) : '';
+		$token = preg_replace('/[^a-zA-Z0-9_-]/', '', $a) . $language;  // Only allow alphanumeric, underscores, and dashes
+
+		// Perform static caching and serving with sanitized token
+		FullCache::Encode($token);
+		FullCache::Live();
+	}
+}
+
+
 /** End static serving from cache **/
 //Vital file include
 require_once("load.php");

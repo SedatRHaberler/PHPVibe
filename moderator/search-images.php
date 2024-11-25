@@ -8,12 +8,22 @@ if($id){
 $db->query("UPDATE ".DB_PREFIX."images set featured = '1' where id='".intval($id)."'");
 echo '<div class="msg-info">Image #'.$id.' was featured.</div>';
 }
-} 
-if(isset($_POST['checkRow'])) {
-foreach ($_POST['checkRow'] as $del) {
-unpublish_image(intval($del));
 }
-echo '<div class="msg-info">Images #'.implode(',', $_POST['checkRow']).' unpublished.</div>';
+if (isset($_POST['checkRow'])) {
+    // Sanitize and validate input
+    $sanitized_ids = array_map('intval', $_POST['checkRow']); // Convert all values to integers
+
+    // Perform the unpublish action
+    foreach ($sanitized_ids as $del) {
+        unpublish_image($del);
+    }
+
+    // Safely display the unpublished image IDs
+    $safe_ids = array_map(function($id) {
+        return htmlspecialchars($id, ENT_QUOTES, 'UTF-8');
+    }, $sanitized_ids);
+
+    echo '<div class="msg-info">Images #' . implode(', ', $safe_ids) . ' unpublished.</div>';
 }
 $key = (isset($_GET['key'])) ? $_GET['key'] : $_POST['key'];
 if(!$key || empty($key) ) {
@@ -58,7 +68,7 @@ $a->set_values($count->nr);
 
 
 <div class="row">
-<form class="form-horizontal styled" action="<?php echo $ps; ?><?php echo this_page();?>" enctype="multipart/form-data" method="post">
+    <form class="form-horizontal styled" action="<?php echo htmlspecialchars($ps, ENT_QUOTES, 'UTF-8'); ?><?php echo htmlspecialchars(this_page(), ENT_QUOTES, 'UTF-8'); ?>" enctype="multipart/form-data" method="post">
 
 <div class="cleafix full"></div>
 <fieldset>
@@ -77,29 +87,48 @@ $a->set_values($count->nr);
                           <tbody>
 						  <?php foreach ($images as $image) { ?>
                               <tr>
-                                  <td><input type="checkbox" name="checkRow[]" value="<?php echo $image->id; ?>" class="styled" /></td>
-                                  <td><img src="<?php echo thumb_fix($image->thumb); ?>" style="width:130px; height:90px;"></td>
-                                  <td><?php echo _html($image->title); ?></td>
-                                  <td><?php echo _html($image->liked); ?></td>
-                                  <td><?php echo _html($image->views); ?></td>
-								  <td>
-								  <div class="btn-group"><a class="btn btn-sm btn-outline btn-danger" href="<?php echo admin_url('images');?>&p=<?php echo this_page();?>&delete-image=<?php echo $image->id;?>"><i class="icon-trash" style="margin-right:5px;"></i></a>
-								  <a class="btn btn-sm btn-outline btn-info" href="<?php echo admin_url('edit-image');?>&vid=<?php echo $image->id;?>"><i class="icon-edit" style="margin-right:5px;"></i><?php echo _lang("Edit"); ?></a>
-								  <?php if($image->featured < 1) { ?>
-								<a class="btn btn-sm btn-outline btn-default" href="<?php echo admin_url('images');?>&p=<?php echo this_page();?>&feature-image=<?php echo $image->id;?>" title="Feature"><i class="icon-star" style="margin-right:5px;"></i></a>
-								 <?php } else { ?>
-								<a class="btn btn-sm btn-outline btn-info" href="<?php echo admin_url('images');?>&p=<?php echo this_page();?>&feature-image=<?php echo $image->id;?>" title="Unfeature"><i class="icon-star-half" style="margin-right:5px;"></i></a>
-								 <?php } ?>
-								 <a class="btn btn-sm btn-outline btn-primary" target="_blank" href="<?php echo image_url($image->id, $image->title);?>"><i class="icon-check" style="margin-right:5px;"></i><?php echo _lang("View"); ?></a></div>
-								  </td>
+                                  <td>
+                                      <input type="checkbox" name="checkRow[]" value="<?php echo htmlspecialchars($image->id, ENT_QUOTES, 'UTF-8'); ?>" class="styled" />
+                                  </td>
+                                  <td>
+                                      <img src="<?php echo htmlspecialchars(thumb_fix($image->thumb), ENT_QUOTES, 'UTF-8'); ?>" style="width:130px; height:90px;">
+                                  </td>
+                                  <td><?php echo htmlspecialchars(_html($image->title), ENT_QUOTES, 'UTF-8'); ?></td>
+                                  <td><?php echo htmlspecialchars(_html($image->liked), ENT_QUOTES, 'UTF-8'); ?></td>
+                                  <td><?php echo htmlspecialchars(_html($image->views), ENT_QUOTES, 'UTF-8'); ?></td>
+                                  <td>
+                                      <div class="btn-group">
+                                          <a class="btn btn-sm btn-outline btn-danger" href="<?php echo htmlspecialchars(admin_url('images') . '&p=' . this_page() . '&delete-image=' . $image->id, ENT_QUOTES, 'UTF-8'); ?>">
+                                              <i class="icon-trash" style="margin-right:5px;"></i>
+                                          </a>
+                                          <a class="btn btn-sm btn-outline btn-info" href="<?php echo htmlspecialchars(admin_url('edit-image') . '&vid=' . $image->id, ENT_QUOTES, 'UTF-8'); ?>">
+                                              <i class="icon-edit" style="margin-right:5px;"></i><?php echo htmlspecialchars(_lang("Edit"), ENT_QUOTES, 'UTF-8'); ?>
+                                          </a>
+                                          <?php if ($image->featured < 1) { ?>
+                                              <a class="btn btn-sm btn-outline btn-default" href="<?php echo htmlspecialchars(admin_url('images') . '&p=' . this_page() . '&feature-image=' . $image->id, ENT_QUOTES, 'UTF-8'); ?>" title="Feature">
+                                                  <i class="icon-star" style="margin-right:5px;"></i>
+                                              </a>
+                                          <?php } else { ?>
+                                              <a class="btn btn-sm btn-outline btn-info" href="<?php echo htmlspecialchars(admin_url('images') . '&p=' . this_page() . '&feature-image=' . $image->id, ENT_QUOTES, 'UTF-8'); ?>" title="Unfeature">
+                                                  <i class="icon-star-half" style="margin-right:5px;"></i>
+                                              </a>
+                                          <?php } ?>
+                                          <a class="btn btn-sm btn-outline btn-primary" target="_blank" href="<?php echo htmlspecialchars(image_url($image->id, $image->title), ENT_QUOTES, 'UTF-8'); ?>">
+                                              <i class="icon-check" style="margin-right:5px;"></i><?php echo htmlspecialchars(_lang("View"), ENT_QUOTES, 'UTF-8'); ?>
+                                          </a>
+                                      </div>
+                                  </td>
                               </tr>
-							  <?php } ?>
+
+                          <?php } ?>
 						</tbody>  
 </table>
 </div>						
 </fieldset>					
 </form>
-<?php  $a->show_pages($ps); }
+<?php
+$ps = isset($_GET['ps']) ? htmlspecialchars($_GET['ps'], ENT_QUOTES, 'UTF-8') : '';
+$a->show_pages($ps); }
 
 } ?>
 </div>

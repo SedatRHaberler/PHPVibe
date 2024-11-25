@@ -1,13 +1,24 @@
 <?php
 if(isset($_GET['delete-channel'])) {
 $db->get_row("DELETE from ".DB_PREFIX."postcats where cat_id ='".intval($_GET['delete-channel'])."' ");
-echo '<div class="msg-info">Channel #'.$_GET['delete-channel'].' deleted.</div>';
-} 
-if(isset($_POST['checkRow'])) {
-foreach ($_POST['checkRow'] as $del) {
-$db->get_row("DELETE from ".DB_PREFIX."postcats where cat_id ='".intval($del)."' ");
-}
-echo '<div class="msg-info">Channels #'.implode(',', $_POST['checkRow']).' deleted.</div>';
+    $channel_id = htmlspecialchars($_GET['delete-channel'], ENT_QUOTES, 'UTF-8');
+
+    // Output the sanitized value
+    echo '<div class="msg-info">Channel #' . $channel_id . ' deleted.</div>';}
+if (isset($_POST['checkRow'])) {
+    // Sanitize each value in the array and perform the deletions
+    $sanitized_ids = array_map('intval', $_POST['checkRow']);
+
+    foreach ($sanitized_ids as $del) {
+        $db->get_row("DELETE FROM " . DB_PREFIX . "postcats WHERE cat_id = '" . $del . "'");
+    }
+
+    // Safely display the deleted channel IDs
+    $safe_ids = array_map(function($id) {
+        return htmlspecialchars($id, ENT_QUOTES, 'UTF-8');
+    }, $_POST['checkRow']);
+
+    echo '<div class="msg-info">Channels #' . implode(', ', $safe_ids) . ' deleted.</div>';
 }
 
 $count = $db->get_row("Select count(*) as nr from ".DB_PREFIX."postcats");

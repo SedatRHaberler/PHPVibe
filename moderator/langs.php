@@ -12,25 +12,30 @@ $db->clean_cache();
 $all_options = get_all_options();
 }
 if (isset($_GET['delete'])) {
-    // İzin verilen dil dosyaları
-    $allowed_languages = ['en', 'fr', 'de'];
+    // Allowed language codes
+    $allowed_languages = ['en', 'fr', 'de','tr'];
 
-    // Kullanıcıdan gelen değeri güvenli hale getir
-    $lang = basename($_GET['delete']); // Dizin geçişlerini önlemek için sadece dosya adı alınır
+    // Sanitize user input to prevent directory traversal (only allows file names)
+    $lang = basename($_GET['delete']); // basename() ensures the input is safe
 
-    // Dil geçerli mi kontrol et
+    // Validate the language
     if (in_array($lang, $allowed_languages)) {
-        // Dosya yolunu oluştur
+        // Build the file path
         $file_path = ABSPATH . '/' . ADMINCP . '/cache/' . $lang;
 
-        // Dosya var mı kontrol et ve sil
+        // Check if the file exists before removing
         if (file_exists($file_path)) {
+            // Remove the file securely
             remove_file($file_path);
+            // Escape the message to prevent XSS if it's echoed back to the user
+            echo htmlspecialchars('File successfully deleted.', ENT_QUOTES, 'UTF-8');
         } else {
-            echo 'Dosya bulunamadı.';
+            // Escape error messages
+            echo htmlspecialchars('File not found.', ENT_QUOTES, 'UTF-8');
         }
     } else {
-        echo 'Geçersiz dil kodu.';
+        // Escape error messages for invalid language codes
+        echo htmlspecialchars('Invalid language code.', ENT_QUOTES, 'UTF-8');
     }
 }
 

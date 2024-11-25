@@ -102,10 +102,29 @@ class Google_IO_Stream extends Google_IO_Abstract
     $this->trappedErrorNumber = null;
     $this->trappedErrorString = null;
 
-    // START - error trap.
-    set_error_handler(array($this, 'trapError'));
-    $fh = fopen($url, 'r', false, $context);
-    restore_error_handler();
+// START - error trap.
+      set_error_handler(array($this, 'trapError'));
+
+// Sanitize and validate the $url
+// Ensure that $url is a valid URL and does not contain any malicious input
+      $url = filter_var($url, FILTER_SANITIZE_URL);
+
+// Use realpath() to resolve the file path and ensure it's within a specific directory
+      $allowed_directory = '/path/to/allowed/directory'; // Adjust this to your needs
+      $resolved_path = realpath($url);
+
+// Check if the resolved path is within the allowed directory
+      if ($resolved_path && strpos($resolved_path, $allowed_directory) === 0) {
+          // The file is within the allowed directory, proceed with fopen
+          $fh = fopen($resolved_path, 'r', false, $context);
+      } else {
+          // Handle the error if the file is outside the allowed directory
+          // You could log this attempt, display an error message, or take other actions
+          echo "Invalid file path!";
+      }
+
+      restore_error_handler();
+
     // END - error trap.
 
     if ($this->trappedErrorNumber) {

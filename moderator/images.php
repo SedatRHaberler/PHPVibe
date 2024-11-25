@@ -130,7 +130,14 @@ $a->set_values($count->nr);
 if(!empty($sortA)){
 echo '<div class="row-fuild" style="margin-bottom:15px"> Active filters:   ';	
 foreach ($sortA as $filter){
-    echo '<a class=" mright10" href="'.remove_sort($filter).'"><span class="badge">'.ucwords(str_replace('-',' : ', htmlspecialchars($filter, ENT_QUOTES, 'UTF-8'))). ' <i class="material-icons">delete</i></span></a>';
+// Ensure $filter is properly sanitized
+    $sanitized_filter = htmlspecialchars($filter, ENT_QUOTES, 'UTF-8');
+    $sanitized_href = htmlspecialchars(remove_sort($filter), ENT_QUOTES, 'UTF-8');
+
+    echo '<a class="mright10" href="' . $sanitized_href . '">
+        <span class="badge">' . ucwords(str_replace('-', ' : ', $sanitized_filter)) .
+        ' <i class="material-icons">delete</i></span>
+      </a>';
 
 }
 echo '</div>';	
@@ -216,7 +223,7 @@ filter_list
                 <i class="material-icons">&#xE417;</i>
             </a>
         <?php } else { ?>
-	<a class="tipS couldhide" title="<?php echo _lang("Featured image! Click to remove"); ?>" href="<?php echo canonical(); ?>&unfeature-image=<?php echo $image->id;?>"><i class="material-icons">&#xE838;</i></a>
+            <a class="tipS couldhide" title="<?php echo _lang("Featured image! Click to remove"); ?>" href="<?php echo htmlspecialchars(canonical(), ENT_QUOTES, 'UTF-8'); ?>&unfeature-image=<?php echo urlencode($image->id); ?>"><i class="material-icons">&#xE838;</i></a>
 	<?php } ?>
 	</div>
 	

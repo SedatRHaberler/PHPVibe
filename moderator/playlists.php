@@ -1,13 +1,24 @@
 <?php
-if(isset($_GET['delete-playlist'])) {
-delete_playlist(intval($_GET['delete-playlist']));
-echo '<div class="msg-info">Playlist #'.$_GET['delete-playlist'].' deleted.</div>';
-} 
-if(isset($_POST['checkRow'])) {
-foreach ($_POST['checkRow'] as $del) {
-delete_playlist(intval($del));
+if (isset($_GET['delete-playlist'])) {
+    $playlist_id = intval($_GET['delete-playlist']); // Ensure it's an integer
+    delete_playlist($playlist_id); // Perform the deletion
+
+    // Sanitize the output for safe display
+    echo '<div class="msg-info">Playlist #' . htmlspecialchars($playlist_id, ENT_QUOTES, 'UTF-8') . ' deleted.</div>';
 }
-echo '<div class="msg-info">Playlists #'.implode(',', $_POST['checkRow']).' deleted.</div>';
+if (isset($_POST['checkRow'])) {
+    // Sanitize the input and delete playlists
+    $sanitized_ids = array_map('intval', $_POST['checkRow']); // Ensure all IDs are integers
+    foreach ($sanitized_ids as $del) {
+        delete_playlist($del); // Perform the deletion
+    }
+
+    // Safely display the deleted playlist IDs
+    $safe_ids = array_map(function($id) {
+        return htmlspecialchars($id, ENT_QUOTES, 'UTF-8');
+    }, $sanitized_ids);
+
+    echo '<div class="msg-info">Playlists #' . implode(', ', $safe_ids) . ' deleted.</div>';
 }
 $add = "";
 if(_get('sort')) {
