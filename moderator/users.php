@@ -84,7 +84,7 @@ $a->set_values($count->nr);
 //$a->show_pages($ps);
 ?>
 
-<form class="form-horizontal styled" action="<?php echo $ps;?><?php echo this_page();?>" enctype="multipart/form-data" method="post">
+    <form class="form-horizontal styled" action="<?php echo htmlspecialchars($ps . this_page(), ENT_QUOTES, 'UTF-8'); ?>" enctype="multipart/form-data" method="post">
 <div class="panel top10 multicheck">
 <fieldset>
 <div class="panel-heading">
@@ -161,4 +161,9 @@ supervised_user_circle
 </div>						
 </fieldset>					
 </form>
-<?php  $a->show_pages($ps); } else { echo "No user found."; } ?>
+    <?php
+    $a->show_pages(htmlspecialchars($ps, ENT_QUOTES, 'UTF-8'));
+} else {
+    echo "No user found.";
+}
+

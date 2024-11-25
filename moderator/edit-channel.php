@@ -8,7 +8,9 @@ $ch = $_POST['categ'.$_POST['type']];if(is_array($ch)) { $ch = $ch[0];}
 }
 $db->query("UPDATE ".DB_PREFIX."channels SET type ='".$_POST['type']."', child_of ='".intval($ch)."', sub ='".$_POST['sub']."', cat_name ='".toDb($_POST['play-name'])."', cat_desc = '".toDb($_POST['play-desc'])."' WHERE cat_id= '".intval($_GET['id'])."'");
 
-echo '<div class="msg-info">Channel '.$_POST['play-name'].' updated</div>';
+    $playName = htmlspecialchars($_POST['play-name'], ENT_QUOTES, 'UTF-8');
+    echo '<div class="msg-info">Channel ' . $playName . ' updated</div>';
+
 }$db->clean_cache();
 $ch = $db->get_row("SELECT * FROM ".DB_PREFIX."channels where cat_id ='".intval($_GET['id'])."'");
 if($ch) {
@@ -123,5 +125,6 @@ if($ch) {
 </form>
 </div>
 <?php } else {
-echo '<div class="msg-warning">Channel '.$_GET['id'].' not found</div>';
+    $id = htmlspecialchars($_GET['id'], ENT_QUOTES, 'UTF-8');
+    echo '<div class="msg-warning">Channel ' . $id . ' not found</div>';
 } ?>

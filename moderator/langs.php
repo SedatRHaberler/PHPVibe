@@ -12,26 +12,28 @@ $db->clean_cache();
 $all_options = get_all_options();
 }
 if (isset($_GET['delete'])) {
-    // Sanitize the input to prevent malicious values
-    $lang = basename($_GET['delete']);  // Use basename to avoid directory traversal
-    $allowed_languages = ['en', 'fr', 'de']; // Example allowed languages list
+    // İzin verilen dil dosyaları
+    $allowed_languages = ['en', 'fr', 'de'];
 
-    // Check if the language is valid
+    // Kullanıcıdan gelen değeri güvenli hale getir
+    $lang = basename($_GET['delete']); // Dizin geçişlerini önlemek için sadece dosya adı alınır
+
+    // Dil geçerli mi kontrol et
     if (in_array($lang, $allowed_languages)) {
+        // Dosya yolunu oluştur
         $file_path = ABSPATH . '/' . ADMINCP . '/cache/' . $lang;
 
-        // Sanitize the $lang parameter to prevent directory traversal or other malicious input
-        $lang = basename($_GET['lang']);  // Extracts the file name only, removing any path traversal attempts
-
-// Construct the file path
-        $file_path = ABSPATH . '/' . ADMINCP . '/cache/' . $lang;
-
-// Ensure the file exists before attempting to delete
+        // Dosya var mı kontrol et ve sil
         if (file_exists($file_path)) {
             remove_file($file_path);
+        } else {
+            echo 'Dosya bulunamadı.';
         }
+    } else {
+        echo 'Geçersiz dil kodu.';
     }
 }
+
 if(isset($_GET['import'])) {
 $lang = $_GET['import'];
 $file = ABSPATH.'/'.ADMINCP.'/cache/'.$lang;
@@ -99,8 +101,7 @@ if(isset($_POST['checkRow'])) {
     }, $sanitized_languages);
 
 // Safely output the sanitized values
-    echo '<div class="msg-info">Languages #' . implode(',', $sanitized_languages) . ' deleted.</div>';
-
+    echo '<div class="msg-info">Languages #' . htmlspecialchars(implode(',', $sanitized_languages), ENT_QUOTES, 'UTF-8') . ' deleted.</div>';
 }
 //Upload lang file
 if(isset($_FILES['language']) && !empty($_FILES['language']['name'])){
@@ -192,9 +193,9 @@ include_once('setheader.php');
 							<p><a class="btn btn-sm btn-outline btn-danger confirm" href="<?php echo admin_url('langs');?>&p=<?php echo this_page();?>&delete-lang=<?php echo $language->lang_code;?>"><?php echo _lang("Delete"); ?></a></p>
 							 </td>
                                  
-                              </tr>
+                              </fieldset>
 							  <?php } ?>
-						</tbody>  
+						</form>
 </table>
 </div>						
 </fieldset>					

@@ -1,11 +1,16 @@
-<?php $tp = ABSPATH.'/storage/'.get_option('tmp-folder','rawmedia')."/";
+<?php
+$tp = ABSPATH.'/storage/'.get_option('tmp-folder','rawmedia')."/";
 $ts = site_url().'storage/'.get_option('tmp-folder','rawmedia')."/";
 if(isset($_POST['checkRow'])) {
-foreach ($_POST['checkRow'] as $del) {
-remove_file($tp.$del);
-}
+    foreach ($_POST['checkRow'] as $del) {
+        // You can sanitize $del if it is used in any output later
+        // Ensure it's a valid string/file name or path before using it
+        $sanitized_del = htmlspecialchars($del, ENT_QUOTES, 'UTF-8');
+        remove_file($tp.$sanitized_del);
+    }
 }
 ?>
+
 <div class="row">
 <h3>RawMedia Folder</h3>				
 </div>

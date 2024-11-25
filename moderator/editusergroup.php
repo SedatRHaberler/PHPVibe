@@ -2,8 +2,14 @@
 $term = toDb($_REQUEST['id']);
 if(isset($_POST['add_group'])) {
 $db->query("UPDATE ".DB_PREFIX."users_groups SET `name` = '".$db->escape($_POST['group-name'])."', `group_creative` = '".$db->escape($_POST['group-creative'])."' where id = '".$db->escape($_POST['id_group'])."'");
-echo '<div class="msg-win">Usergroup "'.$_POST['group-name'].'" was updated.</div>';
-echo '<div class="full msg-content"><a class="btn btn-default" href="'.admin_url('editusergroup').'&id='.$db->escape($_POST['id_group']).'">Continue editing this group</a></div>';
+    $group_name = htmlspecialchars($_POST['group-name'], ENT_QUOTES, 'UTF-8'); // Escape special characters
+
+    echo '<div class="msg-win">Usergroup "' . $group_name . '" was updated.</div>';
+    $id_group = htmlspecialchars($db->escape($_POST['id_group']), ENT_QUOTES, 'UTF-8'); // Escape the group ID to prevent XSS
+
+    echo '<div class="full msg-content">
+        <a class="btn btn-default" href="' . admin_url('editusergroup') . '&id=' . $id_group . '">Continue editing this group</a>
+      </div>';
 echo '<div class="full msg-content"><a class="btn btn-primary" href="'.admin_url('usergroups').'">Go to Usergroups</a></div>';
 }
 

@@ -515,17 +515,20 @@
 		</div>   
 	 </div>  
 	 </div>  
-	 </form> 
-	 <?php  $a->show_pages($ps);
-                   } 
-                   break; 
-               
-               case "new-playlist":    
-                   
-                   if(isset($_POST['play-name'])) {
-                       echo '  <div class="msg-hint mleft20 mright20 mtop20 top10 bottom10">'.$_POST['play-name']._lang(" created.").'	 </div>  	';
-                   } ?> 
-	 <div class="col-md-8 col-md-offset-2 odet">   
+	 </form>
+                       <?php
+                       $a->show_pages($ps);
+                   }
+         break;
+
+         case "new-playlist":
+
+             if(isset($_POST['play-name'])) {
+                 echo '  <div class="msg-hint mleft20 mright20 mtop20 top10 bottom10">' . htmlspecialchars($_POST['play-name'], ENT_QUOTES, 'UTF-8') . _lang(" created.") . ' </div>';
+             }
+             ?>
+
+             <div class="col-md-8 col-md-offset-2 odet">
 	 <form id="validate" action="<?php echo site_url().me;?>?sk=new-playlist" enctype="multipart/form-data" method="post">  
 	<h2><?php echo _lang("Create a new playlist"); ?></h2>	 
 	 <div class="control-group mtop20 clearfix ">  
@@ -583,11 +586,12 @@
                            $picture  = str_replace(ABSPATH.'/' ,'',$thumb);
                        } else { 
                            $picture  = 'storage/uploads/noimage.png';
-                       } 
-                       $db->query("INSERT INTO ".DB_PREFIX."playlists (`ptype`,`owner`, `title`, `picture`, `description`) VALUES (2, '".user_id()."','".toDb($_POST['album-name'])."', '".toDb($picture)."' , '".toDb($_POST['album-desc'])."')"); echo ' 
-	 <div class="msg-hint mleft20 mright20 mtop20 top10 bottom10">'.$_POST['album-name']._lang(" created.").'
-	 </div>  
-	';
+                       }
+                       $db->query("INSERT INTO ".DB_PREFIX."playlists (`ptype`,`owner`, `title`, `picture`, `description`) VALUES (2, '".user_id()."','".toDb($_POST['album-name'])."', '".toDb($picture)."' , '".toDb($_POST['album-desc'])."')");
+
+                       echo ' 
+     <div class="msg-hint mleft20 mright20 mtop20 top10 bottom10">' . htmlspecialchars($_POST['album-name'], ENT_QUOTES, 'UTF-8') . _lang(" created.") . '</div>';
+
                    } ?> 
 	 <div class="row odet"> 
 	 <form id="validate" action="<?php echo site_url().me;?>?sk=new-album" enctype="multipart/form-data" method="post">       
@@ -694,15 +698,14 @@
                    } 
                    
                    break; 
-               case "edit-video":    
-                   
+               case "edit-video":
+
                    if(isset($_POST['edited-video'])) {
                        echo '     
-	 <div class="msg-hint mleft20 mright20 mtop20 top10 bottom10">'.$_POST['title']._lang(" updated.").'
-	 </div>  
-	   ';
-                   } 
-                   
+    <div class="msg-hint mleft20 mright20 mtop20 top10 bottom10">' . htmlspecialchars($_POST['title'], ENT_QUOTES, 'UTF-8') . _lang(" updated.") . '</div>';
+                   }
+
+
                    if(!_get("vid")){ die(_lang("Missing video id")); } 
                    
                    if((get_option('uploadrule') <> 1 )&&  !is_moderator()) { die(_lang("Video editing has been disabled by the administrator")); } 
@@ -881,15 +884,14 @@
 	';
                    } 
                    break; 
-               case "edit-image":    
-                   
+               case "edit-image":
+
                    if(isset($_POST['edited-image'])) {
                        echo ' 
-	 <div class="msg-hint mleft20 mright20 mtop20 mtop10 mbot10">'.$_POST['title']._lang(" updated.").'
-	 </div>  
-	';
-                   } 
-                   if(!_get("vid")){ die(_lang("Missing image id")); } 
+    <div class="msg-hint mleft20 mright20 mtop20 mtop10 mbot10">' . htmlspecialchars($_POST['title'], ENT_QUOTES, 'UTF-8') . _lang(" updated.") . '</div>';
+                   }
+
+                   if(!_get("vid")){ die(_lang("Missing image id")); }
                    if((get_option('uploadrule') <> 1 )&&  !is_moderator()) { die(_lang("Image editing has been disabled by the administrator")); } 
                    $image = $db->get_row("SELECT * from ".DB_PREFIX."images where user_id= '".user_id()."' and id = '".intval(_get("vid"))."' "); 
                    if($image) { ?> 

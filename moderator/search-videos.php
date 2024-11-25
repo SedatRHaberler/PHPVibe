@@ -14,7 +14,8 @@ if(isset($_POST['checkRow'])) {
 foreach ($_POST['checkRow'] as $del) {
 unpublish_video(intval($del));
 }
-echo '<div class="msg-info">Videos #'.implode(',', $_POST['checkRow']).' unpublished.</div>';
+    echo '<div class="msg-info">Videos #'.implode(',', array_map('htmlspecialchars', $_POST['checkRow'])).' unpublished.</div>';
+
 }
 $key = (isset($_GET['key'])) ? $_GET['key'] : $_POST['key'];
 if(!$key || empty($key) ) {
@@ -60,7 +61,7 @@ $a->set_values($count->nr);
         </ul>
     </div>
 
-<form class="form-horizontal styled" action="<?php echo $ps;?>&p=<?php echo this_page();?>" enctype="multipart/form-data" method="post">
+    <form class="form-horizontal styled" action="<?php echo htmlspecialchars($ps, ENT_QUOTES, 'UTF-8'); ?>&p=<?php echo htmlspecialchars(this_page(), ENT_QUOTES, 'UTF-8'); ?>" enctype="multipart/form-data" method="post">
 
 <div class="cleafix full"></div>
 <fieldset>
@@ -80,31 +81,37 @@ $a->set_values($count->nr);
                           <tbody>
 						  <?php foreach ($videos as $video) { ?>
                               <tr>
-                                  <td><input type="checkbox" name="checkRow[]" value="<?php echo $video->id; ?>" class="styled" /></td>
-                                  <td><img src="<?php echo thumb_fix($video->thumb); ?>" style="width:130px; height:90px;"></td>
-                                  <td><?php echo _html($video->title); ?></td>
-                                  <td><?php echo video_time($video->duration); ?></td>
-                                  <td><?php echo _html($video->liked); ?></td>
-                                  <td><?php echo _html($video->views); ?></td>
-								  <td>
-								  <div class="btn-group">
-								  <a class="btn btn-sm btn-outline btn-danger" href="<?php echo $ps;?><?php echo this_page();?>&delete-video=<?php echo $video->id;?>"><i class="icon-trash" style="margin-right:5px;"></i></a>
-								  <a class="btn btn-sm btn-outline btn-info" href="<?php echo admin_url('edit-video');?>&vid=<?php echo $video->id;?>"><i class="icon-edit" style="margin-right:5px;"></i><?php echo _lang("Edit"); ?></a>
-								  <?php if($video->featured < 1) { ?>
-								<a class="btn btn-sm btn-outline btn-default" href="<?php echo $ps; ?><?php echo this_page();?>&feature-video=<?php echo $video->id;?>" title="Feature"><i class="icon-star" style="margin-right:5px;"></i></a>
-								 <?php } else { ?>
-								<a class="btn btn-sm btn-outline btn-info" href="<?php echo admin_url('videos');?>&p=<?php echo this_page();?>&feature-video=<?php echo $video->id;?>" title="Unfeature"><i class="icon-star-half" style="margin-right:5px;"></i></a>
-								 <?php } ?>
-								 <a class="btn btn-sm btn-outline btn-primary" target="_blank" href="<?php echo video_url($video->id, $video->title);?>"><i class="icon-check" style="margin-right:5px;"></i><?php echo _lang("View"); ?></a></div>
-								  </td>
+                                  <td><input type="checkbox" name="checkRow[]" value="<?php echo htmlspecialchars($video->id, ENT_QUOTES, 'UTF-8'); ?>" class="styled" /></td>
+                                  <td><img src="<?php echo htmlspecialchars(thumb_fix($video->thumb), ENT_QUOTES, 'UTF-8'); ?>" style="width:130px; height:90px;"></td>
+                                  <td><?php echo htmlspecialchars(_html($video->title), ENT_QUOTES, 'UTF-8'); ?></td>
+                                  <td><?php echo htmlspecialchars(video_time($video->duration), ENT_QUOTES, 'UTF-8'); ?></td>
+                                  <td><?php echo htmlspecialchars(_html($video->liked), ENT_QUOTES, 'UTF-8'); ?></td>
+                                  <td><?php echo htmlspecialchars(_html($video->views), ENT_QUOTES, 'UTF-8'); ?></td>
+                                  <td>
+                                      <div class="btn-group">
+                                          <a class="btn btn-sm btn-outline btn-danger" href="<?php echo htmlspecialchars($ps, ENT_QUOTES, 'UTF-8'); ?><?php echo htmlspecialchars(this_page(), ENT_QUOTES, 'UTF-8'); ?>&delete-video=<?php echo htmlspecialchars($video->id, ENT_QUOTES, 'UTF-8'); ?>"><i class="icon-trash" style="margin-right:5px;"></i></a>
+                                          <a class="btn btn-sm btn-outline btn-info" href="<?php echo htmlspecialchars(admin_url('edit-video'), ENT_QUOTES, 'UTF-8'); ?>&vid=<?php echo htmlspecialchars($video->id, ENT_QUOTES, 'UTF-8'); ?>"><i class="icon-edit" style="margin-right:5px;"></i><?php echo _lang("Edit"); ?></a>
+                                          <?php if($video->featured < 1) { ?>
+                                              <a class="btn btn-sm btn-outline btn-default" href="<?php echo htmlspecialchars($ps, ENT_QUOTES, 'UTF-8'); ?><?php echo htmlspecialchars(this_page(), ENT_QUOTES, 'UTF-8'); ?>&feature-video=<?php echo htmlspecialchars($video->id, ENT_QUOTES, 'UTF-8'); ?>" title="Feature"><i class="icon-star" style="margin-right:5px;"></i></a>
+                                          <?php } else { ?>
+                                              <a class="btn btn-sm btn-outline btn-info" href="<?php echo htmlspecialchars(admin_url('videos'), ENT_QUOTES, 'UTF-8'); ?>&p=<?php echo htmlspecialchars(this_page(), ENT_QUOTES, 'UTF-8'); ?>&feature-video=<?php echo htmlspecialchars($video->id, ENT_QUOTES, 'UTF-8'); ?>" title="Unfeature"><i class="icon-star-half" style="margin-right:5px;"></i></a>
+                                          <?php } ?>
+                                          <a class="btn btn-sm btn-outline btn-primary" target="_blank" href="<?php echo htmlspecialchars(video_url($video->id, $video->title), ENT_QUOTES, 'UTF-8'); ?>"><i class="icon-check" style="margin-right:5px;"></i><?php echo _lang("View"); ?></a>
+                                      </div>
+                                  </td>
                               </tr>
-							  <?php } ?>
+                          <?php } ?>
 						</tbody>  
 </table>
 </div>						
 </fieldset>					
 </form>
-<?php  $a->show_pages($ps); }
+    <?php
+    // Sanitize the input before using it.
+    $ps = htmlspecialchars($ps, ENT_QUOTES, 'UTF-8');
 
-} ?>
+    // Call the method with the sanitized $ps.
+    $a->show_pages($ps);}}
+    ?>
+
 </div>

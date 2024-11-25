@@ -1,13 +1,14 @@
 <?php
 if(isset($_GET['delete-channel'])) {
 $db->get_row("DELETE from ".DB_PREFIX."channels where cat_id ='".intval($_GET['delete-channel'])."' ");
-echo '<div class="msg-info">Channel #'.$_GET['delete-channel'].' deleted.</div>';
+    echo '<div class="msg-info">Channel #'.htmlspecialchars($_GET['delete-channel'], ENT_QUOTES, 'UTF-8').' deleted.</div>';
+
 } 
 if(isset($_POST['checkRow'])) {
 foreach ($_POST['checkRow'] as $del) {
 $db->get_row("DELETE from ".DB_PREFIX."channels where cat_id ='".intval($del)."' ");
 }
-echo '<div class="msg-info">Channels #'.implode(',', $_POST['checkRow']).' deleted.</div>';
+    echo '<div class="msg-info">Channels #'.implode(',', array_map('htmlspecialchars', $_POST['checkRow'])).' deleted.</div>';
 }
 $stype='';
 

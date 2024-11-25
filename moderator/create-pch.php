@@ -1,26 +1,26 @@
 <?php
 if(isset($_POST['play-name'])) {
-$picture ='storage/uploads/noimage.png';
-$formInputName   = 'play-img';							# This is the name given to the form's file input
-	$savePath	     = ABSPATH.'/storage/uploads';								# The folder to save the image
-	$saveName        = md5(time()).'-'.user_id();									# Without ext
-	$allowedExtArray = array('.jpg', '.png', '.gif');	# Set allowed file types
-	$imageQuality    = 100;
-$uploader = new FileUploader($formInputName, $savePath, $saveName , $allowedExtArray);
-if ($uploader->getIsSuccessful()) {
+    $picture = 'storage/uploads/noimage.png';
+    $formInputName = 'play-img';                            # This is the name given to the form's file input
+    $savePath = ABSPATH . '/storage/uploads';                                # The folder to save the image
+    $saveName = md5(time()) . '-' . user_id();                                    # Without ext
+    $allowedExtArray = array('.jpg', '.png', '.gif');    # Set allowed file types
+    $imageQuality = 100;
+    $uploader = new FileUploader($formInputName, $savePath, $saveName, $allowedExtArray);
+    if ($uploader->getIsSuccessful()) {
 //$uploader -> resizeImage(200, 200, 'crop');
-$uploader -> saveImage($uploader->getTargetPath(), $imageQuality);
-$thumb  = $uploader->getTargetPath();
-$picture  = str_replace(ABSPATH.'/' ,'',$thumb);
-} 
-if(isset($_POST['categ']) && intval($_POST['categ']) > 0) {
-$ch = $_POST['categ'];
-} else {
-$ch = null;
-}
+        $uploader->saveImage($uploader->getTargetPath(), $imageQuality);
+        $thumb = $uploader->getTargetPath();
+        $picture = str_replace(ABSPATH . '/', '', $thumb);
+    }
+    if (isset($_POST['categ']) && intval($_POST['categ']) > 0) {
+        $ch = $_POST['categ'];
+    } else {
+        $ch = null;
+    }
 
-$db->query("INSERT INTO ".DB_PREFIX."postcats (`cat_name`, `picture`, `cat_desc`) VALUES ('".toDb($_POST['play-name'])."', '".toDb($picture)."' , '".toDb($_POST['play-desc'])."')");
-echo '<div class="msg-info">Blog category "'.$_POST['play-name'].'" created</div>';
+    $db->query("INSERT INTO " . DB_PREFIX . "postcats (`cat_name`, `picture`, `cat_desc`) VALUES ('" . toDb($_POST['play-name']) . "', '" . toDb($picture) . "' , '" . toDb($_POST['play-desc']) . "')");
+    echo '<div class="msg-info">Blog category "' . htmlspecialchars($_POST['play-name'], ENT_QUOTES, 'UTF-8') . '" created</div>';
 }
 
 ?><div class="row">

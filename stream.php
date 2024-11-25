@@ -68,7 +68,7 @@ if (is_file($file)) {
         }
 
         while (!feof($handle)) {
-            echo fread($handle, 8192);
+            echo htmlspecialchars(fread($handle, 8192), ENT_QUOTES, 'UTF-8');
         }
         fclose($handle);
         exit;

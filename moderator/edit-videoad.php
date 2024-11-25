@@ -17,14 +17,16 @@ set `jad_start` = '".$content['sec']."',
 `jad_pos` = '".$db->escape($_POST['pos'])."'
 WHERE jad_id = $id");
 //$db->debug();
-echo '<div class="msg-info">Ad '.$_POST['name'].' updated</div>';
+    $name = htmlspecialchars($_POST['name'], ENT_QUOTES, 'UTF-8'); // Escape the 'name' value to prevent XSS
+
+    echo '<div class="msg-info">Ad ' . $name . ' updated</div>';
 }
 $adtype = array("3" => "Pre-roll","4" => "Post-Roll", "5" => "Overlay","2" => "Annotation" );
 $ad = $db->get_row("select * from ".DB_PREFIX."jads WHERE jad_id = '$id'");
 $atype= $ad->jad_type;
 ?>
 <div class="row" style="margin-bottom:10px">
-<h3>Editing "<?php echo _html($ad->jad_title); ?>"</h3>
+    <h3>Editing "<?php echo htmlspecialchars($ad->jad_title, ENT_QUOTES, 'UTF-8'); ?>"</h3>
 </div>
 <?php if($atype <> 5) { ?>
 <div class="blc">
@@ -36,12 +38,14 @@ Selected ad spot is available only for the following players: jPlayer, jwPlayer 
 <div class="row">
 <form id="validate" class="form-horizontal styled" action="<?php echo admin_url('edit-videoad');?>" enctype="multipart/form-data" method="post">
 <fieldset>
-<input type="hidden" name="id" value="<?php echo $id; ?>">
+    <input type="hidden" name="id" value="<?php echo htmlspecialchars($id, ENT_QUOTES, 'UTF-8'); ?>">
 <div class="form-group form-material">
 <label class="control-label"><i class="icon-copy"></i>Title</label>
 <div class="controls">
-<input type="text" name="name" class="validate[required] col-md-12" value="<?php echo _html($ad->jad_title); ?>"/> 	
-<span class="help-block" id="limit-text">Only visible to you.</span>						
+    <label>
+        <input type="text" name="name" class="validate[required] col-md-12" value="<?php echo htmlspecialchars($ad->jad_title, ENT_QUOTES, 'UTF-8'); ?>"/>
+    </label>
+    <span class="help-block" id="limit-text">Only visible to you.</span>
 					
 </div>	
 </div>	
@@ -57,8 +61,10 @@ Selected ad spot is available only for the following players: jPlayer, jwPlayer 
 <div class="form-group form-material">
 <label class="control-label"><strong>The Advertisement</strong> <br><em></em>Html/Js code</label>
 <div class="controls">
-<textarea rows="5" cols="5" name="content" class="col-md-12" style="word-wrap: break-word; resize: horizontal; height: 88px;"><?php echo stripslashes($ad->jad_body); ?></textarea>					
-<span class="help-block" id="limit-text">Place here the actual html or js code that renders your ad (for example Google Adsense code, or other provider code. Or just use plain html to create your ad's output).</span>
+    <label>
+        <textarea rows="5" cols="5" name="content" class="col-md-12" style="word-wrap: break-word; resize: horizontal; height: 88px;"><?php echo htmlspecialchars($ad->jad_body, ENT_QUOTES, 'UTF-8'); ?></textarea>
+    </label>
+    <span class="help-block" id="limit-text">Place here the actual html or js code that renders your ad (for example Google Adsense code, or other provider code. Or just use plain html to create your ad's output).</span>
 </div>	
 </div>
 <div class="form-group form-material">
@@ -74,15 +80,19 @@ Selected ad spot is available only for the following players: jPlayer, jwPlayer 
 <div class="form-group form-material">
 	<label class="control-label"><i class="icon-fullscreen"></i>Ad start: </label>
 	<div class="controls">
-<input type="text" name="sec" class="validate[required] col-md-4" value="<?php echo _html($ad->jad_start); ?>"/> 	
-<span class="help-block" id="limit-text">When will the ad appear on the player?</span>	
+        <label>
+            <input type="text" name="sec" class="validate[required] col-md-4" value="<?php echo htmlspecialchars($ad->jad_start, ENT_QUOTES, 'UTF-8'); ?>"/>
+        </label>
+        <span class="help-block" id="limit-text">When will the ad appear on the player?</span>
 	</div>
 	</div>	
 <div class="form-group form-material">
 	<label class="control-label"><i class="icon-fullscreen"></i>Ad duration: </label>
 	<div class="controls">
-<input type="text" name="end" class="validate[required] col-md-4" value="<?php echo _html($ad->jad_end); ?>"/> 	
-<span class="help-block" id="limit-text">To which duration in seconds will it be kept on the player? If 0 is set, it will remain until user closes it.</span>	
+        <label>
+            <input type="text" name="end" class="validate[required] col-md-4" value="<?php echo htmlspecialchars($ad->jad_end, ENT_QUOTES, 'UTF-8'); ?>"/>
+        </label>
+        <span class="help-block" id="limit-text">To which duration in seconds will it be kept on the player? If 0 is set, it will remain until user closes it.</span>
 	</div>
 	</div>	
 

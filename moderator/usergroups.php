@@ -39,7 +39,7 @@ $safe_ps = htmlspecialchars($ps, ENT_QUOTES, 'UTF-8');
 
 // Now safely use the sanitized $safe_ps in the show_pages method
 $a->show_pages($safe_ps);
-$a->show_pages($ps);
+$a->show_pages(htmlspecialchars($ps, ENT_QUOTES, 'UTF-8'));
 ?>
 
 <form class="form-horizontal styled" action="<?php echo htmlspecialchars($ps, ENT_QUOTES, 'UTF-8'); ?><?php echo this_page(); ?>" enctype="multipart/form-data" method="post">

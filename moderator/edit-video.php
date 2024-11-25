@@ -90,11 +90,11 @@ category='".toDb(intval(_post('categ')))."', tags='".toDb(_post('tags') )."',
 	} else {
 		echo '<div class="msg-warning">'.$updater->error().' updated.</div>';
 	}
-} 
+}
 if(isset($_GET['removefn'])) {
-	$fl =  $folder = ABSPATH.'/storage/'.get_option('mediafolder','media').'/'.$_GET['removefn'];
-	remove_file($fl);
-	echo '<div class="msg-win">Quality file removed.</div>';
+    $fl =  $folder = ABSPATH.'/storage/'.get_option('mediafolder','media').'/'.$_GET['removefn'];
+    remove_file($fl);
+    echo '<div class="msg-win">Quality file removed: '.htmlspecialchars($_GET['removefn'], ENT_QUOTES, 'UTF-8').'</div>';
 }
 if(isset($_GET['reconvertfrom'])) {
 	$input = ABSPATH.'/storage/'.get_option('mediafolder','media').'/'.$_GET['reconvertfrom'];

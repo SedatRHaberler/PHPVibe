@@ -18,7 +18,8 @@ $picture  = str_replace(ABSPATH.'/' ,'',$thumb);
 
 $db->query("UPDATE ".DB_PREFIX."playlists SET title ='".toDb($_POST['play-name'])."', description = '".toDb($_POST['play-desc'])."' WHERE id= '".intval($_GET['id'])."'");
 
-echo '<div class="msg-info">Playlist '.$_POST['play-name'].' updated</div>';
+    echo '<div class="msg-info">Playlist ' . htmlspecialchars($_POST['play-name'], ENT_QUOTES, 'UTF-8') . ' updated</div>';
+
 }
 $ch = $db->get_row("SELECT * FROM ".DB_PREFIX."playlists where id ='".intval($_GET['id'])."'");
 if($ch) {
@@ -58,5 +59,5 @@ if($ch) {
 </form>
 </div>
 <?php } else {
-echo '<div class="msg-warning">Playlist '.$_GET['id'].' not found</div>';
+    echo '<div class="msg-warning">Playlist ' . htmlspecialchars($_GET['id'], ENT_QUOTES, 'UTF-8') . ' not found</div>';
 } ?>

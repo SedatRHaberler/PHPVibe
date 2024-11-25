@@ -59,9 +59,17 @@ break;
 
 }
     $act = htmlspecialchars($act, ENT_QUOTES, 'UTF-8'); // Escape the action
-    $checkRow = array_map('intval', $_POST['checkRow']); // Sanitize checkRow to ensure it's a list of integers
 
-    echo '<div class="msg-info">Performed ' . $act . ' action on videos #' . implode(',', $checkRow) . '</div>';
+// Sanitize checkRow to ensure it's a list of integers
+    $checkRow = array_map('intval', $_POST['checkRow']);
+
+// Escape the output of implode to prevent XSS
+    $checkRowString = implode(',', $checkRow);
+    $checkRowString = htmlspecialchars($checkRowString, ENT_QUOTES, 'UTF-8');
+
+// Safely output the result
+    echo '<div class="msg-info">Performed ' . $act . ' action on videos #' . $checkRowString . '</div>';
+
 
 }
 $order = "ORDER BY ".DB_PREFIX."videos.id desc";
@@ -131,12 +139,18 @@ $a->set_per_page(bpp());
 $a->set_values($count->nr);
 //$a->show_pages($ps);
 if(!empty($sortA)){
-echo '<div class="row-fuild" style="margin-bottom:15px"> Active filters:   ';	
-foreach ($sortA as $filter){
-    $filter = htmlspecialchars($filter, ENT_QUOTES, 'UTF-8'); // Escape special characters in $filter
+echo '<div class="row-fuild" style="margin-bottom:15px"> Active filters:   ';
+    foreach ($sortA as $filter) {
+        // Escape special characters in $filter
+        $escaped_filter = htmlspecialchars($filter, ENT_QUOTES, 'UTF-8');
 
-    echo '<a class="mright10" href="' . remove_sort($filter) . '"><span class="badge">' . ucwords(str_replace('-', ' : ', $filter)) . ' <i class="material-icons">delete</i></span></a>';
-}
+        // Safely use the escaped value in the href attribute and display
+        echo '<a class="mright10" href="' . htmlspecialchars(remove_sort($escaped_filter), ENT_QUOTES, 'UTF-8') . '">
+            <span class="badge">' . ucwords(str_replace('-', ' : ', $escaped_filter)) . ' 
+            <i class="material-icons">delete</i></span>
+          </a>';
+    }
+
 echo '</div>';	
 }
 ?>

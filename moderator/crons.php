@@ -133,7 +133,7 @@ Crons
 								  </div>
                               </li>
 							  <?php } ?>
-						</tbody>  
+						</ul>
 </div>
 </div>
 </div>					

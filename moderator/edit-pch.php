@@ -18,7 +18,8 @@ $picture  = str_replace(ABSPATH.'/' ,'',$thumb);
 
 $db->query("UPDATE ".DB_PREFIX."postcats SET child_of ='".intval($_POST['categ'])."', cat_name ='".toDb($_POST['play-name'])."', cat_desc = '".toDb($_POST['play-desc'])."' WHERE cat_id= '".intval($_GET['id'])."'");
 
-echo '<div class="msg-info">Category'.$_POST['play-name'].' updated</div>';
+    echo '<div class="msg-info">Category ' . htmlspecialchars($_POST['play-name'], ENT_QUOTES, 'UTF-8') . ' updated</div>';
+
 }
 $ch = $db->get_row("SELECT * FROM ".DB_PREFIX."postcats where cat_id ='".intval($_GET['id'])."'");
 if($ch) {
@@ -76,5 +77,5 @@ echo '</select>
 </form>
 </div>
 <?php } else {
-echo '<div class="msg-warning">Category'.$_GET['id'].' not found</div>';
+    echo '<div class="msg-warning">Category ' . htmlspecialchars($_GET['id'], ENT_QUOTES, 'UTF-8') . ' not found</div>';
 } ?>

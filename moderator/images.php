@@ -58,7 +58,8 @@ break;
 }
 
 }
-echo '<div class="msg-info">Perfomed '.$act.' action on images #'.implode(',', $_POST['checkRow']).'</div>';
+    echo '<div class="msg-info">Performed ' . htmlspecialchars($act, ENT_QUOTES, 'UTF-8') . ' action on images #' . htmlspecialchars(implode(',', $_POST['checkRow']), ENT_QUOTES, 'UTF-8') . '</div>';
+
 }
 $order = "ORDER BY ".DB_PREFIX."images.id desc";
 $where = "";
@@ -129,7 +130,8 @@ $a->set_values($count->nr);
 if(!empty($sortA)){
 echo '<div class="row-fuild" style="margin-bottom:15px"> Active filters:   ';	
 foreach ($sortA as $filter){
-echo '<a class=" mright10" href="'.remove_sort($filter).'"><span class="badge">'.ucwords(str_replace('-',' : ',$filter)).' <i class="material-icons">delete</i></span></a>';
+    echo '<a class=" mright10" href="'.remove_sort($filter).'"><span class="badge">'.ucwords(str_replace('-',' : ', htmlspecialchars($filter, ENT_QUOTES, 'UTF-8'))). ' <i class="material-icons">delete</i></span></a>';
+
 }
 echo '</div>';	
 }
@@ -146,22 +148,23 @@ echo '</div>';
 filter_list
 </i>
 <small>Filter</small>
-	<ul class="dropdown-menu dropdown-right bullet" role="menu">
-		<li role="presentation"><a title="Order by title ascending" href="<?php echo add_sort('title-asc');?>"><i class="icon-angle-up icon"></i> Title ascending</a></li>
-		<li role="presentation"><a title="Order by title descending" href="<?php echo add_sort('title-desc');?>"><i class="icon-angle-down icon"></i> Title descending</a></li>
-		<li role="presentation"><a title="Order by likes ascending" href="<?php echo add_sort('liked-asc');?>"><i class="icon-angle-up icon"></i> Likes ascending</a></li>
-		<li role="presentation"><a title="Order by likes descending" href="<?php echo add_sort('liked-desc');?>"><i class="icon-angle-down icon"></i>Likes descending</a></li>
-		<li role="presentation"><a title="Order by duration ascending" href="<?php echo add_sort('duration-asc');?>"><i class="icon-angle-up icon"></i>Duration ascending</a></li>
-		<li role="presentation"><a title="Order by duration descending" href="<?php echo add_sort('duration-desc');?>"><i class="icon-angle-down icon"></i>Duration descending</a></li>
-		<li role="presentation"><a title="Order by website ascending" href="<?php echo add_sort('website-asc');?>"><i class="icon-angle-up icon"></i>Website ascending</a></li>
-		<li role="presentation"><a title="Order by website descending" href="<?php echo add_sort('website-desc');?>"><i class="icon-angle-down icon"></i>Website descending</a></li>
-		<li role="presentation"><a title="Order by date ascending" href="<?php echo add_sort('date-asc');?>"><i class="icon-angle-up icon"></i>Date ascending</a></li>
-		<li role="presentation"><a title="Order by date descending" href="<?php echo add_sort('date-desc');?>"><i class="icon-angle-down icon"></i>Date descending</a></li>
-		<li role="presentation"><a title="Order by views ascending" href="<?php echo add_sort('views-asc');?>"><i class="icon-angle-up icon"></i>Views ascending</a></li>
-		<li role="presentation"><a title="Order by views descending" href="<?php echo add_sort('views-desc');?>"><i class="icon-angle-down icon"></i>Views descending</a></li>
-		<li role="presentation"><a title="Show featured only" href="<?php echo add_sort('featured');?>"><i class="material-icons icon">&#xE83A;</i> Featured only</a></li>
-		<li role="presentation"><a title="Show premium only" href="<?php echo add_sort('premium');?>"><i class="material-icons icon">&#xE8D0;</i> Premium only</a></li>
-		</ul>
+    <ul class="dropdown-menu dropdown-right bullet" role="menu">
+        <li role="presentation"><a title="Order by title ascending" href="<?php echo htmlspecialchars(add_sort('title-asc'), ENT_QUOTES, 'UTF-8'); ?>"><i class="icon-angle-up icon"></i> Title ascending</a></li>
+        <li role="presentation"><a title="Order by title descending" href="<?php echo htmlspecialchars(add_sort('title-desc'), ENT_QUOTES, 'UTF-8'); ?>"><i class="icon-angle-down icon"></i> Title descending</a></li>
+        <li role="presentation"><a title="Order by likes ascending" href="<?php echo htmlspecialchars(add_sort('liked-asc'), ENT_QUOTES, 'UTF-8'); ?>"><i class="icon-angle-up icon"></i> Likes ascending</a></li>
+        <li role="presentation"><a title="Order by likes descending" href="<?php echo htmlspecialchars(add_sort('liked-desc'), ENT_QUOTES, 'UTF-8'); ?>"><i class="icon-angle-down icon"></i> Likes descending</a></li>
+        <li role="presentation"><a title="Order by duration ascending" href="<?php echo htmlspecialchars(add_sort('duration-asc'), ENT_QUOTES, 'UTF-8'); ?>"><i class="icon-angle-up icon"></i> Duration ascending</a></li>
+        <li role="presentation"><a title="Order by duration descending" href="<?php echo htmlspecialchars(add_sort('duration-desc'), ENT_QUOTES, 'UTF-8'); ?>"><i class="icon-angle-down icon"></i> Duration descending</a></li>
+        <li role="presentation"><a title="Order by website ascending" href="<?php echo htmlspecialchars(add_sort('website-asc'), ENT_QUOTES, 'UTF-8'); ?>"><i class="icon-angle-up icon"></i> Website ascending</a></li>
+        <li role="presentation"><a title="Order by website descending" href="<?php echo htmlspecialchars(add_sort('website-desc'), ENT_QUOTES, 'UTF-8'); ?>"><i class="icon-angle-down icon"></i> Website descending</a></li>
+        <li role="presentation"><a title="Order by date ascending" href="<?php echo htmlspecialchars(add_sort('date-asc'), ENT_QUOTES, 'UTF-8'); ?>"><i class="icon-angle-up icon"></i> Date ascending</a></li>
+        <li role="presentation"><a title="Order by date descending" href="<?php echo htmlspecialchars(add_sort('date-desc'), ENT_QUOTES, 'UTF-8'); ?>"><i class="icon-angle-down icon"></i> Date descending</a></li>
+        <li role="presentation"><a title="Order by views ascending" href="<?php echo htmlspecialchars(add_sort('views-asc'), ENT_QUOTES, 'UTF-8'); ?>"><i class="icon-angle-up icon"></i> Views ascending</a></li>
+        <li role="presentation"><a title="Order by views descending" href="<?php echo htmlspecialchars(add_sort('views-desc'), ENT_QUOTES, 'UTF-8'); ?>"><i class="icon-angle-down icon"></i> Views descending</a></li>
+        <li role="presentation"><a title="Show featured only" href="<?php echo htmlspecialchars(add_sort('featured'), ENT_QUOTES, 'UTF-8'); ?>"><i class="material-icons icon">&#xE83A;</i> Featured only</a></li>
+        <li role="presentation"><a title="Show premium only" href="<?php echo htmlspecialchars(add_sort('premium'), ENT_QUOTES, 'UTF-8'); ?>"><i class="material-icons icon">&#xE8D0;</i> Premium only</a></li>
+    </ul>
+
 </a>
 </h3> 
 
@@ -256,7 +259,12 @@ filter_list
 </div>						
 </fieldset>					
 </form>
-<?php  $a->show_pages($ps); 
+<?php
+// Sanitize input (optional, depending on the use case)
+$ps = htmlspecialchars($ps, ENT_QUOTES, 'UTF-8');
+
+// Now call the method safely
+$a->show_pages($ps);
 }else {
 echo '<div class="msg-note">Nothing here yet.</div>';
 }

@@ -6,11 +6,12 @@ if(isset($_POST['checkRow'])) {
 foreach ($_POST['checkRow'] as $del) {
 delete_video(intval($del));
 }
-echo '<div class="msg-info">Videos #'.implode(',', $_POST['checkRow']).' removed permanently.</div>';
+    echo '<div class="msg-info">Videos #'.implode(',', array_map('htmlspecialchars', $_POST['checkRow'])).' removed permanently.</div>';
+
 }
 if(isset($_GET['pub-video'])) {
 publish_video(intval($_GET['pub-video']));
-echo '<div class="msg-info">Video #'.$_GET['pub-video'].' published.</div>';
+    echo '<div class="msg-info">Video #'.htmlspecialchars($_GET['pub-video'], ENT_QUOTES, 'UTF-8').' published.</div>';
 } 
 $count = $db->get_row("Select count(*) as nr from ".DB_PREFIX."videos where pub < 1");
 $videos = $db->get_results("select id,title,thumb, views, liked, duration from ".DB_PREFIX."videos where pub < 1 ORDER BY ".DB_PREFIX."videos.id DESC ".this_limit()."");
