@@ -1,25 +1,51 @@
 <?php
-if(isset($_POST['play-name'])) {
-if($_FILES['play-img']){
-$formInputName   = 'play-img';							# This is the name given to the form's file input
-	$savePath	     = ABSPATH.'/storage/uploads';								# The folder to save the image
-	$saveName        = md5(time()).'-'.user_id();									# Without ext
-	$allowedExtArray = array('.jpg', '.png', '.gif');	# Set allowed file types
-	$imageQuality    = 100;
-$uploader = new FileUploader($formInputName, $savePath, $saveName , $allowedExtArray);
-if ($uploader->getIsSuccessful()) {
-//$uploader -> resizeImage(200, 200, 'crop');
-$uploader -> saveImage($uploader->getTargetPath(), $imageQuality);
-$thumb  = $uploader->getTargetPath();
-$picture  = str_replace(ABSPATH.'/' ,'',$thumb);
-	$db->query("UPDATE  ".DB_PREFIX."postcats SET picture='".toDb($picture)."' WHERE cat_id= '".intval($_GET['id'])."'");
-	}
-}	
+if (isset($_POST['play-name'])) {
+    if ($_FILES['play-img']) {
+        $formInputName = 'play-img';  // This is the name given to the form's file input
+        $savePath = ABSPATH . '/storage/uploads';  // The folder to save the image
 
-$db->query("UPDATE ".DB_PREFIX."postcats SET child_of ='".intval($_POST['categ'])."', cat_name ='".toDb($_POST['play-name'])."', cat_desc = '".toDb($_POST['play-desc'])."' WHERE cat_id= '".intval($_GET['id'])."'");
+        // Sanitize the file name to prevent directory traversal
+        $filename = basename($_FILES['play-img']['name']);
+
+        // Generate a unique file name and append the file extension
+        $saveName = md5(time()) . '-' . user_id() . '.' . strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+        // Set allowed file types
+        $allowedExtArray = array('.jpg', '.png', '.gif');
+        $imageQuality = 100;
+
+        // Validate file extension
+        $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        if (!in_array('.' . $ext, $allowedExtArray)) {
+            die('Invalid file type!');
+        }
+
+        // Ensure the file is saved in the intended directory
+        $targetPath = $savePath . '/' . $saveName;
+        $realPath = realpath($savePath);
+        if ($realPath === false || strpos(realpath($targetPath), $realPath) !== 0) {
+            die('Invalid file path!');
+        }
+
+        // Handle file upload
+        $uploader = new FileUploader($formInputName, $savePath, $saveName, $allowedExtArray);
+        if ($uploader->getIsSuccessful()) {
+            // Optionally resize the image
+            //$uploader->resizeImage(200, 200, 'crop');
+            $uploader->saveImage($uploader->getTargetPath(), $imageQuality);
+
+            $thumb = $uploader->getTargetPath();
+            $picture = str_replace(ABSPATH . '/', '', $thumb);  // Store relative path in the database
+
+            // Update the database with the new picture path
+            $db->query("UPDATE " . DB_PREFIX . "postcats SET picture='" . toDb($picture) . "' WHERE cat_id='" . intval($_GET['id']) . "'");
+        }
+    }
+
+    // Update category details in the database
+    $db->query("UPDATE " . DB_PREFIX . "postcats SET child_of='" . intval($_POST['categ']) . "', cat_name='" . toDb($_POST['play-name']) . "', cat_desc='" . toDb($_POST['play-desc']) . "' WHERE cat_id='" . intval($_GET['id']) . "'");
 
     echo '<div class="msg-info">Category ' . htmlspecialchars($_POST['play-name'], ENT_QUOTES, 'UTF-8') . ' updated</div>';
-
 }
 $ch = $db->get_row("SELECT * FROM ".DB_PREFIX."postcats where cat_id ='".intval($_GET['id'])."'");
 if($ch) {

@@ -1,5 +1,5 @@
 <?php
-if(isset($_POST['play-name'])) {
+if (isset($_POST['play-name'])) {
     $picture = 'storage/uploads/noimage.png';  // Default image if no file is uploaded
     $formInputName = 'play-img';                // Name of the file input
     $savePath = ABSPATH . '/storage/uploads';   // Directory to save the image
@@ -15,7 +15,17 @@ if(isset($_POST['play-name'])) {
     // Check if the uploaded file is an image and has a valid extension
     $uploadedFileType = strtolower(pathinfo($_FILES[$formInputName]['name'], PATHINFO_EXTENSION));
     if (!in_array('.' . $uploadedFileType, $allowedExtArray)) {
-        exit('Invalid file type.');
+        echo "Invalid file type.";  // User-friendly error message
+        exit;
+    }
+
+    // Sanitize the file path to ensure it's within the intended directory
+    $targetPath = $savePath . '/' . $saveName;
+    $realPath = realpath($savePath); // Get the absolute path of the save directory
+
+    if ($realPath === false || strpos(realpath($targetPath), $realPath) !== 0) {
+        echo "Invalid file path.";  // User-friendly error message
+        exit;
     }
 
     // Initialize file uploader class
@@ -31,7 +41,14 @@ if(isset($_POST['play-name'])) {
         // Retrieve the target path and sanitize it for safe database storage
         $thumb = $uploader->getTargetPath();
         $picture = str_replace(ABSPATH . '/', '', $thumb); // Remove the base path for storage
+    } else {
+        echo "File upload failed.";  // User-friendly error message
+        exit;
     }
+
+    // Proceed with the rest of your logic, such as storing the picture path in the database
+    // Example: $db->query("UPDATE table SET picture='" . toDb($picture) . "' WHERE ...");
+
 
 
     if (isset($_POST['categ']) && intval($_POST['categ']) > 0) {

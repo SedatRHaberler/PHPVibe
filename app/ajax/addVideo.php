@@ -1,4 +1,5 @@
-<?php  include_once('../../load.php');
+<?php global $db;
+include_once('../../load.php');
 function checkRemoteFileImage($url)
 {
 if((substr($url, 0, 2) == "//") || (substr($url, 0, 4) == "http") ) { 
@@ -32,26 +33,64 @@ if (is_user( )) {
 if(_post('type') && _post('file') && (isset($_FILES['play-img']) || _post('remote-img'))) {
 $sec = _tSec(_post('hours').":"._post('minutes').":"._post('seconds'));
 //if is image upload
-if(isset($_FILES['play-img']) && !empty($_FILES['play-img']['name'])){
-$formInputName   = 'play-img';							# This is the name given to the form's file input
-	$savePath	     = ABSPATH.'/storage/'.get_option('mediafolder').'/thumbs';								# The folder to save the image
-	$saveName        = md5(time()).'-'.user_id();									# Without ext
-	$allowedExtArray = array('.jpg', '.png', '.gif');	# Set allowed file types
-	$imageQuality    = 100;
-$uploader = new FileUploader($formInputName, $savePath, $saveName , $allowedExtArray);
-if ($uploader->getIsSuccessful()) {
-$uploader -> resizeImage(380, 240, 'crop');
-$uploader -> saveImage($uploader->getTargetPath(), $imageQuality);
-$thumb  = $uploader->getTargetPath();
-$thumb = str_replace(ABSPATH.'/' ,'',$thumb);
-} else { $thumb  = 'storage/uploads/noimage.png'; 	}
-} else {
-if(checkRemoteFileImage(_post('remote-img'))){
-$thumb = _post('remote-img');
-} else {
-$thumb = 'storage/uploads/noimage.png';
-}
-}
+    if (isset($_FILES['play-img']) && !empty($_FILES['play-img']['name'])) {
+        $formInputName = 'play-img';
+        $savePath = ABSPATH . '/storage/' . get_option('mediafolder') . '/thumbs'; // Directory to save the image
+        $filename = basename($_FILES['play-img']['name']); // Sanitize the filename to prevent directory traversal
+        $allowedExtArray = array('.jpg', '.png', '.gif');
+        $imageQuality = 100;
+
+        // Validate file extension
+        $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        if (!in_array('.' . $ext, $allowedExtArray)) {
+            die('Invalid file type!');
+        }
+
+        // Validate MIME type (check for image types)
+        $fileType = mime_content_type($_FILES['play-img']['tmp_name']);
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (!in_array($fileType, $allowedMimes)) {
+            die('Invalid file type!');
+        }
+
+        // Generate a unique file name to avoid name collisions
+        $saveName = md5(time() . user_id()) . '.' . $ext;
+
+        // Ensure the file path is within the allowed directory
+        $realPath = realpath($savePath);
+        $targetPath = $savePath . '/' . $saveName;
+
+        // Check if the real path is valid and if the target path is within the allowed directory
+        if ($realPath === false || strpos(realpath($targetPath), $realPath) !== 0) {
+            die('Invalid file path!');
+        }
+
+        // Proceed with the file upload
+        $uploader = new FileUploader($formInputName, $savePath, $saveName, $allowedExtArray);
+        if ($uploader->getIsSuccessful()) {
+            // Resize the image if needed (uncomment if required)
+            //$uploader->resizeImage(380, 240, 'crop');
+            $uploader->saveImage($uploader->getTargetPath(), $imageQuality);
+
+            // Get the final file path after upload
+            $thumb = $uploader->getTargetPath();
+
+            // Remove the base directory path for storage purposes (to store only the relative path)
+            $thumb = str_replace(ABSPATH . '/', '', $thumb);
+        } else {
+            // Fallback image if upload fails
+            $thumb = 'storage/uploads/noimage.png';
+        }
+    } else {
+        // Handle remote image scenario (if applicable)
+        if (checkRemoteFileImage(_post('remote-img'))) {
+            $thumb = _post('remote-img');
+        } else {
+            // Fallback image if no image is found
+            $thumb = 'storage/uploads/noimage.png';
+        }
+    }
+
 //Insert video
 if(_post('media')) {$mt = _post('media');} else {$mt = 1;}
 $token = uniqid();

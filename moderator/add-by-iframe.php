@@ -1,24 +1,46 @@
 <?php if(_post('file') && ($_FILES['play-img'] || _post('remote-img'))) {
 $sec = intval(_post('duration'));
 //if is image upload
-if(isset($_FILES['play-img']) && !empty($_FILES['play-img']['name'])){
-$formInputName   = 'play-img';							
-	$savePath	     = ABSPATH.'/storage/'.get_option('mediafolder').'/thumbs';	
-	$saveName        = md5(time()).'-'.user_id();									
-	$allowedExtArray = array('.jpg', '.png', '.gif');	
-	$imageQuality    = 100;
-$uploader = new FileUploader($formInputName, $savePath, $saveName , $allowedExtArray);
-if ($uploader->getIsSuccessful()) {
-//$uploader -> resizeImage(200, 200, 'crop');
-$uploader -> saveImage($uploader->getTargetPath(), $imageQuality);
-$thumb  = $uploader->getTargetPath();
-$thumbz  = str_replace(ABSPATH.'/' ,'',$thumb);
-} else {
-$thumbz = 'storage/uploads/noimage.png';
-}
-} else {
-$thumbz = toDb($_POST['remote-img']);
-}
+	if (isset($_FILES['play-img']) && !empty($_FILES['play-img']['name'])) {
+		$formInputName   = 'play-img';
+		$savePath        = ABSPATH . '/storage/' . get_option('mediafolder') . '/thumbs';
+		$filename        = basename($_FILES['play-img']['name']); // Sanitized filename
+		$allowedExtArray = array('.jpg', '.png', '.gif');
+		$imageQuality    = 100;
+
+		// Validate file extension
+		$ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+		if (!in_array('.' . $ext, $allowedExtArray)) {
+			die('Invalid file type!');
+		}
+
+		// Validate MIME type
+		$fileType = mime_content_type($_FILES['play-img']['tmp_name']);
+		$allowedMimes = ['image/jpeg', 'image/png', 'image/gif'];
+		if (!in_array($fileType, $allowedMimes)) {
+			die('Invalid file type!');
+		}
+
+		// Generate a unique and safe file name
+		$saveName = md5(time() . user_id()) . '.' . $ext;
+
+		// Ensure the file is saved inside the allowed directory
+		$realPath = realpath($savePath);
+		$targetPath = $savePath . '/' . $saveName;
+
+		if ($realPath === false || strpos(realpath($targetPath), $realPath) !== 0) {
+			die('Invalid file path!');
+		}
+
+		// Proceed with file upload
+		$uploader = new FileUploader($formInputName, $savePath, $saveName, $allowedExtArray);
+		if ($uploader->getIsSuccessful()) {
+			$uploader->saveImage($uploader->getTargetPath(), $imageQuality);
+			$thumb = $uploader->getTargetPath();
+			$changes['thumb'] = toDb(str_replace(ABSPATH . '/', '', $thumb));
+		}
+	}
+
 $thumb = empty($thumbz)? 'storage/uploads/noimage.png' : $thumbz ;
 
 //Insert video

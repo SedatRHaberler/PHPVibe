@@ -560,40 +560,56 @@
 	 </button> 
 	 </div>  
 	 </form> 
-	 </div>  
-	 <?php 
-                   break; 
-               case "new-album":    
-                   
-                   if(isset($_POST['album-name'])) {
-                       $picture ='storage/uploads/noimage.png'; 
-                       $formInputName   = 'album-img';							
-                       $savePath	     = ABSPATH.'/storage/uploads';	
+	 </div>
+             <?php
+             break;
+         case "new-album":
 
-                       $saveName        = md5(time()).'-'.user_id();									
+             if (isset($_POST['album-name'])) {
+                 $picture = 'storage/uploads/noimage.png';
+                 $formInputName = 'album-img';  // This is the name given to the form's file input
+                 $savePath = ABSPATH . '/storage/uploads';  // The folder to save the image
+                 $filename = basename($_FILES['album-img']['name']);  // Sanitize the file name to remove any path info
 
-                       $allowedExtArray = array('.jpg', '.png', '.gif');	
-                       $imageQuality    = 100; 
-                       $uploader = new FileUploader($formInputName, $savePath, $saveName , $allowedExtArray);
-                       if ($uploader->getIsSuccessful()) { 
+                 // Generate a unique file name with the appropriate extension
+                 $saveName = md5(time()) . '-' . user_id() . '.' . strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
-                           $uploader -> resizeImage(200, 200, 'crop'); 
+                 // Allowed file extensions
+                 $allowedExtArray = array('.jpg', '.png', '.gif');
+                 $imageQuality = 100;
 
-                           $uploader -> saveImage($uploader->getTargetPath(), $imageQuality); 
+                 // Validate file extension
+                 $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                 if (!in_array('.' . $ext, $allowedExtArray)) {
+                     die('Invalid file type!');
+                 }
 
-                           $thumb  = $uploader->getTargetPath(); 
+                 // Ensure the file is not a directory traversal attempt
+                 $targetPath = $savePath . '/' . $saveName;
+                 $realPath = realpath($savePath);
+                 if ($realPath === false || strpos(realpath($targetPath), $realPath) !== 0) {
+                     die('Invalid file path!');
+                 }
 
-                           $picture  = str_replace(ABSPATH.'/' ,'',$thumb);
-                       } else { 
-                           $picture  = 'storage/uploads/noimage.png';
-                       }
-                       $db->query("INSERT INTO ".DB_PREFIX."playlists (`ptype`,`owner`, `title`, `picture`, `description`) VALUES (2, '".user_id()."','".toDb($_POST['album-name'])."', '".toDb($picture)."' , '".toDb($_POST['album-desc'])."')");
+                 $uploader = new FileUploader($formInputName, $savePath, $saveName, $allowedExtArray);
+                 if ($uploader->getIsSuccessful()) {
+                     $uploader->resizeImage(200, 200, 'crop');
+                     $uploader->saveImage($uploader->getTargetPath(), $imageQuality);
 
-                       echo ' 
-     <div class="msg-hint mleft20 mright20 mtop20 top10 bottom10">' . htmlspecialchars($_POST['album-name'], ENT_QUOTES, 'UTF-8') . _lang(" created.") . '</div>';
+                     $thumb = $uploader->getTargetPath();
+                     $picture = str_replace(ABSPATH . '/', '', $thumb);  // Store relative path in the database
+                 } else {
+                     $picture = 'storage/uploads/noimage.png';
+                 }
 
-                   } ?> 
-	 <div class="row odet"> 
+                 // Insert album data into the database
+                 $db->query("INSERT INTO " . DB_PREFIX . "playlists (`ptype`,`owner`, `title`, `picture`, `description`) VALUES (2, '" . user_id() . "', '" . toDb($_POST['album-name']) . "', '" . toDb($picture) . "', '" . toDb($_POST['album-desc']) . "')");
+
+                 echo '<div class="msg-hint mleft20 mright20 mtop20 top10 bottom10">' . htmlspecialchars($_POST['album-name'], ENT_QUOTES, 'UTF-8') . _lang(" created.") . '</div>';
+             }
+             ?>
+
+             <div class="row odet">
 	 <form id="validate" action="<?php echo site_url().me;?>?sk=new-album" enctype="multipart/form-data" method="post">       
 	 <div class="control-group">  
 	 <label class="control-label"> <?php echo _lang("Title"); ?>           </label>    

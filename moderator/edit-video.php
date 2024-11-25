@@ -2,22 +2,45 @@
 	$updater = new PHPVibe\Video\VideoUpdate(intval($_POST['edited-video']));
 	// Track changes 
 	$changes = array();
-	
-	if(isset($_FILES['play-img']) && !empty($_FILES['play-img']['name'])){
-		$formInputName   = 'play-img';							# This is the name given to the form's file input
-			$savePath	     = ABSPATH.'/storage/'.get_option('mediafolder').'/thumbs';								# The folder to save the image
-			$saveName        = md5(time()).'-'.user_id();									# Without ext
-			$allowedExtArray = array('.jpg', '.png', '.gif');	# Set allowed file types
-			$imageQuality    = 100;
-		$uploader = new FileUploader($formInputName, $savePath, $saveName , $allowedExtArray);
-		if ($uploader->getIsSuccessful()) {
-			//$uploader -> resizeImage(200, 200, 'crop');
-			$uploader -> saveImage($uploader->getTargetPath(), $imageQuality);
-			$thumb  = $uploader->getTargetPath();
-			$changes['thumb'] = toDb(str_replace(ABSPATH.'/' ,'',$thumb));
-		}
 
-	} else {
+    if (isset($_FILES['play-img']) && !empty($_FILES['play-img']['name'])) {
+        $formInputName   = 'play-img';
+        $savePath        = ABSPATH . '/storage/' . get_option('mediafolder') . '/thumbs';
+        $filename        = basename($_FILES['play-img']['name']); // Sanitized filename
+        $allowedExtArray = array('.jpg', '.png', '.gif');
+        $imageQuality    = 100;
+
+        // Validate file extension
+        $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        if (!in_array('.' . $ext, $allowedExtArray)) {
+            die('Invalid file type!');
+        }
+
+        // Validate MIME type
+        $fileType = mime_content_type($_FILES['play-img']['tmp_name']);
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (!in_array($fileType, $allowedMimes)) {
+            die('Invalid file type!');
+        }
+
+        // Generate unique file name
+        $saveName = md5(time() . user_id()) . '.' . $ext;
+
+        // Ensure safe file path
+        $realPath = realpath($savePath);
+        if ($realPath === false || strpos(realpath($savePath . '/' . $saveName), $realPath) !== 0) {
+            die('Invalid file path!');
+        }
+
+        // Proceed with file upload
+        $uploader = new FileUploader($formInputName, $savePath, $saveName, $allowedExtArray);
+        if ($uploader->getIsSuccessful()) {
+            $uploader->saveImage($uploader->getTargetPath(), $imageQuality);
+            $thumb = $uploader->getTargetPath();
+            $changes['thumb'] = toDb(str_replace(ABSPATH . '/', '', $thumb));
+        }
+    }
+    else {
 		if(not_empty($_POST['remote-img'])) {	
 			//$db->query("UPDATE ".DB_PREFIX."videos SET thumb='".toDb($_POST['remote-img'])."' WHERE id = '".intval($_POST['edited-video'])."'");
 		    $changes['thumb'] = toDb($_POST['remote-img']);

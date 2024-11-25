@@ -1,26 +1,44 @@
 <?php
-if(isset($_POST['play-name'])) {
-if($_FILES['play-img']){
-$formInputName   = 'play-img';							# This is the name given to the form's file input
-	$savePath	     = ABSPATH.'/storage/uploads';								# The folder to save the image
-	$saveName        = md5(time()).'-'.user_id();									# Without ext
-	$allowedExtArray = array('.jpg', '.png', '.gif');	# Set allowed file types
-	$imageQuality    = 100;
-$uploader = new FileUploader($formInputName, $savePath, $saveName , $allowedExtArray);
-if ($uploader->getIsSuccessful()) {
-//$uploader -> resizeImage(200, 200, 'crop');
-$uploader -> saveImage($uploader->getTargetPath(), $imageQuality);
-$thumb  = $uploader->getTargetPath();
-$picture  = str_replace(ABSPATH.'/' ,'',$thumb);
-	$db->query("UPDATE  ".DB_PREFIX."playlists SET picture='".toDb($picture)."' WHERE id= '".intval($_GET['id'])."'");
-	}
-}	
+global $db;
+if (isset($_POST['play-name'])) {
+    if ($_FILES['play-img']) {
+        $formInputName = 'play-img';  // This is the name given to the form's file input
+        $savePath = ABSPATH . '/storage/uploads';  // The folder to save the image
+        $filename = basename($_FILES['play-img']['name']);  // Sanitize the file name
+        $saveName = md5(time()) . '-' . user_id() . '.' . strtolower(pathinfo($filename, PATHINFO_EXTENSION));  // Generate a unique file name with extension
+        $allowedExtArray = array('.jpg', '.png', '.gif');  // Set allowed file types
+        $imageQuality = 100;
 
-$db->query("UPDATE ".DB_PREFIX."playlists SET title ='".toDb($_POST['play-name'])."', description = '".toDb($_POST['play-desc'])."' WHERE id= '".intval($_GET['id'])."'");
+        // Validate file extension
+        $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        if (!in_array('.' . $ext, $allowedExtArray)) {
+            die('Invalid file type!');
+        }
+
+        // Ensure the file is not a directory traversal attempt
+        $targetPath = $savePath . '/' . $saveName;
+        $realPath = realpath($savePath);
+        if ($realPath === false || strpos(realpath($targetPath), $realPath) !== 0) {
+            die('Invalid file path!');
+        }
+
+        $uploader = new FileUploader($formInputName, $savePath, $saveName, $allowedExtArray);
+        if ($uploader->getIsSuccessful()) {
+            $uploader->saveImage($uploader->getTargetPath(), $imageQuality);
+            $thumb = $uploader->getTargetPath();
+            $picture = str_replace(ABSPATH . '/', '', $thumb);  // Store the relative file path in the database
+
+            // Update database with the new picture path
+            $db->query("UPDATE " . DB_PREFIX . "playlists SET picture='" . toDb($picture) . "' WHERE id= '" . intval($_GET['id']) . "'");
+        }
+    }
+
+    // Update other playlist details in the database
+    $db->query("UPDATE " . DB_PREFIX . "playlists SET title ='" . toDb($_POST['play-name']) . "', description = '" . toDb($_POST['play-desc']) . "' WHERE id = '" . intval($_GET['id']) . "'");
 
     echo '<div class="msg-info">Playlist ' . htmlspecialchars($_POST['play-name'], ENT_QUOTES, 'UTF-8') . ' updated</div>';
-
 }
+
 $ch = $db->get_row("SELECT * FROM ".DB_PREFIX."playlists where id ='".intval($_GET['id'])."'");
 if($ch) {
 ?>
