@@ -37,6 +37,7 @@ $sec = _tSec(_post('hours').":"._post('minutes').":"._post('seconds'));
         $formInputName = 'play-img';
         $savePath = ABSPATH . '/storage/' . get_option('mediafolder') . '/thumbs'; // Directory to save the image
         $filename = basename($_FILES['play-img']['name']); // Sanitize the filename to prevent directory traversal
+        $filename = preg_replace('/[^a-zA-Z0-9-_\.]/', '', $filename); // Allow only safe characters
         $allowedExtArray = array('.jpg', '.png', '.gif');
         $imageQuality = 100;
 
@@ -53,6 +54,12 @@ $sec = _tSec(_post('hours').":"._post('minutes').":"._post('seconds'));
             die('Invalid file type!');
         }
 
+        // Validate file size
+        $maxFileSize = 5 * 1024 * 1024; // 5MB
+        if ($_FILES['play-img']['size'] > $maxFileSize) {
+            die('File is too large!');
+        }
+
         // Generate a unique file name to avoid name collisions
         $saveName = md5(time() . user_id()) . '.' . $ext;
 
@@ -65,18 +72,14 @@ $sec = _tSec(_post('hours').":"._post('minutes').":"._post('seconds'));
             die('Invalid file path!');
         }
 
-        // Proceed with the file upload
-        $uploader = new FileUploader($formInputName, $savePath, $saveName, $allowedExtArray);
-        if ($uploader->getIsSuccessful()) {
-            // Resize the image if needed (uncomment if required)
-            //$uploader->resizeImage(380, 240, 'crop');
-            $uploader->saveImage($uploader->getTargetPath(), $imageQuality);
+        // Proceed with the file upload using move_uploaded_file() for better security
+        if (move_uploaded_file($_FILES['play-img']['tmp_name'], $targetPath)) {
+            // File upload was successful
+            // Optionally, you can resize the image here if needed
+            // Resize logic here (optional)
 
-            // Get the final file path after upload
-            $thumb = $uploader->getTargetPath();
-
-            // Remove the base directory path for storage purposes (to store only the relative path)
-            $thumb = str_replace(ABSPATH . '/', '', $thumb);
+            $thumb = $targetPath;
+            $thumb = str_replace(ABSPATH . '/', '', $thumb); // Remove the base directory path for storage
         } else {
             // Fallback image if upload fails
             $thumb = 'storage/uploads/noimage.png';
