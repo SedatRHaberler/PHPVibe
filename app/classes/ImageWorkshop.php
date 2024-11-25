@@ -40,41 +40,36 @@ class FileUploader {
      * @param string $name Overwrites the name of the file.
      */
     public function handleUpload($uploadDirectory, $name = null){
-
+        // Check if the chunks folder is writable and perform garbage collection with probability
         if (is_writable($this->chunksFolder) &&
             1 == mt_rand(1, 1/$this->chunksCleanupProbability)){
-
             // Run garbage collection
             $this->cleanupChunks();
         }
 
-        // Check that the max upload size specified in class configuration does not
-        // exceed size allowed by server config
+        // Check server configurations for upload size limits
         if ($this->toBytes(ini_get('post_max_size')) < $this->sizeLimit ||
             $this->toBytes(ini_get('upload_max_filesize')) < $this->sizeLimit){
             $size = max(1, $this->sizeLimit / 1024 / 1024) . 'M';
             return array('error'=>"Server error. Increase post_max_size and upload_max_filesize to ".$size);
         }
 
-		// is_writable() is not reliable on Windows (http://www.php.net/manual/en/function.is-executable.php#111146)
-		// The following tests if the current OS is Windows and if so, merely checks if the folder is writable;
-		// otherwise, it checks additionally for executable status (like before).
-		
-		$isWin = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
-		$folderInaccessible = ($isWin) ? !is_writable($uploadDirectory) : ( !is_writable($uploadDirectory) || !is_executable($uploadDirectory) );
+        // Ensure the directory is writable and executable
+        $isWin = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
+        $folderInaccessible = ($isWin) ? !is_writable($uploadDirectory) : ( !is_writable($uploadDirectory) || !is_executable($uploadDirectory) );
 
         if ($folderInaccessible){
-            return array('error' => "Server error. Uploads directory isn't writable" . (!$isWin) ? " or executable." : ".");
+            return array('error' => "Server error. Uploads directory isn't writable" . (!$isWin ? " or executable." : "."));
         }
 
+        // Ensure the upload request is valid
         if(!isset($_SERVER['CONTENT_TYPE'])) {
             return array('error' => "No files were uploaded.");
         } else if (strpos(strtolower($_SERVER['CONTENT_TYPE']), 'multipart/') !== 0){
             return array('error' => "Server error. Not a multipart request. Please set forceMultipart to default value (true).");
         }
 
-        // Get size and name
-
+        // Get file details from the request
         $file = $_FILES[$this->inputName];
         $size = $file['size'];
 
@@ -82,13 +77,10 @@ class FileUploader {
             $name = $this->getName();
         }
 
-        // Validate name
-
+        // Validate name and file size
         if ($name === null || $name === ''){
             return array('error' => 'File name empty.');
         }
-
-        // Validate file size
 
         if ($size == 0){
             return array('error' => 'File is empty.');
@@ -99,7 +91,6 @@ class FileUploader {
         }
 
         // Validate file extension
-
         $pathinfo = pathinfo($name);
         $ext = isset($pathinfo['extension']) ? $pathinfo['extension'] : '';
 
@@ -108,39 +99,44 @@ class FileUploader {
             return array('error' => 'File has an invalid extension, it should be one of '. $these . '.');
         }
 
-        // Save a chunk
-
+        // Handle chunked uploads
         $totalParts = isset($_REQUEST['qqtotalparts']) ? (int)$_REQUEST['qqtotalparts'] : 1;
 
         if ($totalParts > 1){
 
             $chunksFolder = $this->chunksFolder;
             $partIndex = (int)$_REQUEST['qqpartindex'];
-            $uuid = $_REQUEST['qquuid'];
+            // Sanitize UUID to prevent directory traversal
+            $uuid = basename($_REQUEST['qquuid']); // Ensures no path traversal characters like "../"
 
             if (!is_writable($chunksFolder) && !is_executable($uploadDirectory)){
                 return array('error' => "Server error. Chunks directory isn't writable or executable.");
             }
 
-            $targetFolder = $this->chunksFolder.DIRECTORY_SEPARATOR.$uuid;
-
-            if (!file_exists($targetFolder)){
-                mkdir($targetFolder);
+            // Ensure that the final path is within the allowed upload directory
+            $targetFolder = realpath($this->chunksFolder . DIRECTORY_SEPARATOR . $uuid);
+            if (strpos($targetFolder, realpath($this->chunksFolder)) !== 0) {
+                return array('error' => "Invalid target folder.");
             }
 
-            $target = $targetFolder.'/'.$partIndex;
+            if (!file_exists($targetFolder)){
+                mkdir($targetFolder, 0755, true); // Ensure permissions and create directories if necessary
+            }
+
+            $target = $targetFolder . '/' . $partIndex;
             $success = move_uploaded_file($_FILES[$this->inputName]['tmp_name'], $target);
 
             // Last chunk saved successfully
-            if ($success AND ($totalParts-1 == $partIndex)){
+            if ($success AND ($totalParts - 1 == $partIndex)){
 
                 $target = $this->getUniqueTargetPath($uploadDirectory, $name);
                 $this->uploadName = basename($target);
 
                 $target = fopen($target, 'wb');
 
-                for ($i=0; $i<$totalParts; $i++){
-                    $chunk = fopen($targetFolder.DIRECTORY_SEPARATOR.$i, "rb");
+                // Combine all chunks
+                for ($i = 0; $i < $totalParts; $i++){
+                    $chunk = fopen($targetFolder . DIRECTORY_SEPARATOR . $i, "rb");
                     stream_copy_to_stream($chunk, $target);
                     fclose($chunk);
                 }
@@ -148,20 +144,20 @@ class FileUploader {
                 // Success
                 fclose($target);
 
-                for ($i=0; $i<$totalParts; $i++){
-                    unlink($targetFolder.DIRECTORY_SEPARATOR.$i);
+                // Clean up chunk files
+                for ($i = 0; $i < $totalParts; $i++){
+                    unlink($targetFolder . DIRECTORY_SEPARATOR . $i);
                 }
 
                 rmdir($targetFolder);
 
                 return array("success" => true);
-
             }
 
             return array("success" => true);
 
         } else {
-
+            // Handle single file upload
             $target = $this->getUniqueTargetPath($uploadDirectory, $name);
 
             if ($target){
@@ -176,6 +172,8 @@ class FileUploader {
                 'The upload was cancelled, or server error encountered');
         }
     }
+
+
 
     /**
      * Returns a path to use with this upload. Check that the name does not exist,
