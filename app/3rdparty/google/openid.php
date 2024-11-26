@@ -310,7 +310,7 @@ class LightOpenID
             throw new ErrorException('Path traversal detected.');
         }
 
-        // If it's a local file (scheme is 'file'), ensure it's within a safe directory
+        // Step 4: Prevent unsafe file access (for 'file' scheme URLs)
         if (isset($parsed_url['scheme']) && $parsed_url['scheme'] === 'file') {
             $resolved_path = realpath($parsed_url['path']);
             if ($resolved_path === false || strpos($resolved_path, '/allowed/directory') !== 0) {
@@ -318,7 +318,16 @@ class LightOpenID
             }
         }
 
-        // Step 4: Continue with your normal request logic (GET, POST, etc.)
+        // Step 5: Prevent Path Traversal in query parameters (if any)
+        if (!empty($params)) {
+            foreach ($params as $key => $value) {
+                if (preg_match('/\.\.\/|\.\.\\\/', $value)) {
+                    throw new ErrorException('Invalid parameter value for ' . $key . '. Path traversal detected.');
+                }
+            }
+        }
+
+        // Step 6: Continue with your normal request logic (GET, POST, etc.)
         switch ($method) {
             case 'GET':
                 $opts = array(
@@ -354,10 +363,11 @@ class LightOpenID
             ));
         }
 
-        // Step 5: Make the request
+        // Step 7: Make the request
         $context = stream_context_create($opts);
         return file_get_contents($url, false, $context);
     }
+
 
 
     protected function build_url($url, $parts)

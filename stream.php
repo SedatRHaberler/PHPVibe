@@ -19,20 +19,24 @@ exit("Something is wrong");
 $file = $path . $filename;
 /* End compatibility */
 } else if(isset($_GET["sk"])) {
-/* PHPVibe 5 file calls */
-$media = 'media'; /* Edit this if changed from admin */	
-if (strpos('.',$_GET["sk"])!==false) {
-exit("Something is wrong");
-}
-if(!isset($_GET["q"]) || (intval($_GET["q"]) < 1)) { $q = "";} else {$q = $_GET["q"]; }
-$ext = '.mp4';
+    /* PHPVibe 5 file calls */
+    $media = 'media'; /* Edit this if changed from admin */
+    if (strpos('.', $_GET["sk"]) !== false) {
+        exit("Something is wrong");
+    }
+    if (!isset($_GET["q"]) || (intval($_GET["q"]) < 1)) {
+        $q = "";
+    } else {
+        $q = $_GET["q"];
+    }
+    $ext = '.mp4';
 // Validate the 'sk' parameter to allow only alphanumeric characters and dashes/underscores
     if (!preg_match('/^[a-zA-Z0-9_-]+$/', $_GET["sk"])) {
         die('{"jsonrpc" : "2.0", "error" : {"code": 400, "message": "Invalid input."}, "id" : "id"}');
     }
 
 // Sanitize file path and name
-    $file = ABSPATH.'/storage/'.$media.'/'.$_GET["sk"].$ext;
+    $file = ABSPATH . '/storage/' . $media . '/' . $_GET["sk"] . $ext;
 
 // Sanitize filename to prevent XSS
     $filename = basename($file);
@@ -41,23 +45,26 @@ $ext = '.mp4';
 // Ensure file exists and extension is valid
     if (isset($file) && is_file($file)) {
         $allowedMimeTypes = ['mp4', 'ogg', 'webm'];
-        $ext = pathinfo($file, PATHINFO_EXTENSION);
-        $ext = strtolower($ext);
+        $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 
         if (!in_array($ext, $allowedMimeTypes)) {
             die('{"jsonrpc" : "2.0", "error" : {"code": 400, "message": "Invalid video format."}, "id" : "id"}');
         }
 
+        // Sanitize the filename for output
+        $safeFilename = basename($file);
+
         // Further headers and file handling
         header("Content-Type: video/$ext");
+        header('Content-Disposition: inline; filename="' . htmlspecialchars($safeFilename, ENT_QUOTES, 'UTF-8') . '"');
+        header('Accept-Ranges: bytes');
+
         // Handle byte-range requests for streaming
         if (isset($_SERVER['HTTP_RANGE'])) {
             rangeDownload($file);
         } else {
             $filesize = filesize($file);
             header('Content-Length: ' . $filesize);
-            header('Content-Disposition: attachment; filename="' . $filename . '"');
-            header('Accept-Ranges: bytes');
 
             // Open and read the file in chunks
             $handle = fopen($file, "rb");
@@ -66,15 +73,16 @@ $ext = '.mp4';
             }
 
             while (!feof($handle)) {
-                echo fread($handle, 8192);
+                echo fread($handle, 8192); // Binary output
                 ob_flush();
                 flush();
             }
-        fclose($handle);
-        exit;
-    }}
-} else {
-    die('{"jsonrpc" : "2.0", "error" : {"code": 404, "message": "File not found."}, "id" : "id"}');
+            fclose($handle);
+            exit;
+        }
+    } else {
+        die('{"jsonrpc" : "2.0", "error" : {"code": 404, "message": "File not found."}, "id" : "id"}');
+    }
 }
 
 
@@ -84,6 +92,17 @@ function rangeDownload($file): void
     if (!is_file($file)) {
         header('HTTP/1.1 404 Not Found');
         die('{"jsonrpc" : "2.0", "error" : {"code": 404, "message": "File not found."}, "id" : "id"}');
+    }
+
+    // Validate file type with MIME detection
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mimeType = finfo_file($finfo, $file);
+    finfo_close($finfo);
+
+    $allowedMimeTypes = ['video/mp4', 'video/webm', 'video/ogg'];
+    if (!in_array($mimeType, $allowedMimeTypes)) {
+        header('HTTP/1.1 403 Forbidden');
+        die('{"jsonrpc" : "2.0", "error" : {"code": 403, "message": "Forbidden file type."}, "id" : "id"}');
     }
 
     // Open the file safely
@@ -116,7 +135,7 @@ function rangeDownload($file): void
             exit;
         }
 
-        // Handle ranges (e.g. "bytes=500-999")
+        // Handle ranges (e.g., "bytes=500-999")
         if ($range[0] === '-') {
             // Last n bytes requested (e.g., "-500")
             $c_start = $size - substr($range, 1);
@@ -146,10 +165,10 @@ function rangeDownload($file): void
     $safeFileName = htmlspecialchars(basename($file), ENT_QUOTES, 'UTF-8');
 
     // Send headers
+    header("Content-Type: $mimeType");
     header("Content-Range: bytes $start-$end/$size");
     header("Content-Length: $length");
     header('Content-Disposition: attachment; filename="' . $safeFileName . '"');
-    header('Accept-Ranges: bytes');
 
     // Clean the output buffer to prevent any previous output from interfering with the binary data
     ob_clean();  // Clean (erase) the output buffer

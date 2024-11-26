@@ -276,17 +276,43 @@ function update_option($option_name, $newvalue)
 function add_option($name, $value = '')
 {
     global $db;
-    $safe_name = escape($name);
-// Make sure the option doesn't already exist
-    if (false !== get_option($safe_name))
+
+    // Escape values
+    $safe_name = $db->escape($name);
+    $_value = $db->escape(maybe_serialize($value));
+
+    // Ensure the option doesn't already exist
+    if (false !== get_option($safe_name)) {
         return;
-    $_value = escape(maybe_serialize($value));
-//do_action( 'add_option', $safe_name, $_value );
-    $db->query("INSERT INTO  " . DB_PREFIX . "options (`option_name`, `option_value`) VALUES ('$name', '$_value')");
-    /* Clear cache file */
-    jc_destroy(get_options_filename());
+    }
+
+    // Prepare the SQL query
+    $query = "INSERT INTO " . DB_PREFIX . "options (`option_name`, `option_value`) VALUES (?, ?)";
+
+    // Access the underlying MySQLi connection via the `dbh` property
+    $mysqli = $db->dbh;
+
+    // Prepare the statement using mysqli
+    if ($stmt = $mysqli->prepare($query)) {
+        // Bind the parameters
+        $stmt->bind_param('ss', $safe_name, $_value);  // 'ss' means both are strings
+        // Execute the statement
+        $stmt->execute();
+
+        // Clear cache file
+        jc_destroy(get_options_filename());
+
+        // Close the statement
+        $stmt->close();
+    } else {
+        // Handle error if preparation fails
+        error_log("Failed to prepare SQL statement: " . $mysqli->error);
+    }
+
     return;
 }
+
+
 
 /**
  * Delete an option from the DB
@@ -562,13 +588,18 @@ function add_language($code, $value = ''): void
 function delete_language($name)
 {
     global $db;
-    $name = escape($name);
-// Get the ID, if no ID then return
-    $language = $db->get_row("SELECT term_id FROM  " . DB_PREFIX . "languages WHERE `lang_code` = '$name'");
-    if (is_null($language) || !$language->term_id)
+    $name = $db->escape($name);  // Properly escape user input.
+
+    // Get the ID with proper sanitization
+    $language = $db->get_row("SELECT term_id FROM " . DB_PREFIX . "languages WHERE `lang_code` = '$name'");
+
+    if (is_null($language) || !$language->term_id) {
         return false;
-//do_action( 'delete_language', $lang_code );
-    $db->query("DELETE FROM  " . DB_PREFIX . "languages WHERE `lang_code` = '$name'");
+    }
+
+    // Delete language using the same escaped $name
+    $db->query("DELETE FROM " . DB_PREFIX . "languages WHERE `lang_code` = '$name'");
+
     return true;
 }
 
