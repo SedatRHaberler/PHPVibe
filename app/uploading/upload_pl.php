@@ -65,63 +65,63 @@ if (!file_exists($targetDir)) {
 	@mkdir($targetDir);
 }
 
-// Get a file name
+// Get and sanitize the file name
 if (isset($_REQUEST["name"])) {
-	$fileName = $_REQUEST["name"];
+    $fileName = basename($_REQUEST["name"]); // Remove any path information
 } elseif (!empty($_FILES)) {
-	$fileName = $_FILES["file"]["name"];
+    $fileName = basename($_FILES["file"]["name"]); // Remove any path information
 } else {
-	$fileName = uniqid("file_");
+    $fileName = uniqid("file_");
 }
-  if(is_insecure_file(strtolower($fileName))){
-die('{"jsonrpc" : "2.0", "error" : {"code": 107, "message": "'._lang("Insecure file detected! This file has an high chance of being an hacking attempt!").'"}, "id" : "id"}');
-  
-  }
+
+// Check for insecure file types
+if (is_insecure_file(strtolower($fileName))) {
+    die('{"jsonrpc" : "2.0", "error" : {"code": 107, "message": "Insecure file detected!"}, "id" : "id"}');
+}
+
+// Define file paths securely
+$targetDir = realpath($targetDir);
+if ($targetDir === false) {
+    die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Invalid target directory."}, "id" : "id"}');
+}
+
 $filePath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
-$ext = substr($fileName, strrpos($fileName, '.') + 1);
-$targetPath = $targetDir . DIRECTORY_SEPARATOR . $token.'.'.$ext;;
-// Chunking might be enabled
-$chunk = isset($_REQUEST["chunk"]) ? intval($_REQUEST["chunk"]) : 0;
-$chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
+$ext = pathinfo($fileName, PATHINFO_EXTENSION);
+$targetPath = $targetDir . DIRECTORY_SEPARATOR . htmlspecialchars($token, ENT_QUOTES, 'UTF-8') . '.' . $ext;
 
+// Ensure paths stay within the allowed directory
+if (strpos(realpath($filePath), $targetDir) !== 0 || strpos(realpath($targetPath), $targetDir) !== 0) {
+    die('{"jsonrpc" : "2.0", "error" : {"code": 108, "message": "Invalid file path."}, "id" : "id"}');
+}
 
-// Remove old temp files	
-if ($cleanupTargetDir) {
-	if (!is_dir($targetDir) || !$dir = opendir($targetDir)) {
-		die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
-	}
-
-	while (($file = readdir($dir)) !== false) {
-		$tmpfilePath = $targetDir . DIRECTORY_SEPARATOR . $file;
-
-		// If temp file is current file proceed to the next
-		if ($tmpfilePath == "{$filePath}.part") {
-			continue;
-		}
-
-		// Remove temp file if it is older than the max age and is not the current file
-		if (preg_match('/\.part$/', $file) && (filemtime($tmpfilePath) < time() - $maxFileAge)) {
-			@unlink($tmpfilePath);
-		}
-	}
-	closedir($dir);
-}	
-
+// Remove old temp files securely
+if ($cleanupTargetDir && is_dir($targetDir)) {
+    foreach (glob($targetDir . DIRECTORY_SEPARATOR . '*.part') as $tmpfilePath) {
+        if ($tmpfilePath !== "{$filePath}.part" && filemtime($tmpfilePath) < time() - $maxFileAge) {
+            @unlink($tmpfilePath);
+        }
+    }
+}
 
 // Open temp file
 if (!$out = @fopen("{$filePath}.part", $chunks ? "ab" : "wb")) {
-	die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
+    die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
 }
 
 extracted($out);
 
-// Check if file has been uploaded
+// Check if file upload is complete
 if (!$chunks || $chunk == $chunks - 1) {
-	// Strip the temp .part suffix off 
-	rename("{$filePath}.part", $filePath);
+    if (!rename("{$filePath}.part", $filePath)) {
+        die('{"jsonrpc" : "2.0", "error" : {"code": 109, "message": "Failed to finalize file upload."}, "id" : "id"}');
+    }
 }
-//Insert and rename
-rename($filePath,$targetPath);
-vinsert($token.'.'.$ext);
-// Return Success JSON-RPC response
+
+// Safely rename and insert
+if (!rename($filePath, $targetPath)) {
+    die('{"jsonrpc" : "2.0", "error" : {"code": 110, "message": "Failed to move uploaded file."}, "id" : "id"}');
+}
+vinsert($token . '.' . $ext);
+
+// Return success response
 die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');

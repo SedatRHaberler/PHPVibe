@@ -150,7 +150,7 @@
 		
 		//$output .= '<li> Page '.$this->current.' from '.$this->page_numbers().'</li>';
 		$output .= '</ul></div>';
-		echo $output;
+		echo htmlspecialchars($output);
 	}
 	}
 }

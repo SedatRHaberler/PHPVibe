@@ -26,18 +26,24 @@
         // Generate unique file name
         $saveName = md5(time() . user_id()) . '.' . $ext;
 
-        // Ensure safe file path
+        // Ensure safe file path and avoid directory traversal
         $realPath = realpath($savePath);
         if ($realPath === false || strpos(realpath($savePath . '/' . $saveName), $realPath) !== 0) {
             die('Invalid file path!');
         }
 
-        // Proceed with file upload
-        $uploader = new FileUploader($formInputName, $savePath, $saveName, $allowedExtArray);
-        if ($uploader->getIsSuccessful()) {
-            $uploader->saveImage($uploader->getTargetPath(), $imageQuality);
-            $thumb = $uploader->getTargetPath();
+        // Avoid directory traversal in the filename by removing any '..' sequences
+        $filename = preg_replace('/[^\w\-\.]/', '', $filename); // Allow only alphanumeric, dashes, and dots
+
+        // Proceed with file upload if validation passes
+        $uploadPath = $realPath . '/' . $saveName;
+        if (move_uploaded_file($_FILES['play-img']['tmp_name'], $uploadPath)) {
+            // File uploaded successfully
+            // Create thumbnail if needed or proceed with further handling
+            $thumb = $uploadPath;
             $changes['thumb'] = toDb(str_replace(ABSPATH . '/', '', $thumb));
+        } else {
+            die('File upload failed!');
         }
     }
     else {

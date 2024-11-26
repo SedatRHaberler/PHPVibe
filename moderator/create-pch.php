@@ -31,6 +31,20 @@ if (isset($_POST['play-name'])) {
     // Initialize file uploader class
     $uploader = new FileUploader($formInputName, $savePath, $saveName, $allowedExtArray);
 
+// Sanitize file name and check for path traversal
+    $filename = basename($_FILES['play-img']['name']);  // Ensure it's a simple file name
+    $filename = preg_replace('/[^a-zA-Z0-9\-_\.]/', '', $filename); // Remove any unwanted characters
+
+// Use a unique name for the uploaded file
+    $saveName = md5(time() . user_id()) . '.' . strtolower(pathinfo($filename, PATHINFO_EXTENSION));  // Unique, sanitized file name
+
+// Ensure the upload path is within the designated directory
+    $realSavePath = realpath($savePath);
+    if ($realSavePath === false || strpos(realpath($savePath . '/' . $saveName), $realSavePath) !== 0) {
+        die('Invalid file path or path traversal detected!');
+    }
+
+// Proceed with file upload
     if ($uploader->getIsSuccessful()) {
         // Optionally resize image
         //$uploader->resizeImage(200, 200, 'crop');
@@ -40,11 +54,12 @@ if (isset($_POST['play-name'])) {
 
         // Retrieve the target path and sanitize it for safe database storage
         $thumb = $uploader->getTargetPath();
-        $picture = str_replace(ABSPATH . '/', '', $thumb); // Remove the base path for storage
+        $picture = str_replace(ABSPATH . '/', '', $thumb);  // Remove the base path for storage
     } else {
         echo "File upload failed.";  // User-friendly error message
         exit;
     }
+
 
     // Proceed with the rest of your logic, such as storing the picture path in the database
     // Example: $db->query("UPDATE table SET picture='" . toDb($picture) . "' WHERE ...");

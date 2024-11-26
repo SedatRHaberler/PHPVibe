@@ -34,141 +34,128 @@ $file = ABSPATH.'/storage/'.$media.'/'.$_GET["sk"].'-'.$q.$ext;
 /* End PHPVibe 5 File finder */
 }
 
-if (is_file($file)) {
-    // Sanitize file extension and mime type
+if (isset($file) && is_file($file)) {
+    // Sanitize file extension and validate video formats
+    $allowedMimeTypes = ['mp4', 'ogg', 'webm']; // Allowed file formats
     $ext = pathinfo($file, PATHINFO_EXTENSION);
-    $mime_type = str_replace(array(".","ogv"), array("","ogg"), $ext);
+    $ext = strtolower($ext); // Normalize extension to lowercase
 
-    // Ensure valid mime type
-    if (!in_array($mime_type, ['mp4', 'ogg', 'webm'])) {
+    if (!in_array($ext, $allowedMimeTypes)) {
         die('{"jsonrpc" : "2.0", "error" : {"code": 400, "message": "Invalid video format."}, "id" : "id"}');
     }
 
-    header("Content-type: video/$mime_type");
+    header("Content-Type: video/$ext");
 
     // Handle byte-range requests (for streaming)
     if (isset($_SERVER['HTTP_RANGE'])) {
         rangeDownload($file);
     } else {
         // Send headers for regular download
-        header('Content-Length: ' . filesize($file));
-        header("Content-Type: application/octet-stream");
+        $filesize = filesize($file);
+        $filename = basename($file); // Extract safe filename
+        $filename = htmlspecialchars($filename, ENT_QUOTES, 'UTF-8'); // Sanitize filename
 
-        // Sanitize filename
-        $filename = basename($file);  // Remove path info to get the filename
-        $filename = htmlspecialchars($filename, ENT_QUOTES, 'UTF-8');  // Sanitize filename
-
+        header('Content-Length: ' . $filesize);
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         header('Accept-Ranges: bytes');
 
-        // Open the file safely and output its contents
+        // Open and read the file in chunks
         $handle = fopen($file, "rb");
         if ($handle === false) {
             die('{"jsonrpc" : "2.0", "error" : {"code": 500, "message": "Error reading the file."}, "id" : "id"}');
         }
 
         while (!feof($handle)) {
-            echo htmlspecialchars(fread($handle, 8192), ENT_QUOTES, 'UTF-8');
+            echo fread($handle, 8192); // Directly output the file chunk
+            ob_flush(); // Ensure the output buffer is flushed
+            flush();    // Send to the client
         }
+
         fclose($handle);
         exit;
     }
 } else {
- 
-	// some error...
- 
+    die('{"jsonrpc" : "2.0", "error" : {"code": 404, "message": "File not found."}, "id" : "id"}');
 }
- 
+
+
 function rangeDownload($file) {
- 
-	$fp = @fopen($file, 'rb');
- 
-	$size   = filesize($file); // File size
-	$length = $size;           // Content length
-	$start  = 0;               // Start byte
-	$end    = $size - 1;       // End byte
-	// Now that we've gotten so far without errors we send the accept range header
-	/* At the moment we only support single ranges.
-	 * Multiple ranges requires some more work to ensure it works correctly
-	 * and comply with the spesifications: http://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html#sec19.2
-	 *
-	 * Multirange support annouces itself with:
-	 * header('Accept-Ranges: bytes');
-	 *
-	 * Multirange content must be sent with multipart/byteranges mediatype,
-	 * (mediatype = mimetype)
-	 * as well as a boundry header to indicate the various chunks of data.
-	 */
-	header("Accept-Ranges: 0-$length");
-	// header('Accept-Ranges: bytes');
-	// multipart/byteranges
-	// http://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html#sec19.2
-	if (isset($_SERVER['HTTP_RANGE'])) {
- 
-		$c_start = $start;
-		$c_end   = $end;
-		// Extract the range string
-		list(, $range) = explode('=', $_SERVER['HTTP_RANGE'], 2);
-		// Make sure the client hasn't sent us a multibyte range
-		if (strpos($range, ',') !== false) {
- 
-			// (?) Shoud this be issued here, or should the first
-			// range be used? Or should the header be ignored and
-			// we output the whole content?
-			header('HTTP/1.1 416 Requested Range Not Satisfiable');
-			header("Content-Range: bytes $start-$end/$size");
-			// (?) Echo some info to the client?
-			exit;
-		}
-		// If the range starts with an '-' we start from the beginning
-		// If not, we forward the file pointer
-		// And make sure to get the end byte if spesified
-		if ($range0 == '-') {
- 
-			// The n-number of the last bytes is requested
-			$c_start = $size - substr($range, 1);
-		}
-		else {
- 
-			$range  = explode('-', $range);
-			$c_start = $range[0];
-			$c_end   = (isset($range[1]) && is_numeric($range[1])) ? $range[1] : $size;
-		}
-		/* Check the range and make sure it's treated according to the specs.
-		 * http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
-		 */
-		// End bytes can not be larger than $end.
-		$c_end = ($c_end > $end) ? $end : $c_end;
-		// Validate the requested range and return an error if it's not correct.
-		if ($c_start > $c_end || $c_start > $size - 1 || $c_end >= $size) {
- 
-			header('HTTP/1.1 416 Requested Range Not Satisfiable');
-			header("Content-Range: bytes $start-$end/$size");
-			// (?) Echo some info to the client?
-			exit;
-		}
-		$start  = $c_start;
-		$end    = $c_end;
-		$length = $end - $start + 1; // Calculate new content length
-		fseek($fp, $start);
-		header('HTTP/1.1 206 Partial Content');
-	}
-	// Notify the client the byte range we'll be outputting
-	header("Content-Range: bytes $start-$end/$size");
-	header("Content-Length: $length");
-
-    $buffer = 1024 * 8;
-    while(!feof($fp) && ($p = ftell($fp)) <= $end) {
-        if ($p + $buffer > $end) {
-            $buffer = $end - $p + 1;
-        }
-        set_time_limit(0); // Reset time limit for big files
-
-        // Sanitize the output to prevent XSS
-        echo htmlspecialchars(fread($fp, $buffer), ENT_QUOTES, 'UTF-8');
-        flush(); // Free up memory
+    // Ensure the file exists and is a regular file
+    if (!is_file($file)) {
+        header('HTTP/1.1 404 Not Found');
+        die('{"jsonrpc" : "2.0", "error" : {"code": 404, "message": "File not found."}, "id" : "id"}');
     }
- 
-	fclose($fp);
- 
+
+    // Open the file safely
+    $fp = @fopen($file, 'rb');
+    if (!$fp) {
+        header('HTTP/1.1 500 Internal Server Error');
+        die('{"jsonrpc" : "2.0", "error" : {"code": 500, "message": "Unable to open file."}, "id" : "id"}');
+    }
+
+    $size = filesize($file); // File size
+    $length = $size;         // Content length
+    $start = 0;              // Start byte
+    $end = $size - 1;        // End byte
+
+    header("Accept-Ranges: bytes");
+
+    if (isset($_SERVER['HTTP_RANGE'])) {
+        $c_start = $start;
+        $c_end = $end;
+
+        // Extract the range string
+        list(, $range) = explode('=', $_SERVER['HTTP_RANGE'], 2);
+
+        // Ensure no multibyte ranges
+        if (strpos($range, ',') !== false) {
+            header('HTTP/1.1 416 Requested Range Not Satisfiable');
+            header("Content-Range: bytes $start-$end/$size");
+            fclose($fp);
+            exit;
+        }
+
+        // Handle ranges
+        if ($range[0] === '-') {
+            // Last n bytes requested
+            $c_start = $size - substr($range, 1);
+        } else {
+            $range = explode('-', $range);
+            $c_start = (int)$range[0];
+            $c_end = isset($range[1]) && is_numeric($range[1]) ? (int)$range[1] : $size - 1;
+        }
+
+        // Validate the range
+        if ($c_start > $c_end || $c_start > $size - 1 || $c_end >= $size) {
+            header('HTTP/1.1 416 Requested Range Not Satisfiable');
+            header("Content-Range: bytes $start-$end/$size");
+            fclose($fp);
+            exit;
+        }
+
+        $start = $c_start;
+        $end = $c_end;
+        $length = $end - $start + 1;
+
+        fseek($fp, $start);
+        header('HTTP/1.1 206 Partial Content');
+    }
+
+    // Send headers
+    header("Content-Range: bytes $start-$end/$size");
+    header("Content-Length: $length");
+
+    // Send the file content in chunks
+    $buffer = 8192; // 8KB buffer size
+    while (!feof($fp) && ($pos = ftell($fp)) <= $end) {
+        if ($pos + $buffer > $end) {
+            $buffer = $end - $pos + 1;
+        }
+        set_time_limit(0); // Prevent timeout for large files
+
+        echo fread($fp, $buffer); // Output raw data (no sanitization required for binary data)
+        flush(); // Send the data to the client
+    }
+
+    fclose($fp);
 }

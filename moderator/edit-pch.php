@@ -5,10 +5,11 @@ if (isset($_POST['play-name'])) {
         $savePath = ABSPATH . '/storage/uploads';  // The folder to save the image
 
         // Sanitize the file name to prevent directory traversal
-        $filename = basename($_FILES['play-img']['name']);
+        $filename = basename($_FILES['play-img']['name']);  // Get only the base file name
+        $filename = preg_replace('/[^a-zA-Z0-9\-_\.]/', '', $filename);  // Remove unwanted characters
 
         // Generate a unique file name and append the file extension
-        $saveName = md5(time()) . '-' . user_id() . '.' . strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $saveName = md5(time() . user_id()) . '-' . rand(1000, 9999) . '.' . strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
         // Set allowed file types
         $allowedExtArray = array('.jpg', '.png', '.gif');
@@ -20,7 +21,7 @@ if (isset($_POST['play-name'])) {
             die('Invalid file type!');
         }
 
-        // Ensure the file is saved in the intended directory
+        // Ensure the file is saved in the intended directory and prevent directory traversal
         $targetPath = $savePath . '/' . $saveName;
         $realPath = realpath($savePath);
         if ($realPath === false || strpos(realpath($targetPath), $realPath) !== 0) {
@@ -41,6 +42,7 @@ if (isset($_POST['play-name'])) {
             $db->query("UPDATE " . DB_PREFIX . "postcats SET picture='" . toDb($picture) . "' WHERE cat_id='" . intval($_GET['id']) . "'");
         }
     }
+
 
     // Update category details in the database
     $db->query("UPDATE " . DB_PREFIX . "postcats SET child_of='" . intval($_POST['categ']) . "', cat_name='" . toDb($_POST['play-name']) . "', cat_desc='" . toDb($_POST['play-desc']) . "' WHERE cat_id='" . intval($_GET['id']) . "'");

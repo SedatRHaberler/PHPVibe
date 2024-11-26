@@ -515,39 +515,42 @@ function add_language($code, $value = ''): void
 {
     global $db;
     $code = escape($code);
-    $long_name = addslashes($value["language-name"]);
-// Make sure the language doesn't already exist
-    $language = $db->get_row("SELECT count(*) as nr FROM  " . DB_PREFIX . "languages WHERE `lang_code` like '$code%'");
-//$db->debug();
-    if ($language) {
-        if ($language->nr > 0) {
-            /* Language code already exists */
-            $nx = $language->nr + 1;
-            $code .= '-' . $nx;
-        }
+    $code = preg_replace('/[^a-zA-Z0-9_\-]/', '', $code); // Güvenli olmayan karakterleri temizle
+    $long_name = addslashes($value["language-name"] ?? '');
+// Dil kodunun zaten mevcut olup olmadığını kontrol edin
+    $language = $db->get_row("SELECT count(*) as nr FROM " . DB_PREFIX . "languages WHERE `lang_code` LIKE '$code%'");
+    if ($language && $language->nr > 0) {
+        $nx = $language->nr + 1;
+        $code .= '-' . $nx;
     }
-//$_value = escape( json_encode( $value ) );
     $_value = addslashes(json_encode($value));
-//do_action( 'add_language', $safe_name, $_value );
-    $db->query("INSERT INTO  " . DB_PREFIX . "languages (`lang_name`, `lang_code`, `lang_terms`) VALUES ('$long_name','$code', '')");
-    @chmod(ABSPATH . '/storage/langs/', 0777);
-    $lang_file = ABSPATH . '/storage/langs/' . $code . '.json';
-    @touch($lang_file);
-    @chmod($lang_file, 0777);
-    $myfile = @fopen($lang_file, "w");
-    @fwrite($myfile, $_value);
-    @fclose($myfile);
-    if (file_exists($lang_file) && (filesize($lang_file) > 1)) {
-        @chmod(ABSPATH . '/storage/langs/', 0755);
-    } else {
-//Back it up to adm cache
-        $lang_file = ADMINCP . '/cache/lang-' . $code . date("m.d.y-g.i.a") . '.json';
-        $myfile = @fopen($lang_file, "w");
-        @fwrite($myfile, $_value);
-        @fclose($myfile);
+// Veritabanına yeni dil ekle
+    $db->query("INSERT INTO " . DB_PREFIX . "languages (`lang_name`, `lang_code`, `lang_terms`) VALUES ('$long_name','$code', '')");
+    $lang_dir = ABSPATH . '/storage/langs/';
+    if (!is_dir($lang_dir)) {
+        @mkdir($lang_dir, 0755, true);
     }
-    return;
+    $lang_file = realpath($lang_dir) . '/' . $code . '.json'; // Gerçek yolu kontrol et
+    if (strpos($lang_file, realpath($lang_dir)) !== 0) { // Path Traversal kontrolü
+        throw new Exception("Invalid file path");
+    }
+    @file_put_contents($lang_file, $_value);
+    if (file_exists($lang_file) && filesize($lang_file) > 1) {
+        @chmod($lang_file, 0644);
+    } else {
+        // Yedekleme
+        $backup_dir = ADMINCP . '/cache/';
+        if (!is_dir($backup_dir)) {
+            @mkdir($backup_dir, 0755, true);
+        }
+        $lang_file = realpath($backup_dir) . '/lang-' . $code . '-' . date("Y-m-d-H-i-s") . '.json';
+        if (strpos($lang_file, realpath($backup_dir)) !== 0) { // Path Traversal kontrolü
+            throw new Exception("Invalid file path");
+        }
+        @file_put_contents($lang_file, $_value);
+    }
 }
+
 
 /**
  * Delete an language from the DB
