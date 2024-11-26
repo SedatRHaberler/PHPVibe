@@ -1,41 +1,55 @@
 <?php //HomeBuilder
 if(isset($_GET['delete']))
-{
- $db->query("DELETE from " . DB_PREFIX . "homepage WHERE id = '" . intval($_GET['delete']) . "'");
-    // Sanitize and escape the value of $_GET['delete']
-    $delete_id = htmlspecialchars($_GET['delete'], ENT_QUOTES, 'UTF-8');
+{if(isset($_GET['delete'])) {
+    $delete_id = intval($_GET['delete']);
+    $stmt = $db->prepare("DELETE FROM " . DB_PREFIX . "homepage WHERE id = ?");
+    $stmt->bind_param("i", $delete_id); // "i" for integer type
+    $stmt->execute();
+    echo '<div class="msg-info">You deleted the home box with id : ' . htmlspecialchars($delete_id, ENT_QUOTES, 'UTF-8') . '</div>';
+}
 
-// Safely output the sanitized value
-    echo '<div class="msg-info">You deleted the home box with id : ' . $delete_id . '</div>';
-}
 if(isset($_POST['channels-list'])) {
-$insertvideo = $db->query("INSERT INTO " . DB_PREFIX . "homepage (`title`, `type`, `ident`,`total`, `ord`, `querystring` ,`car`) VALUES ('" . $db->escape($_POST['title']) . "', '6', '" . $db->escape($_POST['thequeries']) . "', '" . $db->escape($_POST['number']) . "', '1', '" . $db->escape($_POST['thequeries']) . "', '" . $db->escape($_POST['car']) . "')");
- echo '<div class="msg-info">Block created!</div>';	
+    $stmt = $db->prepare("INSERT INTO " . DB_PREFIX . "homepage (`title`, `type`, `ident`, `total`, `ord`, `querystring`, `car`) VALUES (?, '6', ?, ?, '1', ?, ?)");
+    $stmt->bind_param("ssiss", $_POST['title'], $_POST['thequeries'], $_POST['number'], $_POST['thequeries'], $_POST['car']);
+    $stmt->execute();
+    echo '<div class="msg-info">Block created!</div>';
 }
+
 if(isset($_POST['playlists-list'])) {
-$insertvideo = $db->query("INSERT INTO " . DB_PREFIX . "homepage (`title`, `type`, `ident`,`total`, `ord`, `querystring` ,`car`) VALUES ('" . $db->escape($_POST['title']) . "', '7', '" . $db->escape($_POST['thequeries']) . "', '" . $db->escape($_POST['number']) . "', '1', '" . $db->escape($_POST['thequeries']) . "', '" . $db->escape($_POST['car']) . "')");
- echo '<div class="msg-info">Block created!</div>';	
+    $stmt = $db->prepare("INSERT INTO " . DB_PREFIX . "homepage (`title`, `type`, `ident`, `total`, `ord`, `querystring`, `car`) VALUES (?, '7', ?, ?, '1', ?, ?)");
+    $stmt->bind_param("ssiss", $_POST['title'], $_POST['thequeries'], $_POST['number'], $_POST['thequeries'], $_POST['car']);
+    $stmt->execute();
+    echo '<div class="msg-info">Block created!</div>';
 }
-if(isset($_POST['media-block']))
-{
- $insertvideo = $db->query("INSERT INTO " . DB_PREFIX . "homepage (`title`, `type`, `ident`, `querystring`, `total`, `ord`, `mtype`,`car` ) VALUES ('" . $db->escape($_POST['title']) . "', '2', '" . $db->escape($_POST['ident']) . "', '" . $db->escape($_POST['queries']) . "', '" . $db->escape($_POST['number']) . "', '1', '" . $db->escape($_POST['type']) . "', '" . $db->escape($_POST['car']) . "')");
- echo '<div class="msg-info">Block created!</div>';
+
+if(isset($_POST['media-block'])) {
+    $stmt = $db->prepare("INSERT INTO " . DB_PREFIX . "homepage (`title`, `type`, `ident`, `querystring`, `total`, `ord`, `mtype`, `car`) VALUES (?, '2', ?, ?, ?, '1', ?, ?)");
+    $stmt->bind_param("ssiss", $_POST['title'], $_POST['ident'], $_POST['queries'], $_POST['number'], $_POST['type'], $_POST['car']);
+    $stmt->execute();
+    echo '<div class="msg-info">Block created!</div>';
 }
-if(isset($_POST['html-block']))
-{
- $insertvideo = $db->query("INSERT INTO " . DB_PREFIX . "homepage (`title`, `type`, `ident`, `ord` ) VALUES ('" . $db->escape($_POST['title']) . "', '1', '" . $db->escape($_POST['html']) . "', '1')");
- echo '<div class="msg-info">Block created!</div>';
+
+if(isset($_POST['html-block'])) {
+    $stmt = $db->prepare("INSERT INTO " . DB_PREFIX . "homepage (`title`, `type`, `ident`, `ord`) VALUES (?, '1', ?, '1')");
+    $stmt->bind_param("ss", $_POST['title'], $_POST['html']);
+    $stmt->execute();
+    echo '<div class="msg-info">Block created!</div>';
 }
-if(isset($_POST['playlist-block']))
-{
- $insertvideo = $db->query("INSERT INTO " . DB_PREFIX . "homepage (`title`, `type`, `ident`,`total`, `ord`,`car` ) VALUES ('" . $db->escape($_POST['title']) . "', '3', '" . $db->escape($_POST['queries']) . "', '" . $db->escape($_POST['number']) . "', '1', '" . $db->escape($_POST['car']) . "')");
- echo '<div class="msg-info">Block created!</div>';
+
+if(isset($_POST['playlist-block'])) {
+    $stmt = $db->prepare("INSERT INTO " . DB_PREFIX . "homepage (`title`, `type`, `ident`, `total`, `ord`, `car`) VALUES (?, '3', ?, ?, '1', ?)");
+    $stmt->bind_param("ssiss", $_POST['title'], $_POST['queries'], $_POST['number'], $_POST['car']);
+    $stmt->execute();
+    echo '<div class="msg-info">Block created!</div>';
 }
-if(isset($_POST['channel-block']))
-{
- $insertvideo = $db->query("INSERT INTO " . DB_PREFIX . "homepage (`title`, `type`, `ident`,`total`, `ord`, `querystring` ,`car`) VALUES ('" . $db->escape($_POST['title']) . "', '4', '" . $db->escape($_POST['queries']) . "', '" . $db->escape($_POST['number']) . "', '1', '" . $db->escape($_POST['thequeries']) . "', '" . $db->escape($_POST['car']) . "')");
- echo '<div class="msg-info">Block created!</div>';
-}
+
+if(isset($_POST['channel-block'])) {
+    $stmt = $db->prepare("INSERT INTO " . DB_PREFIX . "homepage (`title`, `type`, `ident`, `total`, `ord`, `querystring`, `car`) VALUES (?, '4', ?, ?, '1', ?, ?)");
+    $stmt->bind_param("ssiss", $_POST['title'], $_POST['queries'], $_POST['number'], $_POST['thequeries'], $_POST['car']);
+    $stmt->execute();
+    echo '<div class="msg-info">Block created!</div>';
+}}
+
 include_once('setheader.php');
 
 ?>

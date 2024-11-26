@@ -26,36 +26,35 @@ exit("Something is wrong");
 }
 if(!isset($_GET["q"]) || (intval($_GET["q"]) < 1)) { $q = "";} else {$q = $_GET["q"]; }
 $ext = '.mp4';
-if(strlen($q) < 3) {
-    $file = ABSPATH.'/storage/'.$media.'/'.$_GET["sk"].$ext;
-} else {
-    $file = ABSPATH.'/storage/'.$media.'/'.$_GET["sk"].'-'.$q.$ext;
-}
+// Validate the 'sk' parameter to allow only alphanumeric characters and dashes/underscores
+    if (!preg_match('/^[a-zA-Z0-9_-]+$/', $_GET["sk"])) {
+        die('{"jsonrpc" : "2.0", "error" : {"code": 400, "message": "Invalid input."}, "id" : "id"}');
+    }
 
-    /* Start PHPVibe 5 File finder */
+// Sanitize file path and name
+    $file = ABSPATH.'/storage/'.$media.'/'.$_GET["sk"].$ext;
+
+// Sanitize filename to prevent XSS
+    $filename = basename($file);
+    $filename = htmlspecialchars($filename, ENT_QUOTES, 'UTF-8');
+
+// Ensure file exists and extension is valid
     if (isset($file) && is_file($file)) {
-        // Sanitize file extension and validate video formats
-        $allowedMimeTypes = ['mp4', 'ogg', 'webm']; // Allowed file formats
+        $allowedMimeTypes = ['mp4', 'ogg', 'webm'];
         $ext = pathinfo($file, PATHINFO_EXTENSION);
-        $ext = strtolower($ext); // Normalize extension to lowercase
+        $ext = strtolower($ext);
 
         if (!in_array($ext, $allowedMimeTypes)) {
             die('{"jsonrpc" : "2.0", "error" : {"code": 400, "message": "Invalid video format."}, "id" : "id"}');
         }
 
+        // Further headers and file handling
         header("Content-Type: video/$ext");
-
-        // Handle byte-range requests (for streaming)
+        // Handle byte-range requests for streaming
         if (isset($_SERVER['HTTP_RANGE'])) {
             rangeDownload($file);
         } else {
-            // Send headers for regular download
             $filesize = filesize($file);
-            $filename = basename($file); // Extract safe filename
-
-            // Sanitize the filename to prevent XSS
-            $filename = htmlspecialchars($filename, ENT_QUOTES, 'UTF-8'); // Prevent XSS
-
             header('Content-Length: ' . $filesize);
             header('Content-Disposition: attachment; filename="' . $filename . '"');
             header('Accept-Ranges: bytes');
@@ -67,11 +66,10 @@ if(strlen($q) < 3) {
             }
 
             while (!feof($handle)) {
-                echo fread($handle, 8192); // Directly output the file chunk
-                ob_flush(); // Ensure the output buffer is flushed
-                flush();    // Send to the client
+                echo fread($handle, 8192);
+                ob_flush();
+                flush();
             }
-
         fclose($handle);
         exit;
     }}
@@ -102,11 +100,12 @@ function rangeDownload($file): void
 
     header("Accept-Ranges: bytes");
 
+    // Validate and process the range if provided
     if (isset($_SERVER['HTTP_RANGE'])) {
         $c_start = $start;
         $c_end = $end;
 
-        // Extract the range string
+        // Extract the range string (sanitizing the input to prevent malicious input)
         list(, $range) = explode('=', $_SERVER['HTTP_RANGE'], 2);
 
         // Ensure no multibyte ranges
@@ -152,6 +151,10 @@ function rangeDownload($file): void
     header('Content-Disposition: attachment; filename="' . $safeFileName . '"');
     header('Accept-Ranges: bytes');
 
+    // Clean the output buffer to prevent any previous output from interfering with the binary data
+    ob_clean();  // Clean (erase) the output buffer
+    flush();     // Flush the output buffer
+
     // Send the file content in chunks
     $buffer = 8192; // 8KB buffer size
     while (!feof($fp) && ($pos = ftell($fp)) <= $end) {
@@ -160,9 +163,11 @@ function rangeDownload($file): void
         }
         set_time_limit(0); // Prevent timeout for large files
 
-        echo fread($fp, $buffer); // Output raw data (no sanitization required for binary data)
+        // Output raw data (no sanitization required for binary data)
+        echo fread($fp, $buffer);
         flush(); // Send the data to the client
     }
 
     fclose($fp);
 }
+

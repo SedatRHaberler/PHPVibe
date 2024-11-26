@@ -49,40 +49,54 @@ class FileUploader extends ImgTools {
 		$this->processUploadedFile();
 		
 	}
-	
-
-
-	private function getUploadedFileInfo()
-	#
-	
-	#	Purpose:	Get the uploaded file info provided in the PHP $_FILES array
-	#
-	{
-       	$this->fileTempName	= $_FILES[$this->fileInputName]["tmp_name"];
-       	$this->fileName		= $_FILES[$this->fileInputName]["name"];
-       	$this->fileSize		= $_FILES[$this->fileInputName]["size"];
-       	$this->fileType	    = $_FILES[$this->fileInputName]["type"];
-       	$this->fileError    = $_FILES[$this->fileInputName]["error"];
-
-		$this->retrieveExtension($this->fileName);
-		
-	}
-	
-
-
-	private function retrieveExtension($fileName) 
-	#
-	
-	#	Purpose:	
-	#
-	{
-		// *** Gets the last portion of the string starting at (and including) '.'
-       	$this->fileExtension 	= strtolower(strrchr($fileName, '.'));
-	}
 
 
 
-	private function checkUploadedFile()
+    private function getUploadedFileInfo()
+    {
+        // Get file info from the $_FILES array
+        $this->fileTempName = $_FILES[$this->fileInputName]["tmp_name"];
+        $this->fileName     = $_FILES[$this->fileInputName]["name"];
+        $this->fileSize     = $_FILES[$this->fileInputName]["size"];
+        $this->fileType     = $_FILES[$this->fileInputName]["type"];
+        $this->fileError    = $_FILES[$this->fileInputName]["error"];
+
+        // Sanitize the file name to avoid security risks (e.g., SQL injection)
+        $this->fileName = basename($this->fileName); // Removes any directory path
+        $this->fileName = preg_replace('/[^a-zA-Z0-9\-\_\.]/', '', $this->fileName); // Allow only alphanumeric, dash, underscore, and dot
+
+        // Validate file extension
+        $this->retrieveExtension($this->fileName);
+        $validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf']; // Allow only these extensions
+        if (!in_array($this->fileExtension, $validExtensions)) {
+            throw new Exception("Invalid file extension");
+        }
+    }
+
+
+
+
+    private function retrieveExtension($fileName)
+    {
+        // Ensure the file name is sanitized to avoid dangerous characters before extracting the extension
+        $fileName = basename($fileName);  // Remove any path information (e.g., "../path/to/file")
+        $fileName = preg_replace('/[^a-zA-Z0-9\-_.]/', '', $fileName);  // Allow only alphanumeric, dash, underscore, and dot
+
+        // Extract the file extension
+        $this->fileExtension = strtolower(strrchr($fileName, '.'));
+
+        // Validate the file extension
+        $validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];  // List of allowed file extensions
+        $extension = substr($this->fileExtension, 1);  // Remove the leading dot
+
+        if (!in_array($extension, $validExtensions)) {
+            throw new Exception("Invalid file extension: " . $extension);  // Throw an exception if the extension is not valid
+        }
+    }
+
+
+
+    private function checkUploadedFile()
 	#
 		
 	#	Purpose:	Performs tests on the file to make sure it is valid and uploaded.

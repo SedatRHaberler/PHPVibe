@@ -13,15 +13,31 @@ function ByteSize($bytes) {
 
 function getHeaders() {
     return headers();
-}  
-
-function vinsert($file) {
-global $db, $token;
-$ext = substr($file, strrpos($file, '.') + 1);
-$db->query("INSERT INTO ".DB_PREFIX."videos_tmp (`uid`, `name`, `path`, `ext`) VALUES ('".user_id()."', '".$token."', '".$file."', '".$ext."')");
-$source = get_file($file,$token);
-$db->query("INSERT INTO ".DB_PREFIX."videos (`date`,`pub`,`token`, `user_id`, `source`) VALUES (now(), '0','".$token."', '".user_id()."', '".$source."')");
 }
+
+    function vinsert($file) {
+        global $db, $token;
+
+        // Validate and sanitize the file name
+        $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        $allowedExt = ['mp4', 'avi', 'mkv']; // Define allowed file extensions
+        if (!in_array($ext, $allowedExt)) {
+            throw new Exception("Invalid file extension.");
+        }
+
+        $safeFile = basename($file); // Prevent directory traversal
+
+        // Use prepared statements to prevent SQL injection
+        $insertTmpQuery = "INSERT INTO " . DB_PREFIX . "videos_tmp (`uid`, `name`, `path`, `ext`) VALUES (?, ?, ?, ?)";
+        $db->query($insertTmpQuery, [user_id(), $token, $safeFile, $ext]);
+
+        // Sanitize the source value from get_file function
+        $source = htmlspecialchars(get_file($safeFile, $token), ENT_QUOTES, 'UTF-8');
+
+        $insertVideoQuery = "INSERT INTO " . DB_PREFIX . "videos (`date`, `pub`, `token`, `user_id`, `source`) VALUES (NOW(), ?, ?, ?, ?)";
+        $db->query($insertVideoQuery, [0, $token, user_id(), $source]);
+    }
+
 
 $headers = getHeaders();
 

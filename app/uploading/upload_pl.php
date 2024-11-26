@@ -37,21 +37,37 @@ die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "'._lang("Login firs
 }
 //Save to db
 function vinsert($file) {
-global $db, $token;
-//Just one insert
-if(!isset($_SESSION['upl-'.$token])){
-$ext = substr($file, strrpos($file, '.') + 1);
-$db->query("INSERT INTO ".DB_PREFIX."videos_tmp (`uid`, `name`, `path`, `ext`) VALUES ('".user_id()."', '".$token."', '".$file."', '".$ext."')");
-$source = get_file($file,$token);
-$db->query("INSERT INTO ".DB_PREFIX."videos (`date`,`pub`,`token`, `user_id`, `source`) VALUES (now(), '0','".$token."', '".user_id()."', '".$source."')");
-//Add action
-$doit = $db->get_row("SELECT id from ".DB_PREFIX."videos where token = '".$token."' order by id DESC limit 0,1");
-if($doit) { add_activity('4', $doit->id); }
+    global $db, $token;
+
+    // Just one insert
+    if (!isset($_SESSION['upl-' . $token])) {
+        $ext = substr($file, strrpos($file, '.') + 1);
+        $ext = strtolower($ext); // Normalize the file extension
+
+        // Use prepared statement for the first insert
+        $stmt = $db->prepare("INSERT INTO " . DB_PREFIX . "videos_tmp (`uid`, `name`, `path`, `ext`) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("isss", user_id(), $token, $file, $ext);
+        $stmt->execute();
+
+        // Get source for the video file (ensure it's properly sanitized inside the function)
+        $source = get_file($file, $token);
+
+        // Use prepared statement for the second insert
+        $stmt = $db->prepare("INSERT INTO " . DB_PREFIX . "videos (`date`, `pub`, `token`, `user_id`, `source`) VALUES (now(), '0', ?, ?, ?)");
+        $stmt->bind_param("sis", $token, user_id(), $source);
+        $stmt->execute();
+
+        // Add activity
+        $doit = $db->get_row("SELECT id FROM " . DB_PREFIX . "videos WHERE token = ? ORDER BY id DESC LIMIT 1", [$token]);
+        if ($doit) {
+            add_activity('4', $doit->id);
+        }
+    }
+
+    // Prevent multiple inserts when chunking
+    $_SESSION['upl-' . $token] = 1;
 }
-//Prevent multiple
-//inserts when chucking
-$_SESSION['upl-'.$token] = 1;
-}
+
 // Settings
 $targetDir = ABSPATH.'/storage/'.get_option('mediafolder')."/";
 $token = toDb($_REQUEST['token']);

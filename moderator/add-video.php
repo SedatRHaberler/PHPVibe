@@ -31,24 +31,53 @@ $thumbz = toDb($_POST['remote-img']);
 }
 $thumb = empty($thumbz)? 'storage/uploads/noimage.png' : $thumbz ;
 
-//Insert video
-if(_post('type') < 2) {
-//if it's web link
-$db->query("INSERT INTO ".DB_PREFIX."videos (`stayprivate`,`pub`,`source`,`remote`, `user_id`, `date`, `thumb`, `title`, `duration` ,  `liked` , `category`, `nsfw`, `views`, `featured`) VALUES 
-('".intval(_post('priv'))."','".intval(_post('pub'))."','"._post('file')."', '"."yes"."', '"._post('owner')."', now() , '".$thumb."', '".toDb(_post('title')) ."', '".$sec."',  '0','".toDb(_post('categ'))."','".toDb(_post('nsfw'))."','".intval(_post('views'))."','".intval(_post('featured'))."')");
-} else {
-//if it's remote file
-$db->query("INSERT INTO ".DB_PREFIX."videos (`stayprivate`,`pub`,`remote`, `user_id`, `date`, `thumb`, `title`, `duration`, `liked` , `category`, `nsfw`, `views`, `featured`) VALUES 
-('".intval(_post('priv'))."','".intval(_post('pub'))."','"._post('file')."', '"._post('owner')."', now() , '".$thumb."', '".toDb(_post('title')) ."', '".$sec."', '0','".toDb(_post('categ'))."','".toDb(_post('nsfw'))."','".intval(_post('views'))."','".intval(_post('featured'))."')");	
-}
-$doit = $db->get_row("SELECT id from ".DB_PREFIX."videos where user_id = '".user_id()."' order by id DESC limit 0,1");
-add_activity('4', $doit->id);
-//add tags
-if(_post('tags')){
-	foreach (explode(',',_post('tags')) as $tagul){
-		save_tag($tagul,$doit->id);
-	}
-}
+// Escape the values to prevent SQL injection
+    $stayprivate = intval(_post('priv'));
+    $pub = intval(_post('pub'));
+    $file = $db->escape(_post('file'));
+    $owner = $db->escape(_post('owner'));
+    $title = $db->escape(toDb(_post('title'))); // Assuming toDb escapes special characters
+    $categ = $db->escape(toDb(_post('categ')));
+    $nsfw = $db->escape(toDb(_post('nsfw')));
+    $views = intval(_post('views'));
+    $featured = intval(_post('featured'));
+
+// Insert video (web link case)
+    if (_post('type') < 2) {
+        $query = "
+        INSERT INTO " . DB_PREFIX . "videos 
+        (`stayprivate`, `pub`, `source`, `remote`, `user_id`, `date`, `thumb`, `title`, `duration`, `liked`, `category`, `nsfw`, `views`, `featured`) 
+        VALUES 
+        ('{$stayprivate}', '{$pub}', '{$file}', 'yes', '{$owner}', NOW(), '{$thumb}', '{$title}', '{$sec}', '0', '{$categ}', '{$nsfw}', '{$views}', '{$featured}')
+    ";
+    } else {
+        // Insert video (remote file case)
+        $query = "
+        INSERT INTO " . DB_PREFIX . "videos 
+        (`stayprivate`, `pub`, `remote`, `user_id`, `date`, `thumb`, `title`, `duration`, `liked`, `category`, `nsfw`, `views`, `featured`) 
+        VALUES 
+        ('{$stayprivate}', '{$pub}', '{$file}', '{$owner}', NOW(), '{$thumb}', '{$title}', '{$sec}', '0', '{$categ}', '{$nsfw}', '{$views}', '{$featured}')
+    ";
+    }
+
+// Execute the query
+    $db->query($query);
+
+// Get the last inserted video ID
+    $doit = $db->get_row("SELECT id FROM " . DB_PREFIX . "videos WHERE user_id = '" . user_id() . "' ORDER BY id DESC LIMIT 0,1");
+
+// Add activity
+    add_activity('4', $doit->id);
+
+// Add tags if provided
+    if (_post('tags')) {
+        foreach (explode(',', _post('tags')) as $tagul) {
+            // Sanitize the tag before saving it
+            $tagul = $db->escape($tagul);
+            save_tag($tagul, $doit->id);
+        }
+    }
+
 //add description
 save_description($doit->id,_post('description'));
 add_activity('4', $doit->id);

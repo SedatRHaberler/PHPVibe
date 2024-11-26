@@ -45,22 +45,32 @@ vibe_log($abc);
 //Save to db
 //function
 function vinsert($file) {
-global $db, $token;
-//Just one insert
-if(!isset($_SESSION['upl-'.$token])){
-$ext = substr($file, strrpos($file, '.') + 1);
-$db->query("INSERT INTO ".DB_PREFIX."videos_tmp (`uid`, `name`, `path`, `ext`) VALUES ('".user_id()."', '".$token."', '".$file."', '".$ext."')");
-$ext = strtolower($ext);
-// Prepare conversion
-$db->query("INSERT INTO ".DB_PREFIX."videos (`date`,`pub`,`token`, `user_id`, `tmp_source`, `thumb`) VALUES (now(), '0','".$token."', '".user_id()."', '".$file."','storage/uploads/processing.png')");
-//Add action
-$doit = $db->get_row("SELECT id from ".DB_PREFIX."videos where token = '".$token."' order by id DESC limit 0,1");
-if($doit) { add_activity('4', $doit->id); }
+    global $db, $token;
+
+    // Just one insert
+    if(!isset($_SESSION['upl-'.$token])) {
+        $ext = substr($file, strrpos($file, '.') + 1);
+        $ext = strtolower($ext);
+
+        // Use prepared statements
+        $stmt = $db->prepare("INSERT INTO ".DB_PREFIX."videos_tmp (`uid`, `name`, `path`, `ext`) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("isss", user_id(), $token, $file, $ext);
+        $stmt->execute();
+
+        // Prepare conversion
+        $stmt = $db->prepare("INSERT INTO ".DB_PREFIX."videos (`date`, `pub`, `token`, `user_id`, `tmp_source`, `thumb`) VALUES (now(), '0', ?, ?, ?, ?)");
+        $stmt->bind_param("siss", $token, user_id(), $file, 'storage/uploads/processing.png');
+        $stmt->execute();
+
+        // Add action
+        $doit = $db->get_row("SELECT id from ".DB_PREFIX."videos where token = '".$token."' order by id DESC limit 0,1");
+        if($doit) { add_activity('4', $doit->id); }
+    }
+
+    // Prevent multiple inserts when chunking
+    $_SESSION['upl-'.$token] = 1;
 }
-//Prevent multiple
-//inserts when chucking
-$_SESSION['upl-'.$token] = 1;
-}
+
 // Settings
 $targetDir = ABSPATH.'/storage/'.get_option('tmp-folder','rawmedia')."/";
 $token = '';
@@ -155,21 +165,29 @@ function extracted($out): void
 
 extracted($out);
 
-// Check if file upload is complete
 if (!$chunks || $chunk == $chunks - 1) {
+    // Sanitize token to prevent directory traversal
+    $safeToken = preg_replace('/[^a-zA-Z0-9_-]/', '', $token); // Allow only safe characters
     $realFilePath = realpath("{$filePath}.part");
-    $realTargetPath = realpath($targetDir) . DIRECTORY_SEPARATOR . htmlspecialchars($token, ENT_QUOTES, 'UTF-8') . '.' . $ext;
+    $realTargetPath = realpath($targetDir) . DIRECTORY_SEPARATOR . $safeToken . '.' . $ext;
 
-    // Validate file paths to prevent Path Traversal
-    if ($realFilePath === false || $realTargetPath === false || strpos($realFilePath, realpath($targetDir)) !== 0 || strpos($realTargetPath, realpath($targetDir)) !== 0) {
+    // Validate paths
+    $realTargetDir = realpath($targetDir);
+    if (
+        $realFilePath === false ||
+        $realTargetPath === false ||
+        strpos($realFilePath, $realTargetDir) !== 0 ||
+        strpos($realTargetPath, $realTargetDir) !== 0
+    ) {
         die('{"jsonrpc" : "2.0", "error" : {"code": 108, "message": "Invalid file path."}, "id" : "id"}');
     }
 
-    // Rename safely
+    // Safely rename
     if (!rename($realFilePath, $realTargetPath)) {
         die('{"jsonrpc" : "2.0", "error" : {"code": 109, "message": "Failed to finalize file upload."}, "id" : "id"}');
     }
 }
+
 
 // Insert into database
 vinsert($token . '.' . $ext);

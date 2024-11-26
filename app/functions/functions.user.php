@@ -539,53 +539,58 @@ class user
     public static function AddUser($userData)
     {
         global $db;
-//Security token
-        if (!isset($userData['passKey']) || nullval($userData['passKey'])) {
-            $pass = user::generateRandomNumber();
-        } else {
-            $pass = $userData['passKey'];
-        }
-//avoid not set issues
-        if (!isset($userData['username']) || nullval($userData['username'])) {
-            $userData['username'] = nice_url($userData['name']);
-        }
+
+        // Security token generation
+        $pass = isset($userData['passKey']) && !nullval($userData['passKey'])
+            ? $userData['passKey']
+            : user::generateRandomNumber();
+
+        // Default values and validation
+        $userData['username'] = isset($userData['username']) && !nullval($userData['username'])
+            ? nice_url($userData['username'])
+            : nice_url($userData['name']);
+
         if (!user::checkUnique('username', $userData['username'])) {
             $userData['username'] = '';
         }
-        if (!isset($userData['avatar']) || nullval($userData['avatar'])) {
-            $userData['avatar'] = 'storage/storage/uploads/noimage.png';
-        }
-        if (!isset($userData['email']) || nullval($userData['email'])) {
-            $userData['email'] = '';
-        }
-        if (!isset($userData['gid']) || nullval($userData['gid'])) {
-            $userData['gid'] = '';
-        }
-        if (!isset($userData['fid']) || nullval($userData['fid'])) {
-            $userData['fid'] = '';
-        }
-        if (!isset($userData['oauth_token']) || nullval($userData['oauth_token'])) {
-            $userData['oauth_token'] = '';
-        }
-        if (!isset($userData['password']) || nullval($userData['password'])) {
-            $userData['password'] = '';
-        }
-        if (!isset($userData['local']) || nullval($userData['local'])) {
-            $userData['local'] = '';
-        }
-        if (!isset($userData['country']) || nullval($userData['country'])) {
-            $userData['country'] = '';
-        }
-        if (!isset($userData['bio']) || nullval($userData['bio'])) {
-            $userData['bio'] = '';
-        }
-//insert to db
-        $sql = "INSERT INTO " . DB_PREFIX . "users (name,username,email,type,lastlogin,date_registered,gid,fid,oauth_token,avatar,local,country,group_id,pass,password,bio)"
-            . " VALUES ('" . toDb($userData['name']) . "','" . toDb($userData['username']) . "','" . esc_attr($userData['email']) . "','" . $userData['type'] . "', now(), now(), '" . $userData['gid'] . "', '" . $userData['fid'] . "', '" . $userData['oauth_token'] . "', '" . $userData['avatar'] . "', '" . toDb($userData['local']) . "', '" . toDb($userData['country']) . "', '4', '" . $pass . "','" . toDb($userData['password']) . "', '" . toDb($userData['bio']) . "')";
-        $db->query($sql);
+
+        $userData['avatar'] = $userData['avatar'] ?? 'storage/storage/uploads/noimage.png';
+        $userData['email'] = $userData['email'] ?? '';
+        $userData['gid'] = $userData['gid'] ?? '';
+        $userData['fid'] = $userData['fid'] ?? '';
+        $userData['oauth_token'] = $userData['oauth_token'] ?? '';
+        $userData['password'] = $userData['password'] ?? '';
+        $userData['local'] = $userData['local'] ?? '';
+        $userData['country'] = $userData['country'] ?? '';
+        $userData['bio'] = $userData['bio'] ?? '';
+
+        // Prepare the query using proper escaping
+        $sql = "INSERT INTO " . DB_PREFIX . "users 
+            (name, username, email, type, lastlogin, date_registered, gid, fid, oauth_token, avatar, local, country, group_id, pass, password, bio)
+            VALUES (?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?, ?, '4', ?, ?, ?)";
+
+        // Execute the query using a prepared statement
+        $db->query($sql, [
+            $userData['name'],
+            $userData['username'],
+            $userData['email'],
+            $userData['type'],
+            $userData['gid'],
+            $userData['fid'],
+            $userData['oauth_token'],
+            $userData['avatar'],
+            $userData['local'],
+            $userData['country'],
+            $pass,
+            $userData['password'],
+            $userData['bio']
+        ]);
+
+        // Check if the user was added successfully
         $tid = user::checkUser($userData);
         return $tid;
     }
+
 
     public static function loginbymail($mail, $pass = null)
     {

@@ -410,9 +410,13 @@ $txt = '>a/<>llams/<)1102 dehsilbatsE(>llams< ebiVPHP>"SMC oediV ebiVPHP"=eltit 
 echo strrev($txt);
 }
 function delete_cron($id) {
-global $db;
-$db->query("delete from ".DB_PREFIX."crons where cron_id ='".$id."'");
+    global $db;
+    // Use prepared statements to prevent SQL injection
+    $stmt = $db->prepare("DELETE FROM " . DB_PREFIX . "crons WHERE cron_id = ?");
+    $stmt->bind_param("i", $id);  // "i" means the parameter is an integer
+    $stmt->execute();
 }
+
 function add_cron($args = array(), $title = null) {
 global $db;
 unset($args["sk"]);

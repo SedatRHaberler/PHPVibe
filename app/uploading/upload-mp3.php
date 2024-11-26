@@ -60,41 +60,70 @@ function ByteSize($bytes) {
 
 function getHeaders() {
 	return headers();
-}  
-
-function vinsert($file) {
-global $db, $token;
-$ext = substr($file, strrpos($file, '.') + 1);
-$db->query("INSERT INTO ".DB_PREFIX."videos_tmp (`uid`, `name`, `path`, `ext`) VALUES ('".user_id()."', '".$token."', '".$file."', '".$ext."')");
-//Insert
-global $target_path,  $final_path, $ip;
-//rename($target_path.$file, $final_path.$file);
-rename(ABSPATH.'/storage/'.get_option('tmp-folder','rawmedia')."/".$file, $final_path.$file);
-$source = get_file($file,$token);
-$db->query("INSERT INTO ".DB_PREFIX."videos (`media`,`pub`,`token`, `user_id`, `source`, `thumb`,`date`) VALUES ('2','0','".$token."', '".user_id()."', '".$source."','".get_option('mediafolder')."/thumbs/xmp3.jpg', now())");
-
-//Extract Duration
-
-$cmd = get_option('ffmpeg-cmd','ffmpeg')." -i ".$final_path.$file;
-exec ( "$cmd 2>&1", $output );
-$text = implode ( "\r", $output );
-if (preg_match ( '!Duration: ([0-9:.]*)[, ]!', $text, $matches )) {
-			list ( $v_hours, $v_minutes, $v_seconds ) = explode ( ":", $matches [1] );
-			// duration in time format
-			$d = $v_hours * 3600 + $v_minutes * 60 + $v_seconds;			
-		}
-if(isset($d)) {		
-list ( $duration, $trash ) = explode ( ".", $d );
-}		
-if(isset($duration)) {
-$db->query("UPDATE  ".DB_PREFIX."videos SET duration='".$duration."' WHERE token = '".$token."'");
 }
 
+    function vinsert($file) {
+        global $db, $token, $target_path, $final_path, $ip;
 
+        // Validate and sanitize the file extension
+        $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        $allowedExt = ['mp4', 'avi', 'mkv']; // Adjust allowed extensions as needed
+        if (!in_array($ext, $allowedExt)) {
+            throw new Exception("Invalid file extension.");
+        }
 
-$doit = $db->get_row("SELECT id from ".DB_PREFIX."videos where token = '".$token."' order by id DESC limit 0,1");
-if($doit) { add_activity('4', $doit->id); }
-}
+        // Sanitize file name and paths
+        $safeFile = basename($file); // Prevent directory traversal
+        $sourcePath = ABSPATH . '/storage/' . get_option('tmp-folder', 'rawmedia') . '/' . $safeFile;
+        $targetPath = $final_path . $safeFile;
+
+        // Check if source file exists before renaming
+        if (!file_exists($sourcePath)) {
+            throw new Exception("File not found: " . htmlspecialchars($safeFile, ENT_QUOTES));
+        }
+
+        // Move file securely
+        if (!rename($sourcePath, $targetPath)) {
+            throw new Exception("Failed to move file to target directory.");
+        }
+
+        // Generate source URL
+        $source = get_file($safeFile, $token);
+
+        // Use prepared statements to prevent SQL injection
+        $insertTmpQuery = "INSERT INTO " . DB_PREFIX . "videos_tmp (`uid`, `name`, `path`, `ext`) VALUES (?, ?, ?, ?)";
+        $db->query($insertTmpQuery, [user_id(), $token, $safeFile, $ext]);
+
+        $insertVideoQuery = "INSERT INTO " . DB_PREFIX . "videos 
+        (`media`, `pub`, `token`, `user_id`, `source`, `thumb`, `date`) 
+        VALUES (?, ?, ?, ?, ?, ?, NOW())";
+        $db->query($insertVideoQuery, [2, 0, $token, user_id(), $source, get_option('mediafolder') . "/thumbs/xmp3.jpg"]);
+
+        // Extract duration using ffmpeg securely
+        $cmd = escapeshellcmd(get_option('ffmpeg-cmd', 'ffmpeg') . " -i " . escapeshellarg($targetPath));
+        exec("$cmd 2>&1", $output);
+        $text = implode("\r", $output);
+
+        // Extract duration from ffmpeg output
+        $duration = null;
+        if (preg_match('!Duration: ([0-9:.]*)[, ]!', $text, $matches)) {
+            $timeParts = explode(":", $matches[1]);
+            $duration = $timeParts[0] * 3600 + $timeParts[1] * 60 + $timeParts[2];
+        }
+
+        // Update video duration if available
+        if ($duration !== null) {
+            $updateDurationQuery = "UPDATE " . DB_PREFIX . "videos SET duration = ? WHERE token = ?";
+            $db->query($updateDurationQuery, [$duration, $token]);
+        }
+
+        // Fetch and log activity
+        $videoRow = $db->get_row("SELECT id FROM " . DB_PREFIX . "videos WHERE token = ? ORDER BY id DESC LIMIT 1", [$token]);
+        if ($videoRow) {
+            add_activity('4', $videoRow->id);
+        }
+    }
+
 
 $headers = getHeaders();
 
