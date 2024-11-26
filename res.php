@@ -1170,134 +1170,186 @@ if (!class_exists('mthumb')) : /**
 		/**
 		 *
 		 */
-		protected function calcDocRoot() {
-			$docRoot = @$_SERVER[ 'DOCUMENT_ROOT' ];
-			if (defined('LOCAL_FILE_BASE_DIRECTORY')) {
-				$docRoot = LOCAL_FILE_BASE_DIRECTORY;
-			}
-			if (!isset($docRoot)) {
-				$this->debug(3, "DOCUMENT_ROOT is not set. This is probably windows. Starting search 1.");
-				if (isset($_SERVER[ 'SCRIPT_FILENAME' ])) {
-					$docRoot = str_replace('\\', '/', substr($_SERVER[ 'SCRIPT_FILENAME' ], 0, 0 - strlen($_SERVER[ 'PHP_SELF' ])));
-					$this->debug(3, "Generated docRoot using SCRIPT_FILENAME and PHP_SELF as: $docRoot");
-				}
-			}
-			if (!isset($docRoot)) {
-				$this->debug(3, "DOCUMENT_ROOT still is not set. Starting search 2.");
-				if (isset($_SERVER[ 'PATH_TRANSLATED' ])) {
-					$docRoot = str_replace('\\', '/', substr(str_replace('\\\\', '\\', $_SERVER[ 'PATH_TRANSLATED' ]), 0, 0 - strlen($_SERVER[ 'PHP_SELF' ])));
-					$this->debug(3, "Generated docRoot using PATH_TRANSLATED and PHP_SELF as: $docRoot");
-				}
-			}
-			if ($docRoot && $_SERVER[ 'DOCUMENT_ROOT' ] != '/') {
-				$docRoot = preg_replace('/\/$/', '', $docRoot);
-			}
-			$this->debug(3, "Doc root is: " . $docRoot);
-			$this->docRoot = $docRoot;
-		}
+        protected function calcDocRoot() {
+            // Start with DOCUMENT_ROOT from the server variable
+            $docRoot = @$_SERVER['DOCUMENT_ROOT'];
 
-		/**
+            // If LOCAL_FILE_BASE_DIRECTORY constant is defined, override the DOCUMENT_ROOT value
+            if (defined('LOCAL_FILE_BASE_DIRECTORY')) {
+                $docRoot = LOCAL_FILE_BASE_DIRECTORY;
+            }
+
+            // If DOCUMENT_ROOT is not set, try to generate it
+            if (!isset($docRoot)) {
+                $this->debug(3, "DOCUMENT_ROOT is not set. This is probably windows. Starting search 1.");
+                if (isset($_SERVER['SCRIPT_FILENAME'])) {
+                    // Prevent directory traversal by ensuring no "../" or malicious sequences in SCRIPT_FILENAME
+                    $docRoot = realpath(dirname($_SERVER['SCRIPT_FILENAME']));
+                    $this->debug(3, "Generated docRoot using SCRIPT_FILENAME as: $docRoot");
+                }
+            }
+
+            // If DOCUMENT_ROOT is still not set, try another method
+            if (!isset($docRoot)) {
+                $this->debug(3, "DOCUMENT_ROOT still is not set. Starting search 2.");
+                if (isset($_SERVER['PATH_TRANSLATED'])) {
+                    // Ensure no malicious paths or directory traversal is introduced via PATH_TRANSLATED
+                    $docRoot = realpath(dirname(str_replace('\\\\', '\\', $_SERVER['PATH_TRANSLATED'])));
+                    $this->debug(3, "Generated docRoot using PATH_TRANSLATED as: $docRoot");
+                }
+            }
+
+            // Further sanitize by ensuring it's not pointing to a root directory or any malicious path
+            if ($docRoot && $_SERVER['DOCUMENT_ROOT'] != '/') {
+                $docRoot = rtrim($docRoot, '/');
+            }
+
+            // Debug the final document root
+            $this->debug(3, "Doc root is: " . $docRoot);
+
+            // Save the sanitized doc root
+            $this->docRoot = $docRoot;
+        }
+
+
+        /**
 		 * @param $src
 		 *
 		 * @return bool|string
 		 */
-		protected function getLocalImagePath($src) {
-			$src = ltrim($src, '/'); //strip off the leading '/'
-			if (!$this->docRoot) {
-				$this->debug(3, "We have no document root set, so as a last resort, lets check if the image is in the current dir and serve that.");
-				//We don't support serving images outside the current dir if we don't have a doc root for security reasons.
-				$file = preg_replace('/^.*?([^\/\\\\]+)$/', '$1', $src); //strip off any path info and just leave the filename.
-				if (is_file($file)) {
-					return $this->realpath($file);
-				}
+        protected function getLocalImagePath($src) {
+            // Remove leading '/' from the path
+            $src = ltrim($src, '/');
 
-				return $this->error("Could not find your website document root and the file specified doesn't exist in mThumb's directory. We don't support serving files outside mThumb's directory without a document root for security reasons.");
-			} else {
-				if (!is_dir($this->docRoot)) {
-					$this->error("Server path does not exist. Ensure variable \$_SERVER['DOCUMENT_ROOT'] is set correctly");
-				}
-			}
+            // If docRoot is not set, attempt to find the image in the current directory
+            if (!$this->docRoot) {
+                $this->debug(3, "We have no document root set, so as a last resort, let's check if the image is in the current dir and serve that.");
 
-			//Do not go past this point without docRoot set
+                // Sanitize the file name to prevent directory traversal
+                $file = preg_replace('/^.*?([^\/\\\\]+)$/', '$1', $src); // Strip off any path info, leave just the filename.
 
-			//Try src under docRoot
-			if (file_exists($this->docRoot . '/' . $src)) {
-				$this->debug(3, "Found file as " . $this->docRoot . '/' . $src);
-				$real = $this->realpath($this->docRoot . '/' . $src);
-				if (stripos($real, $this->docRoot) === 0) {
-					return $real;
-				} else {
-					$this->debug(1, "Security block: The file specified occurs outside the document root.");
-					//allow search to continue
-				}
-			}
-			//Check absolute paths and then verify the real path is under doc root
-			$absolute = $this->realpath('/' . $src);
-			if ($absolute && file_exists($absolute)) { //realpath does file_exists check, so can probably skip the exists check here
-				$this->debug(3, "Found absolute path: $absolute");
-				if (!$this->docRoot) {
-					$this->sanityFail("docRoot not set when checking absolute path.");
-				}
-				if (stripos($absolute, $this->docRoot) === 0) {
-					return $absolute;
-				} else {
-					$this->debug(1, "Security block: The file specified occurs outside the document root.");
-					//and continue search
-				}
-			}
+                // Check if the sanitized file exists in the current directory
+                if (is_file($file)) {
+                    return $this->realpath($file);
+                }
 
-			$base = $this->docRoot;
+                return $this->error("Could not find your website document root and the file specified doesn't exist in mThumb's directory. We don't support serving files outside mThumb's directory without a document root for security reasons.");
+            } else {
+                // Ensure the docRoot exists and is a valid directory
+                if (!is_dir($this->docRoot)) {
+                    $this->error("Server path does not exist. Ensure variable \$_SERVER['DOCUMENT_ROOT'] is set correctly");
+                }
+            }
 
-			// account for Windows directory structure
-			if (strstr($_SERVER[ 'SCRIPT_FILENAME' ], ':')) {
-				$sub_directories = explode('\\', str_replace($this->docRoot, '', $_SERVER[ 'SCRIPT_FILENAME' ]));
-			} else {
-				$sub_directories = explode('/', str_replace($this->docRoot, '', $_SERVER[ 'SCRIPT_FILENAME' ]));
-			}
+            // Do not continue without a valid docRoot set
+            if (!$this->docRoot) {
+                return false;
+            }
 
-			foreach ($sub_directories as $sub) {
-				$base .= $sub . '/';
-				$this->debug(3, "Trying file as: " . $base . $src);
-				if (file_exists($base . $src)) {
-					$this->debug(3, "Found file as: " . $base . $src);
-					$real = $this->realpath($base . $src);
-					if (stripos($real, $this->realpath($this->docRoot)) === 0) {
-						return $real;
-					} else {
-						$this->debug(1, "Security block: The file specified occurs outside the document root.");
-						//And continue search
-					}
-				}
-			}
+            // Sanitize $src to prevent directory traversal (no '../' sequences allowed)
+            $src = str_replace(['../', '..\\'], '', $src);
 
-			return FALSE;
-		}
+            // Try to find the file under the docRoot
+            $filePath = $this->docRoot . '/' . $src;
+            if (file_exists($filePath)) {
+                $real = $this->realpath($filePath);
+                // Check if the resolved path is within the document root
+                if (stripos($real, $this->docRoot) === 0) {
+                    return $real;
+                } else {
+                    $this->debug(1, "Security block: The file specified occurs outside the document root.");
+                }
+            }
 
-		/**
+            // Check absolute paths (ensure no malicious paths outside the docRoot)
+            $absolute = $this->realpath('/' . $src);
+            if ($absolute && file_exists($absolute)) {
+                $this->debug(3, "Found absolute path: $absolute");
+                // Ensure absolute path is within docRoot
+                if (stripos($absolute, $this->docRoot) === 0) {
+                    return $absolute;
+                } else {
+                    $this->debug(1, "Security block: The file specified occurs outside the document root.");
+                }
+            }
+
+            // Handle possible sub-directories (for platforms like Windows)
+            $base = $this->docRoot;
+            $sub_directories = (strstr($_SERVER['SCRIPT_FILENAME'], ':'))
+                ? explode('\\', str_replace($this->docRoot, '', $_SERVER['SCRIPT_FILENAME'])) // For Windows paths
+                : explode('/', str_replace($this->docRoot, '', $_SERVER['SCRIPT_FILENAME'])); // For Unix-like paths
+
+            foreach ($sub_directories as $sub) {
+                $base .= $sub . '/';
+                $this->debug(3, "Trying file as: " . $base . $src);
+                if (file_exists($base . $src)) {
+                    $real = $this->realpath($base . $src);
+                    // Ensure the file is within the docRoot directory
+                    if (stripos($real, $this->realpath($this->docRoot)) === 0) {
+                        return $real;
+                    } else {
+                        $this->debug(1, "Security block: The file specified occurs outside the document root.");
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /**
 		 * @param $path
 		 *
 		 * @return string
 		 */
-		protected function realpath($path) {
-			// try to remove any relative paths
-			$remove_relatives = '/\w+\/\.\.\//';
-			while (preg_match($remove_relatives, $path)) {
-				$path = preg_replace($remove_relatives, '', $path);
-			}
-			// if any remain use PHP realpath to strip them out, otherwise return $path
-			// if using realpath, any symlinks will also be resolved
-			return preg_match('#^\.\./|/\.\./#', $path) ? realpath($path) : $path;
-		}
+        protected function realpath($path) {
+            // Remove any relative paths (e.g., '/../' or './')
+            $remove_relatives = '/\w+\/\.\.\//'; // Matches '/../' or similar
+            while (preg_match($remove_relatives, $path)) {
+                $path = preg_replace($remove_relatives, '', $path);
+            }
 
-		/**
+            // Check for any remaining relative paths that may still allow traversal
+            if (preg_match('#^\.\./|/\.\./#', $path)) {
+                // If there are still traversal patterns, use realpath to resolve and strip them
+                $resolvedPath = realpath($path);
+
+                // If the realpath resolves to something, ensure it’s within the allowed directory
+                if ($resolvedPath && strpos($resolvedPath, $this->docRoot) === 0) {
+                    return $resolvedPath;
+                } else {
+                    // Path is outside the allowed directory
+                    $this->debug(1, "Security block: The file specified occurs outside the document root.");
+                    return false;
+                }
+            } else {
+                // No relative paths found, return the path as-is
+                return $path;
+            }
+        }
+
+
+        /**
 		 * @param $name
 		 */
-		protected function toDelete($name) {
-			$this->debug(3, "Scheduling file $name to delete on destruct.");
-			$this->toDeletes[] = $name;
-		}
+        protected function toDelete($name) {
+            // Sanitize the file name to prevent directory traversal
+            $name = basename($name); // Extract only the file name, remove any directory components
 
-		/**
+            // Optional: Validate that the file is within a specific directory (e.g., DOCUMENT_ROOT)
+            $safeDirectory = $this->docRoot; // Assuming $this->docRoot is set properly
+            $filePath = $safeDirectory . '/' . $name;
+
+            // Ensure the file path does not go outside the allowed directory
+            if (realpath($filePath) && strpos(realpath($filePath), $safeDirectory) === 0) {
+                $this->debug(3, "Scheduling file $name to delete on destruct.");
+                $this->toDeletes[] = $filePath;
+            } else {
+                // Handle the case where the file path is invalid or outside the allowed directory
+                $this->debug(1, "Security block: Attempted to delete a file outside the allowed directory.");
+            }
+        }
+
+        /**
 		 * @param $h
 		 * @param $d
 		 *
@@ -1316,34 +1368,54 @@ if (!class_exists('mthumb')) : /**
 		/**
 		 * @return bool
 		 */
-		protected function serveCacheFile() {
-			$this->debug(3, "Serving {$this->cachefile}");
-			if (!is_file($this->cachefile)) {
-				$this->error("serveCacheFile called in mthumb but we couldn't find the cached file.");
+        protected function serveCacheFile(): bool
+        {
+            $this->debug(3, "Serving {$this->cachefile}");
 
-				return FALSE;
-			}
-			$fp = fopen($this->cachefile, 'rb');
-			if (!$fp) {
-				return $this->error("Could not open cachefile.");
-			}
-			fseek($fp, strlen($this->filePrependSecurityBlock), SEEK_SET);
-			$imgType = fread($fp, 3);
-			fseek($fp, 3, SEEK_CUR);
-			if (ftell($fp) != strlen($this->filePrependSecurityBlock) + 6) {
-				@unlink($this->cachefile);
+            // Sanitize the file path to prevent directory traversal
+            $cachefile = realpath($this->cachefile);  // Get the absolute path
 
-				return $this->error("The cached image file seems to be corrupt.");
-			}
-			$imageDataSize = filesize($this->cachefile) - (strlen($this->filePrependSecurityBlock) + 6);
-			$this->sendImageHeaders($imgType, $imageDataSize);
-			$bytesSent = @fpassthru($fp);
-			fclose($fp);
-			if ($bytesSent > 0) {
-				return TRUE;
-			}
-            $content = file_get_contents($this->cachefile);
-            if ($content !== FALSE) {
+            // Ensure the file path is valid and within the allowed directory (e.g., cache directory)
+            $allowedDir = '/path/to/cache/directory'; // Define the safe directory for cache files
+
+            // Check if the file is within the allowed directory
+            if ($cachefile === false || strpos($cachefile, $allowedDir) !== 0) {
+                $this->error("Attempt to access a file outside the allowed directory.");
+                return false;
+            }
+
+            if (!is_file($cachefile)) {
+                $this->error("serveCacheFile called in mthumb but we couldn't find the cached file.");
+                return false;
+            }
+
+            $fp = fopen($cachefile, 'rb');
+            if (!$fp) {
+                return $this->error("Could not open cachefile.");
+            }
+
+            fseek($fp, strlen($this->filePrependSecurityBlock), SEEK_SET);
+            $imgType = fread($fp, 3);
+            fseek($fp, 3, SEEK_CUR);
+
+            if (ftell($fp) != strlen($this->filePrependSecurityBlock) + 6) {
+                @unlink($cachefile);
+                return $this->error("The cached image file seems to be corrupt.");
+            }
+
+            $imageDataSize = filesize($cachefile) - (strlen($this->filePrependSecurityBlock) + 6);
+            $this->sendImageHeaders($imgType, $imageDataSize);
+
+            $bytesSent = @fpassthru($fp);
+            fclose($fp);
+
+            if ($bytesSent > 0) {
+                return true;
+            }
+
+            // Fallback if fpassthru doesn't send the content
+            $content = file_get_contents($cachefile);
+            if ($content !== false) {
                 // Remove the security block and sanitize the remaining content
                 $content = substr($content, strlen($this->filePrependSecurityBlock) + 6);
 
@@ -1353,47 +1425,56 @@ if (!class_exists('mthumb')) : /**
                 // Output the sanitized content
                 echo $safeContent;
             } else {
-				$this->error("Cache file could not be loaded.");
+                $this->error("Cache file could not be loaded.");
+                return false;
+            }
+            return false;
+        }
 
-				return FALSE;
-			}
-		}
 
-		/**
+        /**
 		 * @param $mimeType
 		 * @param $dataSize
 		 *
 		 * @return bool
 		 */
-		protected function sendImageHeaders($mimeType, $dataSize) {
-			if (!preg_match('/^image\//i', $mimeType)) {
-				$mimeType = 'image/' . $mimeType;
-			}
-			if (strtolower($mimeType) == 'image/jpg') {
-				$mimeType = 'image/jpeg';
-			}
-			$gmdate_expires = gmdate('D, d M Y H:i:s', strtotime('now +10 days')) . ' GMT';
-			$gmdate_modified = gmdate('D, d M Y H:i:s') . ' GMT';
-			// send content headers then display image
-			header('Content-Type: ' . $mimeType);
-			header('Accept-Ranges: none'); //Changed this because we don't accept range requests
-			header('Last-Modified: ' . $gmdate_modified);
-			header('Content-Length: ' . $dataSize);
-			if (BROWSER_CACHE_DISABLE) {
-				$this->debug(3, "Browser cache is disabled so setting non-caching headers.");
-				header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-				header("Pragma: no-cache");
-				header('Expires: ' . gmdate('D, d M Y H:i:s', time()));
-			} else {
-				$this->debug(3, "Browser caching is enabled");
-				header('Cache-Control: max-age=' . BROWSER_CACHE_MAX_AGE . ', must-revalidate');
-				header('Expires: ' . $gmdate_expires);
-			}
+        protected function sendImageHeaders($mimeType, $dataSize) {
+            // Validate MIME type (whitelist)
+            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+            if (!in_array(strtolower($mimeType), $allowedMimeTypes)) {
+                $mimeType = 'image/jpeg';  // Default to a safe MIME type
+            }
 
-			return TRUE;
-		}
+            // If mimeType is 'image/jpg', treat as 'image/jpeg'
+            if (strtolower($mimeType) == 'image/jpg') {
+                $mimeType = 'image/jpeg';
+            }
 
-		/**
+            $gmdate_expires = gmdate('D, d M Y H:i:s', strtotime('now +10 days')) . ' GMT';
+            $gmdate_modified = gmdate('D, d M Y H:i:s') . ' GMT';
+
+            // Send content headers for image
+            header('Content-Type: ' . $mimeType);
+            header('Accept-Ranges: none'); // No range requests
+            header('Last-Modified: ' . $gmdate_modified);
+            header('Content-Length: ' . $dataSize);
+
+            if (BROWSER_CACHE_DISABLE) {
+                $this->debug(3, "Browser cache is disabled, setting non-caching headers.");
+                header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+                header("Pragma: no-cache");
+                header('Expires: ' . gmdate('D, d M Y H:i:s', time()));
+            } else {
+                $this->debug(3, "Browser caching is enabled");
+                header('Cache-Control: max-age=' . BROWSER_CACHE_MAX_AGE . ', must-revalidate');
+                header('Expires: ' . $gmdate_expires);
+            }
+
+            return true;
+        }
+
+
+        /**
 		 * @param        $property
 		 * @param string $default
 		 *

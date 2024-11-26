@@ -26,60 +26,62 @@ exit("Something is wrong");
 }
 if(!isset($_GET["q"]) || (intval($_GET["q"]) < 1)) { $q = "";} else {$q = $_GET["q"]; }
 $ext = '.mp4';
-if(strlen($q) < 3) { 
-$file = ABSPATH.'/storage/'.$media.'/'.$_GET["sk"].$ext;
+if(strlen($q) < 3) {
+    $file = ABSPATH.'/storage/'.$media.'/'.$_GET["sk"].$ext;
 } else {
-$file = ABSPATH.'/storage/'.$media.'/'.$_GET["sk"].'-'.$q.$ext;	
-}
-/* End PHPVibe 5 File finder */
+    $file = ABSPATH.'/storage/'.$media.'/'.$_GET["sk"].'-'.$q.$ext;
 }
 
-if (isset($file) && is_file($file)) {
-    // Sanitize file extension and validate video formats
-    $allowedMimeTypes = ['mp4', 'ogg', 'webm']; // Allowed file formats
-    $ext = pathinfo($file, PATHINFO_EXTENSION);
-    $ext = strtolower($ext); // Normalize extension to lowercase
+    /* Start PHPVibe 5 File finder */
+    if (isset($file) && is_file($file)) {
+        // Sanitize file extension and validate video formats
+        $allowedMimeTypes = ['mp4', 'ogg', 'webm']; // Allowed file formats
+        $ext = pathinfo($file, PATHINFO_EXTENSION);
+        $ext = strtolower($ext); // Normalize extension to lowercase
 
-    if (!in_array($ext, $allowedMimeTypes)) {
-        die('{"jsonrpc" : "2.0", "error" : {"code": 400, "message": "Invalid video format."}, "id" : "id"}');
-    }
-
-    header("Content-Type: video/$ext");
-
-    // Handle byte-range requests (for streaming)
-    if (isset($_SERVER['HTTP_RANGE'])) {
-        rangeDownload($file);
-    } else {
-        // Send headers for regular download
-        $filesize = filesize($file);
-        $filename = basename($file); // Extract safe filename
-        $filename = htmlspecialchars($filename, ENT_QUOTES, 'UTF-8'); // Sanitize filename
-
-        header('Content-Length: ' . $filesize);
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
-        header('Accept-Ranges: bytes');
-
-        // Open and read the file in chunks
-        $handle = fopen($file, "rb");
-        if ($handle === false) {
-            die('{"jsonrpc" : "2.0", "error" : {"code": 500, "message": "Error reading the file."}, "id" : "id"}');
+        if (!in_array($ext, $allowedMimeTypes)) {
+            die('{"jsonrpc" : "2.0", "error" : {"code": 400, "message": "Invalid video format."}, "id" : "id"}');
         }
 
-        while (!feof($handle)) {
-            echo fread($handle, 8192); // Directly output the file chunk
-            ob_flush(); // Ensure the output buffer is flushed
-            flush();    // Send to the client
-        }
+        header("Content-Type: video/$ext");
+
+        // Handle byte-range requests (for streaming)
+        if (isset($_SERVER['HTTP_RANGE'])) {
+            rangeDownload($file);
+        } else {
+            // Send headers for regular download
+            $filesize = filesize($file);
+            $filename = basename($file); // Extract safe filename
+
+            // Sanitize the filename to prevent XSS
+            $filename = htmlspecialchars($filename, ENT_QUOTES, 'UTF-8'); // Prevent XSS
+
+            header('Content-Length: ' . $filesize);
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('Accept-Ranges: bytes');
+
+            // Open and read the file in chunks
+            $handle = fopen($file, "rb");
+            if ($handle === false) {
+                die('{"jsonrpc" : "2.0", "error" : {"code": 500, "message": "Error reading the file."}, "id" : "id"}');
+            }
+
+            while (!feof($handle)) {
+                echo fread($handle, 8192); // Directly output the file chunk
+                ob_flush(); // Ensure the output buffer is flushed
+                flush();    // Send to the client
+            }
 
         fclose($handle);
         exit;
-    }
+    }}
 } else {
     die('{"jsonrpc" : "2.0", "error" : {"code": 404, "message": "File not found."}, "id" : "id"}');
 }
 
 
-function rangeDownload($file) {
+function rangeDownload($file): void
+{
     // Ensure the file exists and is a regular file
     if (!is_file($file)) {
         header('HTTP/1.1 404 Not Found');
@@ -115,9 +117,9 @@ function rangeDownload($file) {
             exit;
         }
 
-        // Handle ranges
+        // Handle ranges (e.g. "bytes=500-999")
         if ($range[0] === '-') {
-            // Last n bytes requested
+            // Last n bytes requested (e.g., "-500")
             $c_start = $size - substr($range, 1);
         } else {
             $range = explode('-', $range);
@@ -125,7 +127,7 @@ function rangeDownload($file) {
             $c_end = isset($range[1]) && is_numeric($range[1]) ? (int)$range[1] : $size - 1;
         }
 
-        // Validate the range
+        // Validate the range (ensure logical values and no overflow)
         if ($c_start > $c_end || $c_start > $size - 1 || $c_end >= $size) {
             header('HTTP/1.1 416 Requested Range Not Satisfiable');
             header("Content-Range: bytes $start-$end/$size");
@@ -141,9 +143,14 @@ function rangeDownload($file) {
         header('HTTP/1.1 206 Partial Content');
     }
 
+    // Sanitize and encode filename to prevent XSS in headers and body
+    $safeFileName = htmlspecialchars(basename($file), ENT_QUOTES, 'UTF-8');
+
     // Send headers
     header("Content-Range: bytes $start-$end/$size");
     header("Content-Length: $length");
+    header('Content-Disposition: attachment; filename="' . $safeFileName . '"');
+    header('Accept-Ranges: bytes');
 
     // Send the file content in chunks
     $buffer = 8192; // 8KB buffer size

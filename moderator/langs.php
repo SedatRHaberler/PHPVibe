@@ -39,12 +39,22 @@ if (isset($_GET['delete'])) {
     }
 }
 
-if(isset($_GET['import'])) {
-$lang = $_GET['import'];
-$file = ABSPATH.'/'.ADMINCP.'/cache/'.$lang;
-if($lang) {
-if(is_readable($file)) {
-$zip = file_get_contents($file);
+if (isset($_GET['import'])) {
+    $lang = $_GET['import'];
+
+    // Sanitize input to prevent path traversal (e.g., "../")
+    $lang = basename($lang); // Removes any directory components like ".." or "./"
+
+    $file = ABSPATH . '/' . ADMINCP . '/cache/' . $lang;
+
+    if ($lang && is_readable($file)) {
+        $zip = file_get_contents($file);
+    } else {
+        // Handle error: file is not readable or invalid
+        echo "Invalid file.";
+    }
+}
+
 //var_dump($zip);
 $zip = json_decode($zip,true);
     if (not_empty($zip)) {

@@ -40,17 +40,19 @@ class paypal_class {
     <div id="form-content">
    <div class="whead"><h6> <?php echo _lang('Processing Order...'); ?></h6> <div class="clear"></div></div>
     <div class="body">
-	<?php
-	echo "<center><div class='wait_msg'>"._lang('Please wait, your order is being processed and you will be redirected to the paypal website.')."</div></center>\n";  
-	echo "<form method=\"post\" name=\"paypal_form\" ";
-	echo "action=\"".$this->paypal_url."\">\n";
-	foreach ($this->fields as $name => $value) {
-		echo "<input type=\"hidden\" name=\"$name\" value=\"$value\"/>\n";
-	}
-	echo "<center><br/><br/>"._lang('If you are not automatically redirected to')." "._lang('paypal within 5 seconds...')."<br/><br/>\n";
-	echo "<input type=\"submit\" class=\"submitProcessing go-button\" value=\""._lang('Click Here')."\"></center>\n";
-	echo "</form>\n";
-	?>
+        <?php
+        echo "<center><div class='wait_msg'>" . htmlspecialchars(_lang('Please wait, your order is being processed and you will be redirected to the paypal website.'), ENT_QUOTES, 'UTF-8') . "</div></center>\n";
+        echo "<form method=\"post\" name=\"paypal_form\" ";
+        echo "action=\"" . htmlspecialchars($this->paypal_url, ENT_QUOTES, 'UTF-8') . "\">\n";
+        foreach ($this->fields as $name => $value) {
+            // Sanitize both name and value to prevent XSS
+            echo "<input type=\"hidden\" name=\"" . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . "\" value=\"" . htmlspecialchars($value, ENT_QUOTES, 'UTF-8') . "\"/>\n";
+        }
+        echo "<center><br/><br/>" . htmlspecialchars(_lang('If you are not automatically redirected to'), ENT_QUOTES, 'UTF-8') . " " . htmlspecialchars(_lang('paypal within 5 seconds...'), ENT_QUOTES, 'UTF-8') . "<br/><br/>\n";
+        echo "<input type=\"submit\" class=\"submitProcessing go-button\" value=\"" . htmlspecialchars(_lang('Click Here'), ENT_QUOTES, 'UTF-8') . "\"></center>\n";
+        echo "</form>\n";
+        ?>
+
     </div>
     </center>
 	</div>

@@ -475,13 +475,16 @@ function lang_log($txt)
 function get_language($lang_code, $default = false)
 {
     global $cachedb;
-    $lang_code = escape($lang_code);
+
+    // Sanitize lang_code to prevent path traversal attacks
+    $lang_code = basename(escape($lang_code)); // Ensure only the file name is used
+
     $lang_file = ABSPATH . '/storage/langs/' . $lang_code . '.json';
-//echo $lang_file;
+
     if (file_exists($lang_file)) {
         $row = file_get_contents($lang_file);
         $row = json_decode(stripslashes($row), true);
-//print_r($row);
+
         if (is_array($row)) {
             return apply_filter('get_language_' . $lang_code, $row);
         } else { // language does not exist, so we must cache its non-existence
@@ -491,8 +494,8 @@ function get_language($lang_code, $default = false)
     } else { // language does not exist
         return $default;
     }
-
 }
+
 
 
 /**
@@ -1144,12 +1147,15 @@ function remove_file($filename)
     if (is_moderator() && is_readable($filename)) {
         chmod($filename, 0777);
         if (unlink($filename)) {
-            echo '<div class="msg-info">' . $filename . ' removed.</div>';
+            // Sanitize the filename to prevent XSS
+            echo '<div class="msg-info">' . htmlspecialchars($filename, ENT_QUOTES, 'UTF-8') . ' removed.</div>';
         } else {
-            echo '<div class="msg-warning">' . $filename . ' was not removed. Check server permisions for "unlink" function.</div>';
+            // Sanitize the filename to prevent XSS
+            echo '<div class="msg-warning">' . htmlspecialchars($filename, ENT_QUOTES, 'UTF-8') . ' was not removed. Check server permissions for "unlink" function.</div>';
         };
     }
 }
+
 
 function unlike_video($id, $u = null)
 {

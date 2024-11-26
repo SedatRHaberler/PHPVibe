@@ -1624,96 +1624,105 @@ class ImgTools
 	#
 	{
 		$this->__construct($this->fileName);
-	}	
-		
-	
-	
-    public function saveImage($savePath, $imageQuality="100")
-   
-    # Date:       27-02-08  
-    # Purpose:    Saves the image
-    # Param in:   $savePath: Where to save the image including filename:
-    #             $imageQuality: image quality you want the image saved at 0-100
-    # Param out:  n/a
-    # Reference: 
-    # Notes:	  * gif doesn't have a quality parameter
-	#			  * jpg has a quality setting 0-100 (100 being the best)
-    #			  * png has a quality setting 0-9 (0 being the best)
-	#
-	#             * bmp files have no native support for bmp files. We use a
-	#				third party class to save as bmp.
+	}
+
+
+
+    public function saveImage($savePath, $imageQuality = "100")
     {
+        // *** Perform a check or two.
+        if (!is_resource($this->imageResized)) {
+            if ($this->debug) {
+                var_dump('saveImage: This is not a resource.');
+            } else {
+                var_dump();
+            }
+        }
 
-		// *** Perform a check or two.
-		if (!is_resource($this->imageResized)) { if ($this->debug) { 
-			var_dump('saveImage: This is not a resource.'); 
-			}else{ 
-			var_dump(); 
-			}}			
-		$fileInfoArray = pathInfo($savePath);
-		clearstatcache();
-		if (!is_writable($fileInfoArray['dirname'])) {	if ($this->debug) { var_dump('The path is not writable. Please check your permissions.'); }else{ var_dump(); }}	
-		
-		// *** Get extension
-        $extension = strrchr($savePath, '.');
-        $extension = strtolower($extension);
+        // Get directory and file information
+        $fileInfoArray = pathinfo($savePath);
+        clearstatcache();
 
-		$error = '';
+        // Ensure the directory exists and is writable
+        $dir = $fileInfoArray['dirname'];
+        if (!is_writable($dir)) {
+            if ($this->debug) {
+                var_dump('The path is not writable. Please check your permissions.');
+            } else {
+                var_dump();
+            }
+        }
 
-        switch($extension)
-        {
+        // *** Sanitize the file path to prevent directory traversal
+        $savePath = realpath($dir) . DIRECTORY_SEPARATOR . basename($savePath);
+
+        // Ensure that the path is within the allowed directory
+        if (strpos(realpath($savePath), realpath($dir)) !== 0) {
+            die('Invalid file path. Path traversal detected.');
+        }
+
+        // Get the file extension
+        $extension = strtolower(strrchr($savePath, '.'));
+
+        $error = '';
+
+        switch ($extension) {
             case '.jpg':
             case '.jpeg':
-				$this->checkInterlaceImage($this->isInterlace);
-				if (imagetypes() & IMG_JPG) {
-					imagejpeg($this->imageResized, $savePath, $imageQuality);
-				} else { $error = 'jpg'; }
+                $this->checkInterlaceImage($this->isInterlace);
+                if (imagetypes() & IMG_JPG) {
+                    imagejpeg($this->imageResized, $savePath, $imageQuality);
+                } else {
+                    $error = 'jpg';
+                }
                 break;
 
             case '.gif':
-				$this->checkInterlaceImage($this->isInterlace);
-				if (imagetypes() & IMG_GIF) {
-					imagegif($this->imageResized, $savePath);
-				} else { $error = 'gif'; }
+                $this->checkInterlaceImage($this->isInterlace);
+                if (imagetypes() & IMG_GIF) {
+                    imagegif($this->imageResized, $savePath);
+                } else {
+                    $error = 'gif';
+                }
                 break;
 
             case '.png':
-				// *** Scale quality from 0-100 to 0-9
-				$scaleQuality = round(($imageQuality/100) * 9);
+                // Scale quality from 0-100 to 0-9
+                $scaleQuality = round(($imageQuality / 100) * 9);
+                $invertScaleQuality = 9 - $scaleQuality;
 
-				// *** Invert qualit setting as 0 is best, not 9
-				$invertScaleQuality = 9 - $scaleQuality;
-
-				$this->checkInterlaceImage($this->isInterlace);
-				if (imagetypes() & IMG_PNG) {
-					 imagepng($this->imageResized, $savePath, $invertScaleQuality);
-				} else { $error = 'png'; }
+                $this->checkInterlaceImage($this->isInterlace);
+                if (imagetypes() & IMG_PNG) {
+                    imagepng($this->imageResized, $savePath, $invertScaleQuality);
+                } else {
+                    $error = 'png';
+                }
                 break;
 
             case '.bmp':
-				file_put_contents($savePath, $this->GD2BMPstring($this->imageResized));
-			    break;
+                file_put_contents($savePath, $this->GD2BMPstring($this->imageResized));
+                break;
 
-			
-            // ... etc
+            // Additional cases for other file types can be added here
 
             default:
-				// *** No extension - No save.
-				$this->errorArray[] = 'This file type (' . $extension . ') is not supported. File not saved.';
+                // *** No extension - No save.
+                $this->errorArray[] = 'This file type (' . $extension . ') is not supported. File not saved.';
                 break;
         }
 
-		//imagedestroy($this->imageResized);
+        //imagedestroy($this->imageResized);
 
-		// *** Display error if a file type is not supported.
-		if ($error != '') {
-			$this->errorArray[] = $error . ' support is NOT enabled. File not saved.';
-		}       
+        // Display error if a file type is not supported.
+        if ($error != '') {
+            $this->errorArray[] = $error . ' support is NOT enabled. File not saved.';
+        }
     }
 
 
 
-	public function displayImage($fileType = 'jpg', $imageQuality="100")
+
+    public function displayImage($fileType = 'jpg', $imageQuality="100")
    
     # Date:       18-11-09
     # Purpose:    Display images directly to the browser
