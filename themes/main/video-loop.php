@@ -20,7 +20,8 @@ foreach ($videos as $video) {
 <div id="video-'.$video->id.'" class="video">
 <div class="video-thumb">
 		<a class="clip-link" data-id="'.$video->id.'" title="'.$full_title.'" href="'.$url.'">
-			<span class="clip">
+			<span class="clip">';
+            echo '
 				<img src="'.thumb_fix($video->thumb, true, get_option('thumb-width'), get_option('thumb-height')).'" data-name="'.addslashes(strtok($full_title, " ")).'" /><span class="vertical-align"></span>
 			</span>
           	<span class="overlay"></span>

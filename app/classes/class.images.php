@@ -67,10 +67,14 @@ class FileUploader extends ImgTools {
 
         // Validate file extension
         $this->retrieveExtension($this->fileName);
-        $validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf']; // Allow only these extensions
-        if (!in_array($this->fileExtension, $validExtensions)) {
-            throw new Exception("Invalid file extension");
-        }
+
+
+
+        debug_to_consol($this->fileName);
+//        $validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf','JPEG']; // Allow only these extensions
+//        if (!in_array($this->fileExtension, $validExtensions)) {
+//            throw new Exception("Invalid file extension");
+//        }
     }
 
 
