@@ -424,32 +424,44 @@ function get_browser_language()
     global $cachedb;
     $available = array();
     $default = get_option('def_lang', 'en');
-    // List available
-    $avails = $cachedb->get_results("SELECT `lang_code` FROM  " . DB_PREFIX . "languages");
+
+    // List available languages
+    $avails = $cachedb->get_results("SELECT `lang_code` FROM " . DB_PREFIX . "languages");
     foreach ($avails as $av) {
         $available[] = $av->lang_code;
     }
+
+    // Check for HTTP_ACCEPT_LANGUAGE header
     if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
         $langs = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+
         if (empty($available)) {
             return $default;
         }
+
         foreach ($langs as $lang) {
+            // Extract language code (e.g., "en", "fr")
             $lang = substr($lang, 0, 2);
+
+            // Sanitize language code
+            $lang = preg_replace('/[^a-zA-Z]/', '', $lang);
+
             if (in_array($lang, $available)) {
                 return $lang;
             }
-            //Test for XX-nr
-            $matches = preg_grep('/' . $lang . '/', $available);
-            if ($matches) {
-                if (isset($matches[0])) {
-                    return $matches[0];
+
+            // Check for partial matches in available languages
+            foreach ($available as $availableLang) {
+                if (stripos($availableLang, $lang) === 0) {
+                    return $availableLang;
                 }
             }
         }
     }
+
     return $default;
 }
+
 
 function lang_terms($lang = null)
 {
@@ -764,7 +776,9 @@ function _count($table, $field = null, $sum = false)
     } else {
         $c = $db->get_row("SELECT count(*) as nr FROM " . DB_PREFIX . $table);
     }
+    if (isset($c->nr))
     return number_format($c->nr, 0);
+    return 0;
 }
 
 //Fb count

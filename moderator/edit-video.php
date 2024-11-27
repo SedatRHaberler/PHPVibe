@@ -199,6 +199,7 @@ if(isset($_GET['reconvertfrom'])) {
 				}
 			}
 		}
+
 		/* Silently exec chained ffmpeg commands*/
 		if(not_empty($command)) {	
 		vibe_log('Chained cmds:' .$command. '<br>');
