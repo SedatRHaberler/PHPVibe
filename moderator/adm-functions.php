@@ -214,7 +214,6 @@ $sb = '
 					</ul>
 				</li>	
 		 '.apply_filters("before_plugins_menu",false).'		
-       <li class="LiHead"><a href="'.admin_url('plugins').'"><i class="material-icons">system_update_alt</i> Plugins</a></li>
 					 <li class="LiHead"><a href="'.admin_url('langs').'"><i class="material-icons">language</i> Languages</a></li>
                <li class="LiHead"><a href="#"><i class="material-icons">video_library</i> Media library</a>
                   
@@ -406,8 +405,8 @@ echo '<div class="msg-warning">User with id #'.$id.' does not exist.</div>';
 }
 }
 function acjs(){
-$txt = '>a/<>llams/<)1102 dehsilbatsE(>llams< ebiVPHP>"SMC oediV ebiVPHP"=eltit "knalb_"=tegrat "moc.ebivphp.www//:sptth"=ferh a<';
-echo strrev($txt);
+$txt = 'Powered by haberler.com';
+echo $txt;
 }
 function delete_cron($id) {
     global $db;

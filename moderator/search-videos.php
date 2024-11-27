@@ -2,14 +2,14 @@
 if(isset($_GET['delete-video'])) {
 unpublish_video(intval($_GET['delete-video']));
 echo '<div class="msg-info">Video #'.intval($_GET['delete-video']).' was unpublished.</div>';
-} 
+}
 if(isset($_GET['feature-video'])) {
 $id = intval($_GET['feature-video']);
 if($id){
 $db->query("UPDATE ".DB_PREFIX."videos set featured = '1' where id='".intval($id)."'");
 echo '<div class="msg-info">Video #'.$id.' was featured.</div>';
 }
-} 
+}
 if(isset($_POST['checkRow'])) {
 foreach ($_POST['checkRow'] as $del) {
 unpublish_video(intval($del));
@@ -38,7 +38,7 @@ $videos = $db->get_results(str_replace("#what#", $options, $vq.this_limit()));
 if($videos) {
 
 $ps = admin_url('search-videos').'&key='.$key.'&p=';
-$a = new pagination;	
+$a = new pagination;
 $a->set_current(this_page());
 $a->set_first_page(true);
 $a->set_pages_items(7);
@@ -101,10 +101,10 @@ $a->set_values($count->nr);
                                   </td>
                               </tr>
                           <?php } ?>
-						</tbody>  
+						</tbody>
 </table>
-</div>						
-</fieldset>					
+</div>
+</fieldset>
 </form>
     <?php
     // Sanitize the input before using it.

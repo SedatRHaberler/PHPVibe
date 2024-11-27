@@ -46,7 +46,7 @@
       if( in_array(com(),$cat_for_music )) {
 ?>
 <div class="sidebar-nav blc"><ul>
-	<li class="ajaxed <?php aTab(browse);?>" ><a href="<?php echo music_url('browse'); ?>"> <i class="material-icons">&#xe01d </i> <?php echo _lang('Recent'); ?> </li></a>
+	<li class="ajaxed <?php aTab(browse);?>" ><a href="<?php echo music_url('browse'); ?>"> <i class="material-icons">&#xe01d </i> <?php echo _lang('Recent'); ?> </li></ul>
 	<li class="ajaxed <?php aTab(mostviewed);?>" ><a href="<?php echo music_url(mostviewed); ?>"> <i class="icon icon-line-chart"></i> <?php echo _lang('Top'); ?></a></li>
     <li class="ajaxed <?php aTab(mostliked);?>" ><a href="<?php echo music_url(mostliked); ?>"> <i class="material-icons">&#xe8dc </i> <?php echo _lang('Most Liked'); ?></a></li>
     <li class="ajaxed <?php aTab(mostcom);?>" ><a href="<?php echo music_url(mostcom); ?>"> <i class="icon icon-comments"></i> <?php echo _lang('Discussed'); ?></a></li>

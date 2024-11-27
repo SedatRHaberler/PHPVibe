@@ -9,7 +9,6 @@
 <li><a href="'.admin_url('seo').'"><div class="lidot"></div> SEO  </a>
 <li><a href="'.admin_url('sef').'"><div class="lidot"></div> SEF</a>
 <li><a href="'.admin_url('homepage').'"><div class="lidot"></div> Homepage</a></li>
-<li><a href="'.admin_url('plugins').'"><div class="lidot"></div> Plugins</a></li>
 <li><a href="'.admin_url('footer-socials').'"><div class="lidot"></div> Socials</a></li>
 
 '; ?>
