@@ -53,28 +53,19 @@ class FileUploader extends ImgTools {
 
 
     private function getUploadedFileInfo()
+        #
+
+        #	Purpose:	Get the uploaded file info provided in the PHP $_FILES array
+        #
     {
-        // Get file info from the $_FILES array
-        $this->fileTempName = $_FILES[$this->fileInputName]["tmp_name"];
-        $this->fileName     = $_FILES[$this->fileInputName]["name"];
-        $this->fileSize     = $_FILES[$this->fileInputName]["size"];
-        $this->fileType     = $_FILES[$this->fileInputName]["type"];
+        $this->fileTempName	= $_FILES[$this->fileInputName]["tmp_name"];
+        $this->fileName		= $_FILES[$this->fileInputName]["name"];
+        $this->fileSize		= $_FILES[$this->fileInputName]["size"];
+        $this->fileType	    = $_FILES[$this->fileInputName]["type"];
         $this->fileError    = $_FILES[$this->fileInputName]["error"];
 
-        // Sanitize the file name to avoid security risks (e.g., SQL injection)
-        $this->fileName = basename($this->fileName); // Removes any directory path
-        $this->fileName = preg_replace('/[^a-zA-Z0-9\-\_\.]/', '', $this->fileName); // Allow only alphanumeric, dash, underscore, and dot
-
-        // Validate file extension
         $this->retrieveExtension($this->fileName);
 
-
-
-        debug_to_consol($this->fileName);
-//        $validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf','JPEG']; // Allow only these extensions
-//        if (!in_array($this->fileExtension, $validExtensions)) {
-//            throw new Exception("Invalid file extension");
-//        }
     }
 
 
