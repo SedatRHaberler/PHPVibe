@@ -154,19 +154,44 @@ function PHPVibeSources() {
          }
      public function remotevideo($url)
      {
+         //TODO
+//         $embedCode = '';
+//         if ($url) {
+//             // Video dosyasının uzantısını al
+//             $pieces_array = explode('.', $url);
+//             $ext = end($pieces_array);
+//
+//             // Video formatını kontrol et
+//             if (in_array($ext, array("mp4", "webm", "ogv", "m3u8", "ts"))) {
+//                 // HTML5 Video etiketi ile embed et
+//                 $embedCode = '<video controls>
+//                            <source src="' . $url . '" type="video/' . $ext . '">
+//                            Your browser does not support the video tag.
+//                          </video>';
+//             }
+//         }
+//         return $embedCode;
+         global $video;
          $embedCode = '';
          if ($url) {
-             // Video dosyasının uzantısını al
              $pieces_array = explode('.', $url);
              $ext = end($pieces_array);
+             $choice = get_option('remote-player', 1);
+             debug_to_console($choice);
 
-             // Video formatını kontrol et
-             if (in_array($ext, array("mp4", "webm", "ogv", "m3u8", "ts"))) {
-                 // HTML5 Video etiketi ile embed et
-                 $embedCode = '<video controls>
-                            <source src="' . $url . '" type="video/' . $ext . '">
-                            Your browser does not support the video tag.
-                          </video>';
+             $mobile_supported = array("mp4", "mp3", "webm", "ogv", "m3u8", "ts", "tif");
+             if (!in_array($ext, $mobile_supported)) {
+                 /*force jwplayer always on non-mobi formats, as others are just html5 */
+                 $choice = 6;
+             }
+             if ($choice == 1) {
+                 $embedCode = _jwplayer($url, $video->thumb(), thumb_fix(get_option('player-logo')), $ext);
+             } elseif ($choice == 2) {
+                 $embedCode = flowplayer($url, $video->thumb(), thumb_fix(get_option('player-logo')), $ext);
+             } elseif ($choice == 6) {
+                 $embedCode = vjsplayer($url, $video->thumb(), thumb_fix(get_option('player-logo')), $ext);
+             } else {
+                 $embedCode = _jpcustom($url, $video->thumb());
              }
          }
          return $embedCode;
@@ -177,6 +202,7 @@ function PHPVibeSources() {
              debug_to_console("generateEmbedCode");
          global $video,$qualities;
          $embedCode = "";
+         debug_to_console($videoProvider);
          switch ($videoProvider)
          {  case 'up':
 					$token = $video->token();
