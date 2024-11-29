@@ -191,7 +191,7 @@ function modify_content($text)
     return $data;
 }
 
-add_filter('Haberler_title', 'modify_title');
+add_filter('phpvibe_title', 'modify_title');
 
 if ((get_option('uploadrule') == 1) || is_moderator()) {
     add_filter('the_defaults', 'modify_content');

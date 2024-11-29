@@ -9,15 +9,16 @@ if(isset($heading_meta) && !empty($heading_meta)) { echo $heading_meta;}
 if(isset($heading_plus) && !empty($heading_plus)) { echo '<small class="videod">'.$heading_plus.'</small>';}
 if ($images) {
 
-echo $blockextra.'<div class="row text-center"><div class="col-md-12 col-xs-12 gfluid '.$blockclass.'">';
-foreach ($images as $image) {
-	if(isset($image->id) && not_empty($image->id)) {
-		$image->thumb = site_url().'storage/'.get_option('mediafolder').'/pictures/thumbs/'. $image->source;
-	if(isset($image->nsfw) && ($image->nsfw > 0) ) { $image->thumb = tpl().'images/nsfw.jpg';}
-			$title = _html(_cut($image->title, 370));
-			$full_title = _html(str_replace("\"", "",$image->title));
-			$url = image_url($image->id , $image->title);
-			echo '
+    echo $blockextra.'<div class="row text-center"><div class="col-md-12 col-xs-12 gfluid '.$blockclass.'">';
+    foreach ($images as $image) {
+        if(isset($image->id) && not_empty($image->id)) {
+            $image->thumb = site_url().'storage/'.get_option('mediafolder').'/pictures/thumbs/'. $image->source;
+            debug_to_console($image->thumb);
+            if(isset($image->nsfw) && ($image->nsfw > 0) ) { $image->thumb = tpl().'images/nsfw.jpg';}
+            $title = _html(_cut($image->title, 370));
+            $full_title = _html(str_replace("\"", "",$image->title));
+            $url = image_url($image->id , $image->title);
+            echo '
 		<div class="image-item item">
         <div class="image-content">
 		<a class="clip-link" data-id="'.$image->id.'" title="'.$full_title.'" href="'.$url.'">
@@ -31,21 +32,21 @@ foreach ($images as $image) {
 		</div>
     </div>
 ';
-}
-}
-echo _ad('0','after-video-loop');
-/* Kill for home if several blocks */
-if(!isset($kill_infinite) || !$kill_infinite) {
-if(!_contains($canonical,"?")) {
-echo '
+        }
+    }
+    echo _ad('0','after-video-loop');
+    /* Kill for home if several blocks */
+    if(!isset($kill_infinite) || !$kill_infinite) {
+        if(!_contains($canonical,"?")) {
+            echo '
 <nav id="page_nav"><a href="'.$canonical.'?p='.next_page().'"></a></nav>
 ';
-} else {
-echo '
+        } else {
+            echo '
 <nav id="page_nav"><a href="'.$canonical.'&p='.next_page().'"></a></nav>
 ';
-}
-echo '
+        }
+        echo '
 <div class="page-load-status">
   <div class="infinite-scroll-request" style="display:none">
     <div class="cp-spinner cp-flip"></div>
@@ -56,11 +57,11 @@ echo '
   </p>
 </div>
 ';
-}
+    }
 
-echo '</div></div>';
+    echo '</div></div>';
 } else {
-echo '<p class="empty-content">'._lang('Nothing here so far.').'</p>';
+    echo '<p class="empty-content">'._lang('Nothing here so far.').'</p>';
 }
 do_action('videoloop-end');
 ?>

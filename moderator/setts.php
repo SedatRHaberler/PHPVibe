@@ -11,20 +11,68 @@ if(isset($_POST['update_options_now'])){
     }
     echo '<div class="msg-info">Configuration options have been updated.</div>';
 
-//Set logo
-    if(isset($_FILES['site-logo']) && !empty($_FILES['site-logo']['name'])){
-        $endextens = explode('.', $_FILES['site-logo']['name']);
-        $extension = end($endextens);
-        $thumb = ABSPATH.'/storage/uploads/'.nice_url($_FILES['site-logo']['name']).uniqid().'.'.$extension;
-        if (move_uploaded_file($_FILES['site-logo']['tmp_name'], $thumb)) {
-            $sthumb = str_replace(ABSPATH.'/' ,'',$thumb);
-            update_option('site-logo', $sthumb);
-            //$db->clean_cache();
-        } else {
-            echo '<div class="msg-warning">Logo upload failed.</div>';
-        }
+// Set logo
+    if (isset($_FILES['site-logo']) && !empty($_FILES['site-logo']['name'])) {
+        // Allowed file extensions
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif']; // Supported extensions
+        $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif']; // Supported MIME types
+        $maxFileSize = 5000000; // Maximum file size in bytes (5MB)
 
+        // Uploaded file details
+        $fileName = basename($_FILES['site-logo']['name']); // Get only the base name
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION)); // Get file extension
+        $fileType = mime_content_type($_FILES['site-logo']['tmp_name']); // Get MIME type
+        $fileSize = $_FILES['site-logo']['size']; // Get file size
+
+        // Validate file extension
+        if (in_array($fileExtension, $allowedExtensions)) {
+            // Validate MIME type
+            if (in_array($fileType, $allowedMimeTypes)) {
+                // Validate file size
+                if ($fileSize <= $maxFileSize) {
+                    // Generate a unique and secure file name
+                    $uniqueFileName = uniqid('logo_', true) . '.' . $fileExtension;
+
+                    // Target upload directory and file path
+                    $uploadDir = ABSPATH . '/storage/uploads/';
+                    $thumb = $uploadDir . $uniqueFileName;
+
+                    // Check if the upload directory exists and create it if not
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true); // Create the directory if necessary
+                    }
+
+                    // Safely move the uploaded file
+                    if (move_uploaded_file($_FILES['site-logo']['tmp_name'], $thumb)) {
+                        // Set appropriate permissions for the uploaded file
+                        chmod($thumb, 0644);
+
+                        // Save the relative path of the uploaded file
+                        $sthumb = str_replace(ABSPATH . '/', '', $thumb);
+
+                        // Update the site logo option
+                        update_option('site-logo', $sthumb);
+
+                        // Optionally clear the cache
+                        // $db->clean_cache();
+                    } else {
+                        // File move failed
+                        echo '<div class="msg-warning">Logo upload failed. Please try again.</div>';
+                    }
+                } else {
+                    // File size exceeds the limit
+                    echo '<div class="msg-warning">File size is too large. Maximum 5MB allowed.</div>';
+                }
+            } else {
+                // Invalid MIME type
+                echo '<div class="msg-warning">Invalid file type. Only JPEG, PNG, and GIF files are supported.</div>';
+            }
+        } else {
+            // Invalid file extension
+            echo '<div class="msg-warning">Invalid file type. Only jpg, jpeg, png, and gif extensions are allowed.</div>';
+        }
     }
+
     $db->clean_cache();
 }
 $all_options = get_all_options();
@@ -228,7 +276,7 @@ include_once('setheader.php');
                         <label class="control-label"><i class="icon-font"></i>Copyright</label>
                         <div class="controls">
                             <input type="text" name="site-copyright" class=" col-md-12" value="<?php echo get_option('site-copyright'); ?>" />
-                            <span class="help-block" id="limit-text">Ex: &copy; 2013 <?php echo ucfirst(ltrim(cookiedomain(),".")); ?></span>
+                            <span class="help-block" id="limit-text">Ex: &copy; 2013 <?php echo htmlspecialchars(ucfirst(ltrim(cookiedomain(), ".")), ENT_QUOTES, 'UTF-8'); ?></span>
                         </div>
                     </div>
                 </div>
@@ -239,7 +287,7 @@ include_once('setheader.php');
                         <label class="control-label"><i class="icon-tint"></i>Custom licensing</label>
                         <div class="controls">
                             <input type="text" name="licto" class=" col-md-12" value="<?php echo get_option('licto'); ?>" />
-                            <span class="help-block" id="limit-text">Ex: Licensed to <?php echo ucfirst(ltrim(cookiedomain(),".")); ?></span>
+                            <span class="help-block" id="limit-text">Ex: Licensed to <?php echo htmlspecialchars(ucfirst(ltrim(cookiedomain(), ".")), ENT_QUOTES, 'UTF-8'); ?></span>
                         </div>
                     </div>
                 </div>

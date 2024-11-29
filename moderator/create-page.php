@@ -1,8 +1,56 @@
 <?php
-if(isset($_POST['play-name'])) {if(isset($_FILES['play-img']) && !empty($_FILES['play-img']['name'])){	$endextens = explode('.', $_FILES['play-img']['name']);$extension = end($endextens);	$thumb = ABSPATH.'/storage/uploads/'.nice_url($_FILES['play-img']['name']).uniqid().'.'.$extension;	if (move_uploaded_file($_FILES['play-img']['tmp_name'], $thumb)) {   	$picture = str_replace(ABSPATH.'/' ,'',$thumb);   }	else { $picture = '';}	}  	else { $picture = '';}
-    $db->query("INSERT INTO ".DB_PREFIX."pages (`date`, `menu`, `pic`, `title`, `content`, `tags`, `m_order`)
- VALUES (now(),'".intval($_POST['menu'])."', '".$picture."', '".$db->escape($_POST['play-name'])."', '".$db->escape(htmlentities($_POST['content']))."', '".$db->escape($_POST['tags'])."', '".$db->escape($_POST['m_order'])."')");
-    echo '<div class="msg-info">Page '.$_POST['play-name'].' created</div>';
+if(isset($_POST['play-name']))
+{
+    if (isset($_FILES['play-img']) && !empty($_FILES['play-img']['name'])) {
+
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+
+        $fileName = basename($_FILES['play-img']['name']);
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+
+        if (in_array($fileExtension, $allowedExtensions)) {
+
+            $safeFileName = uniqid('img_', true) . '.' . $fileExtension;
+
+
+            $uploadDir = ABSPATH . '/storage/uploads/';
+            $thumb = $uploadDir . $safeFileName;
+
+
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+
+            if (move_uploaded_file($_FILES['play-img']['tmp_name'], $thumb)) {
+                $picture = str_replace(ABSPATH . '/', '', $thumb);
+            } else {
+                $picture = '';
+            }
+        } else {
+            echo '<div class="msg-error">Geçersiz dosya türü. Sadece jpg, jpeg, png ve gif desteklenir.</div>';
+            $picture = '';
+        }
+    } else {
+        $picture = '';
+    }
+
+
+    // Validate and escape input
+    $menu = intval($_POST['menu']);
+    $playName = htmlspecialchars($db->escape($_POST['play-name']), ENT_QUOTES, 'UTF-8');
+    $content = htmlspecialchars($db->escape(htmlentities($_POST['content'])), ENT_QUOTES, 'UTF-8');
+    $tags = htmlspecialchars($db->escape($_POST['tags']), ENT_QUOTES, 'UTF-8');
+    $m_order = htmlspecialchars($db->escape($_POST['m_order']), ENT_QUOTES, 'UTF-8');
+
+    // Insert into database
+    $db->query("INSERT INTO " . DB_PREFIX . "pages (`date`, `menu`, `pic`, `title`, `content`, `tags`, `m_order`)
+        VALUES (NOW(), '$menu', '$picture', '$playName', '$content', '$tags', '$m_order')");
+
+    // Output sanitized name
+    echo '<div class="msg-info">Page ' . htmlspecialchars($_POST['play-name'], ENT_QUOTES, 'UTF-8') . ' created</div>';
 }
 
 ?>

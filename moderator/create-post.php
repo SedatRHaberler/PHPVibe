@@ -1,9 +1,79 @@
 <?php
 if(isset($_POST['play-name'])) {
-    if(isset($_FILES['play-img']) && !empty($_FILES['play-img']['name'])){$endextens = explode('.', $_FILES['play-img']['name']);$extension = end($endextens);$thumb = ABSPATH.'/storage/uploads/'.nice_url($_FILES['play-img']['name']).uniqid().'.'.$extension;if (move_uploaded_file($_FILES['play-img']['tmp_name'], $thumb)) {   $picture = str_replace(ABSPATH.'/' ,'',$thumb);   } else { $picture = '';}	}  else { $picture = '';}
-    $db->query("INSERT INTO ".DB_PREFIX."posts (`date`, `ch`, `pic`, `title`, `content`, `tags`)
- VALUES (now(),'".intval($_POST['ch'])."', '".$picture."', '".$db->escape($_POST['play-name'])."', '".$db->escape(htmlentities($_POST['content']))."', '".$db->escape($_POST['tags'])."')");
-    echo '<div class="msg-info">Post '.$_POST['play-name'].' created</div>';
+    if (isset($_FILES['play-img']) && !empty($_FILES['play-img']['name'])) {
+        // Allowed file extensions
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif']; // Supported extensions
+        $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif']; // Supported MIME types
+        $maxFileSize = 5000000; // Maximum file size in bytes (5MB)
+
+        // Uploaded file name and properties
+        $fileName = basename($_FILES['play-img']['name']); // Get only the base name
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION)); // Get file extension
+        $fileType = mime_content_type($_FILES['play-img']['tmp_name']); // Get MIME type
+        $fileSize = $_FILES['play-img']['size']; // Get file size
+
+        // Validate file extension
+        if (in_array($fileExtension, $allowedExtensions)) {
+            // Validate MIME type
+            if (in_array($fileType, $allowedMimeTypes)) {
+                // Validate file size
+                if ($fileSize <= $maxFileSize) {
+                    // Generate a unique and secure file name
+                    $uniqueFileName = uniqid('img_', true) . '.' . $fileExtension;
+
+                    // Target upload directory and file path
+                    $uploadDir = ABSPATH . '/storage/uploads/';
+                    $thumb = $uploadDir . $uniqueFileName;
+
+                    // Check if the upload directory exists and create it if not
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true); // Create the directory if necessary
+                    }
+
+                    // Safely move the uploaded file
+                    if (move_uploaded_file($_FILES['play-img']['tmp_name'], $thumb)) {
+                        // Set appropriate permissions for the uploaded file
+                        chmod($thumb, 0644);
+
+                        // Save the relative path of the uploaded file
+                        $picture = str_replace(ABSPATH . '/', '', $thumb);
+                    } else {
+                        // File could not be moved
+                        echo '<div class="msg-error">Failed to upload the file. Please try again.</div>';
+                        $picture = '';
+                    }
+                } else {
+                    // File size exceeds the limit
+                    echo '<div class="msg-error">File size is too large. Maximum 5MB allowed.</div>';
+                    $picture = '';
+                }
+            } else {
+                // Invalid MIME type
+                echo '<div class="msg-error">Invalid file type. Only JPEG, PNG, and GIF files are supported.</div>';
+                $picture = '';
+            }
+        } else {
+            // Invalid file extension
+            echo '<div class="msg-error">Invalid file type. Only jpg, jpeg, png, and gif extensions are allowed.</div>';
+            $picture = '';
+        }
+    } else {
+        $picture = ''; // No file uploaded
+    }
+
+
+    // Sanitize and validate input data
+    $ch = intval($_POST['ch']);
+    $playName = htmlspecialchars($db->escape($_POST['play-name']), ENT_QUOTES, 'UTF-8');
+    $content = htmlspecialchars($db->escape(htmlentities($_POST['content'])), ENT_QUOTES, 'UTF-8');
+    $tags = htmlspecialchars($db->escape($_POST['tags']), ENT_QUOTES, 'UTF-8');
+
+    // Insert into database using sanitized values
+    $db->query("INSERT INTO " . DB_PREFIX . "posts (`date`, `ch`, `pic`, `title`, `content`, `tags`)
+        VALUES (NOW(), '$ch', '$picture', '$playName', '$content', '$tags')");
+
+    // Output sanitized user data
+    echo '<div class="msg-info">Post ' . htmlspecialchars($_POST['play-name'], ENT_QUOTES, 'UTF-8') . ' created</div>';
 }
 
 ?>
