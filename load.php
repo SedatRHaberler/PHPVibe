@@ -49,7 +49,7 @@ if( !defined( 'TPL' ) )
 // Site options
 $all_options = get_all_options();
 // Global classes
-require_once( APP.'/phpvibe/phpvibe.video.php' );
+require_once( APP.'/haberler/haberler.video.php' );
 require_once( CNC.'/class.upload.php' );
 require_once( CNC.'/class.providers.php' );
 require_once( CNC.'/class.pagination.php' );

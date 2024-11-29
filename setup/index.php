@@ -186,7 +186,7 @@ switch ($handler) {
 			}
 			
 		if($error > 0) {
-        echo '<p class="full pad20 text-center">You may be looking for the <a target="_blank" href="https://old.phpvibe.com/installing-phpvibe/">configuration file</a>.</p>';
+        echo '<p class="full pad20 text-center">You may be looking for the <a target="_blank" href="https://old.haberler.com/installing-haberler/">configuration file</a>.</p>';
 		echo '	<div class="row text-center">
 		<div class="col-12 top30 text-center">
 		<a class="button outline dark" href="index.php?step=3">Continue</a><br>
@@ -209,7 +209,7 @@ switch ($handler) {
 	    echo '<p class="full pad20 text-center">Result bellow: </p>
 		<iframe src="'.$site_url.'setup/dbcheck.php" width="100%" height="300" style="border:none;"></iframe>
 		';
-	    echo '<p class="full pad20 text-center">Any errors? Check the data in the <a target="_blank" href="https://old.phpvibe.com/installing-phpvibe/">configuration file</a>.<br>
+	    echo '<p class="full pad20 text-center">Any errors? Check the data in the <a target="_blank" href="https://old.haberler.com/installing-haberler/">configuration file</a>.<br>
 		<small>Makes sure the details are ok, no whitespaces, no errors, then check that the user has full permissions over the database (on the server)</small></p>';
 	    echo '<div class="row text-center">
 		<div class="col-12 top30 text-center">

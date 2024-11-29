@@ -8,7 +8,7 @@ if(isset($heading_meta) && !empty($heading_meta)) { echo $heading_meta;}
 if(isset($heading_plus) && !empty($heading_plus)) { echo '<small class="videod">'.$heading_plus.'</small>';}
 if ($videos) {
 
-echo $blockextra.'<div class="loop-content phpvibe-video-list '.$blockclass.'">';
+echo $blockextra.'<div class="loop-content haberler-video-list '.$blockclass.'">';
 foreach ($videos as $video) {
 			$title = _html(_cut($video->title, 70));
 			$full_title = _html(str_replace("\"", "",$video->title));

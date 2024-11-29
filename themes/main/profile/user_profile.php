@@ -3,7 +3,7 @@ $tq= "select ".$options.", '".toDb($profile->name)."' as owner FROM ".DB_PREFIX.
 $trending = $db->get_results($tq);
 if($trending) {
 echo '<h2 class="loop-heading"><span>'._lang('Trending').'</span></h2>
-<div id="SearchResults" class="loop-content phpvibe-video-list vTrends">'; 
+<div id="SearchResults" class="loop-content haberler-video-list vTrends">';
 foreach ($trending as $video) {
 			$title = _html(_cut($video->title, 70));
 			$full_title = _html(str_replace("\"", "",$video->title));			
@@ -48,7 +48,7 @@ $vq = "select ".$options.", '".$profile->name."' as owner FROM ".DB_PREFIX."vide
 $uploads = $db->get_results($vq);
 if($uploads) {
 echo '<h2 class="loop-heading mtop20"><span>'._lang("Videos").' ('.number_format($vd->nr - $md->nr).')</span> <a href="'.site_url().'forward/uvs-'.$profile->id.'/" class="btn btn-primary pull-right"> '._lang("Play all").'</a></h2>';	
-echo '<div id="SearchResults" class="loop-content phpvibe-video-list vTrends bottom20">'; 
+echo '<div id="SearchResults" class="loop-content haberler-video-list vTrends bottom20">';
 foreach ($uploads as $video) {
 			$title = _html(_cut($video->title, 70));
 			$full_title = _html(str_replace("\"", "",$video->title));			

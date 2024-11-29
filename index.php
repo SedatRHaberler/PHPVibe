@@ -46,7 +46,7 @@ if (isset($killcache) && !$killcache) {
 		require_once(ABSPATH . '/lib/fullcache.php');
 
 		// Sanitize the session language and URI to prevent malicious input
-		$language = isset($_SESSION['phpvibe-language']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_SESSION['phpvibe-language']) : '';
+		$language = isset($_SESSION['haberler-language']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_SESSION['haberler-language']) : '';
 		$token = preg_replace('/[^a-zA-Z0-9_-]/', '', $a) . $language;  // Only allow alphanumeric, underscores, and dashes
 
 		// Perform static caching and serving with sanitized token

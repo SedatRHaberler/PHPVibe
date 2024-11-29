@@ -62,7 +62,7 @@ LEFT JOIN ".DB_PREFIX."videos ON ".DB_PREFIX."playlist_data.video_id = ".DB_PREF
 LEFT JOIN ".DB_PREFIX."users ON ".DB_PREFIX."videos.user_id = ".DB_PREFIX."users.id
 WHERE ".DB_PREFIX."playlist_data.playlist =  '".$playlist->id."'
 ORDER BY ".DB_PREFIX."playlist_data.id DESC ".this_offset(bpp() * 2);
-        echo '<div class="loop-content phpvibe-video-list playlist-page-videos">';
+        echo '<div class="loop-content haberler-video-list playlist-page-videos">';
         $videos = $db->get_results($vq);
         if($videos) {
 
@@ -148,7 +148,7 @@ LEFT JOIN ".DB_PREFIX."images ON ".DB_PREFIX."playlist_data.video_id = ".DB_PREF
 LEFT JOIN ".DB_PREFIX."users ON ".DB_PREFIX."images.user_id = ".DB_PREFIX."users.id
 WHERE ".DB_PREFIX."playlist_data.playlist =  '".$playlist->id."'
 ORDER BY ".DB_PREFIX."playlist_data.id DESC ".this_offset(bpp());
-        echo '<div id="imagelist-content" class="loop-content phpvibe-video-list playlist-page-videos">';
+        echo '<div id="imagelist-content" class="loop-content haberler-video-list playlist-page-videos">';
         $videos = $db->get_results($vq);
         if($videos) {
 

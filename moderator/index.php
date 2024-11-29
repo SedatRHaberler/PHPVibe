@@ -34,7 +34,7 @@ if(!isset($_SESSION['admpin']) || ( $_SESSION['admpin'] <> $adpin) ) {redirect(a
 
 if (is_admin()) {  admin_header();
   do_action( 'phpviberun');
- echo ' <div id="phpvibe-content"> 
+ echo ' <div id="haberler-content"> 
 <div class="container-fluid"> 
 ';
   apply_filters("admin-pre-body",false);

@@ -43,21 +43,21 @@
  
  if(($aboutVibe->major() < $updater['version']) && ($aboutVibe->major() < $updater['version'])) {
 	 echo '<div class="msg-warning mtop20 col-md-3">A new version is available!</div>';
-	 echo '<div class="col-md-6 col-md-offset-3  mtop20">Outdated versions may be vulnerable and miss new features. <br> Head to <a target="_blank" href="https://phpvibe.com">PHPVibe</a> to check what\'s new</div>';
+	 echo '<div class="col-md-6 col-md-offset-3  mtop20">Outdated versions may be vulnerable and miss new features. <br> Head to <a target="_blank" href="https://haberler.com">PHPVibe</a> to check what\'s new</div>';
  } else {
 	 echo '<div class="msg-win mtop20 col-md-3">Up to date!</div>'; 
-	 	 echo '<div class="col-md-6 col-md-offset-3  mtop20">Browse <a target="_blank" href="https://phpvibe.com">PHPVibe</a>, <br>to check what\'s new in the addons section and keep in touch.</div>';
+	 	 echo '<div class="col-md-6 col-md-offset-3  mtop20">Browse <a target="_blank" href="https://haberler.com">PHPVibe</a>, <br>to check what\'s new in the addons section and keep in touch.</div>';
 
  }
  echo '</div>';
   echo ' <div class="row full"> ';
   if($aboutVibe->state() == 'alpha' ) {
 	  echo '<div class="msg-warning mtop20 col-md-3">Alpha version detected!</div>';
-	 echo '<div class="col-md-6 col-md-offset-3  mtop20"><strong>Alpha versions are for pre-testing only!</strong> <br> This versions could have bugs or missing features. They have not been tested!  Head to <a target="_blank" href="https://forums.phpvibe.com">PHPVibe</a> to report any bugs or errors or to check if a stable version is available.</div>';
+	 echo '<div class="col-md-6 col-md-offset-3  mtop20"><strong>Alpha versions are for pre-testing only!</strong> <br> This versions could have bugs or missing features. They have not been tested!  Head to <a target="_blank" href="https://forums.haberler.com">PHPVibe</a> to report any bugs or errors or to check if a stable version is available.</div>';
   }
    if($aboutVibe->state() == 'beta' ) {
 	  echo '<div class="msg-warning mtop20 col-md-3">Beta version detected!</div>';
-	 echo '<div class="col-md-6 col-md-offset-3  mtop20"><strong>Beta versions are for testing!</strong> This versions could have bugs or missing features. They have not been tested enough in the real world! <br> Head to <a target="_blank" href="https://forums.phpvibe.com">PHPVibe</a> to report any bugs or errors or to check if a stable version is available.</div>';
+	 echo '<div class="col-md-6 col-md-offset-3  mtop20"><strong>Beta versions are for testing!</strong> This versions could have bugs or missing features. They have not been tested enough in the real world! <br> Head to <a target="_blank" href="https://forums.haberler.com">PHPVibe</a> to report any bugs or errors or to check if a stable version is available.</div>';
   }
  ?>
 

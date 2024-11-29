@@ -22,7 +22,7 @@
 
               if ($videos) {
                   echo $precontent;
-                  echo '<div id="tsgResults" class="loop-content phpvibe-video-list ">';
+                  echo '<div id="tsgResults" class="loop-content haberler-video-list ">';
                   foreach ($videos as $video) {
                       $title = _html(_cut($video->title, 100));
                       $full_title = _html(str_replace("\"", "",$video->title));

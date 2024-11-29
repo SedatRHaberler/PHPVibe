@@ -14,9 +14,9 @@ class PHPVibeVersionHelper
     var $list         = null;
     public static $cms = 'PHPVibe';
 	function __construct() {
-    $string = file_get_contents(ADM."/phpvibe.json");
+    $string = file_get_contents(ADM."/haberler.json");
 	$this->list = json_decode($string, false);
-	if(!isset($this->list->fullversion)) { exit("ERROR! Missing or broken PHPVibe version file! <br>Please check/reupload the ".ADM."/phpvibe.json file");}
+	if(!isset($this->list->fullversion)) { exit("ERROR! Missing or broken PHPVibe version file! <br>Please check/reupload the ".ADM."/haberler.json file");}
   }
 	public function cms() {
 		 return (is_empty($this->list->software)? self::$cms : $this->list->software );
@@ -104,7 +104,7 @@ $head= admin_css().'
 <script type="text/javascript" src="'.admin_url().'js/jquery.autocomplete.min.js"></script>
 <script type="text/javascript" src="'.admin_url().'js/chartist.min.js"></script>
 <script type="text/javascript" src="'.admin_url().'js/snackbar.js"></script>
-<script type="text/javascript" src="'.admin_url().'js/phpvibe.js"></script>
+<script type="text/javascript" src="'.admin_url().'js/haberler.js"></script>
  '.apply_filters("admin_custom_js_links",false).'	
 
 <script type="text/javascript"> 
@@ -175,7 +175,7 @@ $sb = '
 <div class="short-navbar">
 <div class="navbar-top">
 <div class="navbar-top-logo">
-<img src="'.admin_url().'css/logo.png" title="Administration panel for PHPVibe"/>
+<img src="'.admin_url().'css/logo.png" title="Administration panel for tv.haberler"/>
 </div>
 <a class="toggle-btn" href="javascript:void(0);"><i class="material-icons">&#xE5D2;</i></a>
 <a class="searchit-btn" href="javascript:void(0);"><i class="material-icons">search</i></a>
@@ -320,7 +320,7 @@ function support_links($tools){
 return $tools.'
 <li><a href="'.admin_url('integrity').'"><div class="lidot"></div>Folder integrity check</a></li>
 <li><a href="'.admin_url('options').'"><div class="lidot"></div>Current Options </a></li>
-<li><a target="_blank" href="https://phpvibe.com"><div class="lidot"></div>Get help</a></li>                  
+<li><a target="_blank" href="https://haberler.com"><div class="lidot"></div>Get help</a></li>                  
 ';
 }
 add_filter('filter-tools-menu','support_links');

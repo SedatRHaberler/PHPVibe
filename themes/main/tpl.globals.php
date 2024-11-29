@@ -1,4 +1,4 @@
-<?php /* PHPVibe v6 www.phpvibe.com */
+<?php /* PHPVibe v6 www.haberler.com */
 function extra_js() {
 return apply_filter( 'filter_extrajs', false );
 }

@@ -128,7 +128,7 @@ var nv_lang = \''._lang("Next video starting soon").'\';
 var select2choice = \''._lang("Select option").'\';
 var delete_com_text = \''._lang("Delete this comment?").'\';
 </script>
-<script type="text/javascript" src="'.site_url().'app/minify/js.php?t='.THEME.'&sign=phpvibe.js"></script>
+<script type="text/javascript" src="'.site_url().'app/minify/js.php?t='.THEME.'&sign=haberler.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 <div id="fb-root"></div>
 <script>(function(d, s, id) {

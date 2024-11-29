@@ -1,5 +1,5 @@
 <?php /* PHPVibe PRO v6's header */
-register_style('phpvibe');
+register_style('haberler');
 if(!is_home() && !is_video()) {
 register_style('more');
 }

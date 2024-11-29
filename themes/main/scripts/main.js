@@ -5,7 +5,7 @@
  * https://www.phpvibe.com
  * MediaVibe IS NOT FREE SOFTWARE
  * If you have downloaded this CMS from a website other
- * than phpvibe.com or if you have received
+ * than haberler.com or if you have received
  * this CMS from someone who is not a representative of phpVibe, you are involved in an illegal activity.
  * The phpVibe team takes actions against all unlincensed websites using Google, local authorities and 3rd party agencies.
  * Designed and built exclusively for sale @ phpVibe.com .

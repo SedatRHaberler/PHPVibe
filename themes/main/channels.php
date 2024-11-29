@@ -71,7 +71,7 @@
       echo '<h2 class="loop-heading text-left"><span>'._lang("Recently online").'</span></h2>';
       if ($users) {
 
-          echo '<div id="ChannelResults" class="loop-content phpvibe-video-list ">'; 
+          echo '<div id="ChannelResults" class="loop-content haberler-video-list ">';
           foreach ($users as $user) {
               $title = _html(_cut($user->name, 70));
               $full_title = _html(str_replace("\"", "",$user->name));	

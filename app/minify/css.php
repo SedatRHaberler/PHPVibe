@@ -30,7 +30,7 @@ if(isset($_GET['sign'])){
 	
 	/* $txt = file_get_contents($cachedfile); echo $txt;	*/
 	} else {	
-	$defaults = array('phpvibe','bootstrap.min','playerads','materialicons','roboto');
+	$defaults = array('haberler','bootstrap.min','playerads','materialicons','roboto');
 	$newstyles = array();
 	if(!is_null($styles) && !empty($styles)) {
 		$newstyles = explode('_',$styles);

@@ -405,7 +405,7 @@ function _cut($str, $nb = 10)
 function init_lang()
 {
     if (isset($_GET["clang"])) {
-        $_SESSION['phpvibe-language'] = toDB($_GET["clang"]);
+        $_SESSION['haberler-language'] = toDB($_GET["clang"]);
         redirect(strtok(strtok(canonical(), '?'), '&'));
     } else {
         $trans = lang_terms(toDB(current_lang()));
@@ -415,7 +415,7 @@ function init_lang()
 
 function current_lang()
 {
-    $cl = isset($_SESSION['phpvibe-language']) ? $_SESSION['phpvibe-language'] : get_browser_language();
+    $cl = isset($_SESSION['haberler-language']) ? $_SESSION['haberler-language'] : get_browser_language();
     return $cl;
 }
 
@@ -472,7 +472,7 @@ function lang_terms($lang = null)
 //Switch to default if
         $all_terms = get_language(get_option('def_lang', 'en'));
     } else {
-        $_SESSION['phpvibe-language'] = $lang;
+        $_SESSION['haberler-language'] = $lang;
     }
     return $all_terms;
 }
@@ -2107,7 +2107,7 @@ function render_styles($mode = 1)
     }
 
     if (not_empty($localstyles)) {
-        $output .= '<link rel="stylesheet" type="text/css" media="screen" href="' . site_url() . 'app/minify/css.php?t=' . THEME . '&f=' . implode("_", $localstyles) . '&sign=phpvibe.css" />' . PHP_EOL;
+        $output .= '<link rel="stylesheet" type="text/css" media="screen" href="' . site_url() . 'app/minify/css.php?t=' . THEME . '&f=' . implode("_", $localstyles) . '&sign=haberler.css" />' . PHP_EOL;
     }
     if (not_empty($webstyles)) {
         foreach ($webstyles as $webcss) {

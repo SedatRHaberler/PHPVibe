@@ -86,6 +86,6 @@ echo '</ul>';
 /* End related videos *//* Edit in place */if(token() == "xedit") {		$list = intval($_REQUEST['pk']);	$name = toDb($_REQUEST['name']);	$user = user_id();	$value = toDb($_REQUEST['value']);	if($list > 0 ) {				if($name == 'playtitle') {		$field = 'title';			}		if($name == 'playdesc') {		$field = 'description';			}					$db->query("update ".DB_PREFIX."playlists set ".$field." = '".$value."' where id = '".$list."' and owner = '".$user."'");			header( "HTTP/1.1 200 OK" );	echo $value;	} else { 	header('HTTP/1.0 400 Bad Request', true, 400);	echo "This field is required!";	}	}
 
 //Hooks
-do_action('phpvibe-api');
+do_action('haberler-api');
 
 ?>
