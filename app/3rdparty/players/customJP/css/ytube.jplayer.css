@@ -24,7 +24,7 @@
  .jp-context-inactive{cursor:default!important} 
  .jp-context-inactive span{opacity:.5!important} 
  .mediaPlayer.jp-video-full .bAd { position:fixed; } 
- /*PHPVibe compatibility fix */ .controls .progress { box-shadow:none; -webkit-box-shadow:none; -moz-box-shadow:none; height:auto; -moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0; } 
+ /*Haberler compatibility fix */ .controls .progress { box-shadow:none; -webkit-box-shadow:none; -moz-box-shadow:none; height:auto; -moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0; }
  /* Make the video responsive/fill screen */ video { image-fit: fill; object-fit: contain; } 
 
 .mediaPlayer .progress{height:6px;}

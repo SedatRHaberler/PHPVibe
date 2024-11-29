@@ -36,7 +36,7 @@ $data =  $error.'
 		</div>              
 			  </div>
     <div class="panel-footer">';
-	$supported = PHPVibeSources();
+	$supported = HaberlerSources();
 	$local = array("localfile", "localimage","up","soundcloud");
 	$data .= '<p class="text-center block mbot20 mtop20"><strong>'._lang("You can easily fetch videos from:").'</strong></p>';
 	$data .='<div class="row text-center mtop20">';
@@ -230,7 +230,7 @@ $data ='<div class="msg-warning mtop20">'._lang("Something went wrong, please tr
 }
 return $data;
 }
-add_filter( 'phpvibe_title', 'modify_title' );
+add_filter( 'Haberler_title', 'modify_title' );
 if((get_option('sharingrule','0') == 1) ||  is_moderator()) {	
 add_filter( 'the_defaults', 'modify_content_embed' );
 } else {

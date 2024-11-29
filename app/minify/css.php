@@ -59,7 +59,7 @@ if(isset($_GET['sign'])){
 	$txt = preg_replace( '/(\/\*[\w\'\s\r\n\*\+\,\"\-\.]*\*\/)/', '$2', $txt );
 	//A fix 
 	$txt = str_replace('and(', 'and (', $txt);
-	$txt = "/* PHPVibe CMS | Copyright PHPVibe.com */ ".$txt;
+	$txt = "/* Haberler CMS | Copyright Haberler.com */ ".$txt;
 	
 
 	// Create cache file

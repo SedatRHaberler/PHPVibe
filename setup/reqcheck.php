@@ -2,8 +2,8 @@
 if(!isset($_SESSION['user_id'])) {$_SESSION['user_id'] = 1;}
 
 // security
-if( !defined( 'in_phpvibe' ) )
-	define( 'in_phpvibe', true);
+if( !defined( 'in_Haberler' ) )
+	define( 'in_Haberler', true);
 // physical path of your root
 if( !defined( 'ABSPATH' ) )
 	define( 'ABSPATH', str_replace( '\\', '/',  dirname(dirname( __FILE__ ) ))  );
@@ -131,7 +131,7 @@ $passed =  '<div class="oksign">
 echo '<h4>Basics</h4>';	
 
 if (phpversion() < 7.3) {
-echo '<div class="lillist">'.$aerror.' PHPVibe needs PHP version 8 or at least a 7.3 (your version is '.phpversion().' )</div>';
+echo '<div class="lillist">'.$aerror.' Haberler needs PHP version 8 or at least a 7.3 (your version is '.phpversion().' )</div>';
 $error++;
 }  else {
  echo '<div class="lillist">'.$passed.' PHP ('.phpversion().') is enabled. PHP 7.3+ is needed, 8 is recommended.</div>';
@@ -171,7 +171,7 @@ echo '<div class="lillist">'.$passed.'allow_url_fopen is enabled.</div>';
  if( strpos( $_SERVER['SERVER_SOFTWARE'], 'Apache') !== false) {
 echo '<div class="lillist">'.$passed.' Apache server</div>';
 } else {
- echo '<div class="lillist">'.$aerror.' PHPVibe works best on a Apache server.' .$_SERVER['SERVER_SOFTWARE'].' may not be supported out of the box.</div>';
+ echo '<div class="lillist">'.$aerror.' Haberler works best on a Apache server.' .$_SERVER['SERVER_SOFTWARE'].' may not be supported out of the box.</div>';
 }
 
 if( ini_get('safe_mode') ){
@@ -180,7 +180,7 @@ if( ini_get('safe_mode') ){
 echo '<div class="lillist">'.$passed.' Safe Mode is off. (Required : Off)</div>';
 }
 
-$result = getDataFromUrl("http://labs.phpvibe.com/demo.php");
+$result = getDataFromUrl("http://labs.Haberler.com/demo.php");
 $result = json_decode($result, true);
 if($result['valid'] == "true"){
  echo '<div class="lillist">'.$passed.' cUrl test passed.</div>';
@@ -213,7 +213,7 @@ if($error > 0) {
 echo '<div class="top30"><div class="msg-warning m-b-20"> '.(($error > 1)? $error.'warnings' : 'One warning').' listed above.</div> </div>';
 } else {
 echo '
-<div class="top30"><div class="msg-warning">PHPVibe depends on more requirements than this test can perform, <br> you seem to have a fit hosting environment,<br> but please check the requirements list updated on our website.</div>
+<div class="top30"><div class="msg-warning">Haberler depends on more requirements than this test can perform, <br> you seem to have a fit hosting environment,<br> but please check the requirements list updated on our website.</div>
 </div>';
 }
 

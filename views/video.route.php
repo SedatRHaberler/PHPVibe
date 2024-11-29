@@ -13,7 +13,7 @@ echo comments('video_'.$v_id,this_page());
 exit();
 }
 //Get the video
-$video = new PHPVibe\Video\SingleVideo($v_id);
+$video = new Haberler\Video\SingleVideo($v_id);
 
 if ($video->isvalid()) {
 /* It exists */
@@ -122,8 +122,8 @@ function modify_desc( $text ) {
 global $video;
     return _cut(strip_tags(_html($video->description())), 160);
 }
-add_filter( 'phpvibe_title', 'modify_title' );
-add_filter( 'phpvibe_desc', 'modify_desc' );
+add_filter( 'Haberler_title', 'modify_title' );
+add_filter( 'Haberler_desc', 'modify_desc' );
 // Percentages of likes/dis
 $likes_percent =  percent($video->likes(), $video->likes() + $video->dislikes());
 $dislikes_percent = ($likes_percent > 0 || $video->dislikes() > 0)? 100 - $likes_percent : 0;

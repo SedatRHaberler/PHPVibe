@@ -17,8 +17,8 @@ function modify_desc( $text ) {
 global $heading;
     return _cut(strip_tags(stripslashes($heading)), 160);
 }
-add_filter( 'phpvibe_title', 'modify_title' );
-add_filter( 'phpvibe_desc', 'modify_desc' );
+add_filter( 'Haberler_title', 'modify_title' );
+add_filter( 'Haberler_desc', 'modify_desc' );
 //Time for design
 if (!is_ajax_call()) {  the_header(); the_sidebar(); }
 include_once(TPL.'/channels.php');

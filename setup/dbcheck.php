@@ -2,8 +2,8 @@
 if(!isset($_SESSION['user_id'])) {$_SESSION['user_id'] = 1;}
 
 // security
-if( !defined( 'in_phpvibe' ) )
-	define( 'in_phpvibe', true);
+if( !defined( 'in_Haberler' ) )
+	define( 'in_Haberler', true);
 // physical path of your root
 if( !defined( 'ABSPATH' ) )
 	define( 'ABSPATH', str_replace( '\\', '/',  dirname(dirname( __FILE__ ) ))  );

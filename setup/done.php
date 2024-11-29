@@ -17,8 +17,8 @@ function glob_recursive(string $baseDir, string $pattern, int $flags = GLOB_NOSO
     return $paths;
 }
 // security
-if( !defined( 'in_phpvibe' ) )
-	define( 'in_phpvibe', true);
+if( !defined( 'in_Haberler' ) )
+	define( 'in_Haberler', true);
 // physical path of your root
 if( !defined( 'ABSPATH' ) )
 	define( 'ABSPATH', str_replace( '\\', '/',  dirname(dirname( __FILE__ ) ))  );
@@ -71,7 +71,7 @@ echo '
  <html dir="ltr" lang="en-US">  
 <head>  
 <meta http-equiv="content-type" content="text/html;charset=UTF-8">
-<title>PHPVibe :: Setup</title>
+<title>Haberler :: Setup</title>
 <meta charset="UTF-8">  
 <link rel="stylesheet" type="text/css" href="'.$base_href.'setup.style.css" media="screen" />
 <script type="text/javascript" src="'.$base_href.'jquery.js"></script>
@@ -86,7 +86,7 @@ echo '
 		<div class="logo">
 		<img src="logobig.png"><br> 
 		<p style="margin:30px 0 0">
-		<h1>PHPVibe</h1>
+		<h1>Haberler</h1>
 		</p>
 		</div>
 </div>
@@ -190,4 +190,4 @@ $all_options = get_all_options();
 </div>	
 		</div>
 		</div> <br style="clear:both">
-			<strong class="grey-text" style="font-weight: 300;">&copy; Copyright 2010 - '.date('Y').' Marius Patrascu, PHPVibe.com</strong>
+			<strong class="grey-text" style="font-weight: 300;">&copy; Copyright 2010 - '.date('Y').' Marius Patrascu, Haberler.com</strong>

@@ -106,7 +106,7 @@
 .has-menu.flowplayer .fp-brand{right:152px}
 .is-rtl.flowplayer .fp-brand{right:auto;left:125px}
 .has-menu.is-rtl.flowplayer .fp-brand{left:152px}
-.in-phpvibe.flowplayer .fp-brand{display:none}
+.in-Haberler.flowplayer .fp-brand{display:none}
 .no-volume.no-mute.flowplayer .fp-brand{right:10px;}
 .has-menu.no-volume.no-mute.flowplayer .fp-brand{right:47px}
 .no-volume.flowplayer .fp-brand{right:50px}
@@ -135,19 +135,19 @@
 .flowplayer.is-fullscreen .fp-fullscreen{display:block !important;}
 .flowplayer.is-fullscreen .fp-fullscreen:before{content:"\e601"}
 .flowplayer .fp-timeline{height:3px;position:relative;overflow:hidden;top:10px;height:10px;margin:0 225px 0 55px;}
-.in-phpvibe.flowplayer .fp-timeline{margin-right:160px;}
-.has-menu.in-phpvibe.flowplayer .fp-timeline{margin-right:187px}
-.no-volume.in-phpvibe.flowplayer .fp-timeline{margin-right:95px}
-.no-mute.in-phpvibe.flowplayer .fp-timeline{margin-right:130px}
-.no-mute.no-volume.in-phpvibe.flowplayer .fp-timeline{margin-right:55px}
+.in-Haberler.flowplayer .fp-timeline{margin-right:160px;}
+.has-menu.in-Haberler.flowplayer .fp-timeline{margin-right:187px}
+.no-volume.in-Haberler.flowplayer .fp-timeline{margin-right:95px}
+.no-mute.in-Haberler.flowplayer .fp-timeline{margin-right:130px}
+.no-mute.no-volume.in-Haberler.flowplayer .fp-timeline{margin-right:55px}
 .has-menu.flowplayer .fp-timeline{margin-right:252px}
 .no-volume.flowplayer .fp-timeline{margin-right:160px}
 .no-mute.flowplayer .fp-timeline{margin-right:195px}
 .no-mute.no-volume.flowplayer .fp-timeline{margin-right:120px;}
 .has-menu.no-mute.no-volume.flowplayer .fp-timeline{margin-right:157px}
 .is-rtl.flowplayer .fp-timeline{margin:0 55px 0 225px;}
-.in-phpvibe.is-rtl.flowplayer .fp-timeline{margin-left:160px;}
-.has-menu.in-phpvibe.is-rtl.flowplayer .fp-timeline{margin-left:197px}
+.in-Haberler.is-rtl.flowplayer .fp-timeline{margin-left:160px;}
+.has-menu.in-Haberler.is-rtl.flowplayer .fp-timeline{margin-left:197px}
 .has-menu.is-rtl.flowplayer .fp-timeline{margin-left:262px}
 .no-volume.is-rtl.flowplayer .fp-timeline{margin-left:95px}
 .no-mute.is-rtl.flowplayer .fp-timeline{margin-left:130px}
@@ -156,16 +156,16 @@
 .no-volume.is-long.flowplayer .fp-timeline{margin-right:180px}
 .no-mute.is-long.flowplayer .fp-timeline{margin-right:140px}
 .has-menu.is-long.flowplayer .fp-timeline{margin-right:292px}
-.in-phpvibe.is-long.flowplayer .fp-timeline{margin-right:190px;}
-.no-volume.in-phpvibe.is-long.flowplayer .fp-timeline{margin-right:125px}
-.no-mute.in-phpvibe.is-long.flowplayer .fp-timeline{margin-right:85px}
-.has-menu.in-phpvibe.is-long.flowplayer .fp-timeline{margin-right:227px}
+.in-Haberler.is-long.flowplayer .fp-timeline{margin-right:190px;}
+.no-volume.in-Haberler.is-long.flowplayer .fp-timeline{margin-right:125px}
+.no-mute.in-Haberler.is-long.flowplayer .fp-timeline{margin-right:85px}
+.has-menu.in-Haberler.is-long.flowplayer .fp-timeline{margin-right:227px}
 .is-rtl.is-long.flowplayer .fp-timeline{margin:85px 0 190px 0;}
 .no-volume.is-rtl.is-long.flowplayer .fp-timeline{margin-left:125px}
 .no-mute.is-rtl.is-long.flowplayer .fp-timeline{margin-left:85px}
 .aside-time.flowplayer .fp-timeline,.no-time.flowplayer .fp-timeline{margin:0 190px 0 10px;}
 .has-menu.aside-time.flowplayer .fp-timeline,.has-menu.no-time.flowplayer .fp-timeline{margin-right:227px}
-.aside-time.in-phpvibe.flowplayer .fp-timeline{margin-right:115px}
+.aside-time.in-Haberler.flowplayer .fp-timeline{margin-right:115px}
 .aside-time.no-volume.flowplayer .fp-timeline,.no-time.no-volume.flowplayer .fp-timeline{margin-right:115px}
 .aside-time.no-mute.flowplayer .fp-timeline,.no-time.no-mute.flowplayer .fp-timeline{margin-right:75px}
 .is-rtl.aside-time.flowplayer .fp-timeline,.is-rtl.no-time.flowplayer .fp-timeline{margin:0 10px 0 115px}
@@ -205,19 +205,19 @@
 .flowplayer .fp-elapsed{left:10px;}
 .is-rtl.flowplayer .fp-elapsed{left:auto;right:10px}
 .flowplayer .fp-remaining,.flowplayer .fp-duration{right:180px;color:#eee;}
-.in-phpvibe.flowplayer .fp-remaining,.in-phpvibe.flowplayer .fp-duration{right:125px;}
-.has-menu.in-phpvibe.flowplayer .fp-remaining,.has-menu.in-phpvibe.flowplayer .fp-duration{right:152px}
-.no-volume.in-phpvibe.flowplayer .fp-remaining,.no-volume.in-phpvibe.flowplayer .fp-duration{right:50px}
-.no-mute.in-phpvibe.flowplayer .fp-remaining,.no-mute.in-phpvibe.flowplayer .fp-duration{right:95px}
-.no-mute.no-volume.in-phpvibe.flowplayer .fp-remaining,.no-mute.no-volume.in-phpvibe.flowplayer .fp-duration{right:10px}
+.in-Haberler.flowplayer .fp-remaining,.in-Haberler.flowplayer .fp-duration{right:125px;}
+.has-menu.in-Haberler.flowplayer .fp-remaining,.has-menu.in-Haberler.flowplayer .fp-duration{right:152px}
+.no-volume.in-Haberler.flowplayer .fp-remaining,.no-volume.in-Haberler.flowplayer .fp-duration{right:50px}
+.no-mute.in-Haberler.flowplayer .fp-remaining,.no-mute.in-Haberler.flowplayer .fp-duration{right:95px}
+.no-mute.no-volume.in-Haberler.flowplayer .fp-remaining,.no-mute.no-volume.in-Haberler.flowplayer .fp-duration{right:10px}
 .has-menu.flowplayer .fp-remaining,.has-menu.flowplayer .fp-duration{right:217px}
 .no-volume.flowplayer .fp-remaining,.no-volume.flowplayer .fp-duration{right:115px}
 .no-mute.flowplayer .fp-remaining,.no-mute.flowplayer .fp-duration{right:160px}
 .no-mute.no-volume.flowplayer .fp-remaining,.no-mute.no-volume.flowplayer .fp-duration{right:75px;}
 .has-menu.no-mute.no-volume.flowplayer .fp-remaining,.has-menu.no-mute.no-volume.flowplayer .fp-duration{right:112px}
 .is-rtl.flowplayer .fp-remaining,.is-rtl.flowplayer .fp-duration{right:auto;left:180px;}
-.in-phpvibe.is-rtl.flowplayer .fp-remaining,.in-phpvibe.is-rtl.flowplayer .fp-duration{left:115px;}
-.has-menu.in-phpvibe.is-rtl.flowplayer .fp-remaining,.has-menu.in-phpvibe.is-rtl.flowplayer .fp-duration{left:142px}
+.in-Haberler.is-rtl.flowplayer .fp-remaining,.in-Haberler.is-rtl.flowplayer .fp-duration{left:115px;}
+.has-menu.in-Haberler.is-rtl.flowplayer .fp-remaining,.has-menu.in-Haberler.is-rtl.flowplayer .fp-duration{left:142px}
 .has-menu.is-rtl.flowplayer .fp-remaining,.has-menu.is-rtl.flowplayer .fp-duration{left:227px}
 .no-volume.is-rtl.flowplayer .fp-remaining,.no-volume.is-rtl.flowplayer .fp-duration{left:50px}
 .no-mute.is-rtl.flowplayer .fp-remaining,.no-mute.is-rtl.flowplayer .fp-duration{left:95px}
@@ -299,7 +299,7 @@
 .is-rtl.flowplayer .fp-menu .fp-dropdown{right:auto;left:-10px}
 .flowplayer .fp-play{width:30px}
 .flowplayer.aside-time .fp-time{top:0;left:0}
-.in-phpvibe.flowplayer .fp-remaining,.in-phpvibe.flowplayer .fp-duration{right:115px}
+.in-Haberler.flowplayer .fp-remaining,.in-Haberler.flowplayer .fp-duration{right:115px}
 .flowplayer .fp-fullscreen,.flowplayer .fp-unload,.flowplayer .fp-close,.flowplayer .fp-embed{right:0;top:0;}
 .is-rtl.flowplayer .fp-fullscreen,.is-rtl.flowplayer .fp-unload,.is-rtl.flowplayer .fp-close,.is-rtl.flowplayer .fp-embed{right:auto;left:0}
 .flowplayer .fp-embed{right:32px;}

@@ -1,5 +1,5 @@
-/* PHPVibe CMS  */
-/* Licensing and terms at PHPVibe.com  */
+/* Haberler CMS  */
+/* Licensing and terms at Haberler.com  */
 /* Commons */
 img {
   max-width: 100%;
@@ -997,14 +997,14 @@ a#revealRelated {
   font-size: 28px;
   margin-top: -2px;
 }
-.phpvibe-video-list {
+.Haberler-video-list {
   display: block !important;
   width: 100%;
   text-align: center;
   clear: both;
   margin: 25px auto;
 }
-.phpvibe-video-list:after {
+.Haberler-video-list:after {
   visibility: hidden;
   display: block;
   font-size: 0;
@@ -5119,7 +5119,7 @@ a.top-link:focus:before,
 .body-dashboard .owl-carousel .owl-item img {
   min-height: 110px;
 }
-/* PHPVibe CMS former more.css */
+/* Haberler CMS former more.css */
 
 /* # Tags input */
 .tagsinput {

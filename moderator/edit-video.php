@@ -1,5 +1,5 @@
 <?php if(isset($_POST['edited-video']) && !is_null(intval($_POST['edited-video']))) {
-	$updater = new PHPVibe\Video\VideoUpdate(intval($_POST['edited-video']));
+	$updater = new Haberler\Video\VideoUpdate(intval($_POST['edited-video']));
 	// Track changes 
 	$changes = array();
 
@@ -222,7 +222,7 @@ if(isset($_GET['reconvertfrom'])) {
 	/* End reconversion */
 }
 // Query video
-$video = new PHPVibe\Video\SingleVideo(intval(_get("vid")));		
+$video = new Haberler\Video\SingleVideo(intval(_get("vid")));		
 if($video) {
 ?>
 

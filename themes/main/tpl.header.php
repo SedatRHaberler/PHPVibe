@@ -1,4 +1,4 @@
-<?php /* PHPVibe's header */
+<?php /* Haberler's header */
 if(!is_home()) {
     register_style('jssocials');
 }
@@ -57,7 +57,7 @@ function meta_add(){
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <base href="'.site_url().'" />
 <meta name="description" content="'.seo_desc().'">
-<meta name="generator" content="PHPVibe" />
+<meta name="generator" content="Haberler" />
 <link rel="alternate" type="application/rss+xml" title="'.get_option('site-logo-text').' '._lang('All Media Feed').'" href="'.site_url().'feed/" />
 <link rel="alternate" type="application/rss+xml" title="'.get_option('site-logo-text').' '._lang('Video Feed').'" href="'.site_url().'feed?m=1" />
 <link rel="alternate" type="application/rss+xml" title="'.get_option('site-logo-text').' '._lang('Music Feed').'" href="'.site_url().'feed?m=2" />

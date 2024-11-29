@@ -52,7 +52,7 @@ function modify_title( $text ) {
 global $us,$other;
  return _lang("Chat with ").$us[$other]['name'];
 }	
-add_filter( 'phpvibe_title', 'modify_title' );
+add_filter( 'Haberler_title', 'modify_title' );
 //Time for design
  the_header();
 include_once(TPL.'/conversation.php');
@@ -63,7 +63,7 @@ $db->query("Update ".DB_PREFIX."con_msgs set read_at = now() where conv ='".$_co
 function modify_title( $text ) {
  return _lang("Inbox");
 }	
-add_filter( 'phpvibe_title', 'modify_title' );
+add_filter( 'Haberler_title', 'modify_title' );
 //Time for design
  the_header();
 include_once(TPL.'/conversation.php');

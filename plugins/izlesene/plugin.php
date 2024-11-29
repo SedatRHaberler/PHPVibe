@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Izlesene.com source
- * Plugin URI: http://phpvibe.com/
- * Description: Adds Izlesene embed source to PHPVibe
+ * Plugin URI: http://Haberler.com/
+ * Description: Adds Izlesene embed source to Haberler
  * Version: 2.0
- * Author: PHPVibe Crew
- * Author URI: http://www.phpvibe.com
+ * Author: Haberler Crew
+ * Author URI: http://www.Haberler.com
  * License: Commercial
  */
 function _Izlesene($hosts = array()){

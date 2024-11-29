@@ -112,7 +112,7 @@ $lg .= '<button type="submit" class="btn btn-primary mtop20">'._lang("Create acc
     return $lg;
 }
 
-add_filter('phpvibe_title', 'modify_title');
+add_filter('Haberler_title', 'modify_title');
 add_filter('the_defaults', 'modify_content');
 
 //Time for design

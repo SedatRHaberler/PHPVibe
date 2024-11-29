@@ -1,14 +1,14 @@
 /*!
- * PHPVibe v11
+ * Haberler v11
  *
  * Copyright Interact.Software
- * https://www.phpvibe.com
+ * https://www.Haberler.com
  * MediaVibe IS NOT FREE SOFTWARE
  * If you have downloaded this CMS from a website other
  * than haberler.com or if you have received
- * this CMS from someone who is not a representative of phpVibe, you are involved in an illegal activity.
- * The phpVibe team takes actions against all unlincensed websites using Google, local authorities and 3rd party agencies.
- * Designed and built exclusively for sale @ phpVibe.com .
+ * this CMS from someone who is not a representative of Haberler, you are involved in an illegal activity.
+ * The Haberler team takes actions against all unlincensed websites using Google, local authorities and 3rd party agencies.
+ * Designed and built exclusively for sale @ Haberler.com .
  */
 //Initialize
 jQuery(function($) {

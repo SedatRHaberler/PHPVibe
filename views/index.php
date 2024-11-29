@@ -18,5 +18,5 @@
 <hr />
 <span>Oops! No access allowed!</span>
 <a href=../../>Back home</a>
-<a href=https://www.phpvibe.com>Try phpVibe</a>
+<a href=https://www.Haberler.com>Try Haberler</a>
 </div>​

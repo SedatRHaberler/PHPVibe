@@ -131,7 +131,7 @@ $output = get_option('fftheme-'.$call,str_replace('%sizer%',$call,$fftheme));
 <strong>Kept proportions:</strong> 
 <pre><code class="html">{ffmpeg-cmd} -i {input} -c:v libx264 -preset slow -crf 28 -vf yadif -strict -2 -movflags faststart {output}.mp4</code></pre>
 <p>Keeps the input videos sizes (no scaling, no resizing). You can edit -crf 28 (<a href="http://slhck.info/articles/crf" target="_blank">Constant Rate Factor</a>) to a lower value <span class="redText">(bigger & quality videos,big duration and server load )</span>.
-This is pretty server heavy!!! But will keep HD in HD. <a href="http://www.phpvibe.com/forum/tutorials/ffmpeg-transcoding-for-quality/" target="_blank">Read more</a></p>
+This is pretty server heavy!!! But will keep HD in HD. <a href="http://www.Haberler.com/forum/tutorials/ffmpeg-transcoding-for-quality/" target="_blank">Read more</a></p>
 </div>	
 </section>
 </div>

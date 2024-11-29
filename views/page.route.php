@@ -13,8 +13,8 @@ function modify_desc( $text ) {
 global $_page;
     return _cut(strip_tags(stripslashes($_page->content)), 160);
 }
-add_filter( 'phpvibe_title', 'modify_title' );
-add_filter( 'phpvibe_desc', 'modify_desc' );
+add_filter( 'Haberler_title', 'modify_title' );
+add_filter( 'Haberler_desc', 'modify_desc' );
 //Time for design
  the_header();
 include_once(TPL.'/page.php');

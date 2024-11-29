@@ -1,8 +1,8 @@
 <?php /*!
-* PHPVibe 
+* Haberler
 *
-* Copyright PHPVibe.com
-* http://www.phpvibe.com
+* Copyright Haberler.com
+* http://www.Haberler.com
 */
 // Global functions
 //Site url
@@ -148,8 +148,8 @@ function _domain($url)
 
 function _igniterkey($vibe = 11)
 {
-    if (defined('phpVibeKey')) {
-        $out = strtolower(phpVibeKey);
+    if (defined('HaberlerKey')) {
+        $out = strtolower(HaberlerKey);
     } else {
         $out = strtolower(get_option('lekey'));
     }
@@ -620,7 +620,7 @@ function delete_language($name)
 function the_header()
 {
     do_action('vibe_header');
-    do_action('phpviberun');
+    do_action('Haberlerrun');
 }
 
 function the_footer()
@@ -757,12 +757,12 @@ function nsfilter()
 //SEO
 function seo_title()
 {
-    return apply_filters('phpvibe_title', get_option('seo_title'));
+    return apply_filters('Haberler_title', get_option('seo_title'));
 }
 
 function seo_desc()
 {
-    return apply_filters('phpvibe_desc', get_option('seo_desc'));
+    return apply_filters('Haberler_desc', get_option('seo_desc'));
 }
 
 //Db count
@@ -1087,7 +1087,7 @@ function delete_video($id)
     if (intval($id) && is_moderator()) {
 //$video = $db->get_row("SELECT * from ".DB_PREFIX."videos where id='".intval($id)."'");
 //Get the video
-        $video = new PHPVibe\Video\SingleVideo($id);
+        $video = new Haberler\Video\SingleVideo($id);
         if ($video) {
             if ($video->isembed() || $video->isremote()) {
 //delete imediatly if remote
@@ -2286,7 +2286,7 @@ function refresh_multimedia($id)
 
 function get_multimedia($id)
 {
-    $video = new PHPVibe\Video\SingleVideo($id);
+    $video = new Haberler\Video\SingleVideo($id);
     if ($video->isvalid()) {
         return $video;
     } else {

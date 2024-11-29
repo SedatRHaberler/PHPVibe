@@ -1,4 +1,4 @@
-<?php /* PHPVibe PRO v6's header */
+<?php /* Haberler PRO v6's header */
 register_style('haberler');
 if(!is_home() && !is_video()) {
 register_style('more');
@@ -60,7 +60,7 @@ $meta = '<!doctype html>
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <base href="'.site_url().'" />  
 <meta name="description" content="'.seo_desc().'">
-<meta name="generator" content="PHPVibe" />
+<meta name="generator" content="Haberler" />
 <link rel="alternate" type="application/rss+xml" title="'.get_option('site-logo-text').' '._lang('All Media Feed').'" href="'.site_url().'feed/" />
 <link rel="alternate" type="application/rss+xml" title="'.get_option('site-logo-text').' '._lang('Video Feed').'" href="'.site_url().'feed?m=1" />
 <link rel="alternate" type="application/rss+xml" title="'.get_option('site-logo-text').' '._lang('Music Feed').'" href="'.site_url().'feed?m=2" />

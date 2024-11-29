@@ -13,8 +13,8 @@ if( !defined( 'FNC' ) )
 if( !defined( 'CNC' ) )
 	define( 'CNC', APP.'/classes' );
 // Security bypass
-if( !defined( 'in_phpvibe' ) )
-	define( 'in_phpvibe', true);
+if( !defined( 'in_Haberler' ) )
+	define( 'in_Haberler', true);
 // Configs
 require_once( ABSPATH.'/vibe_config.php' );
 require_once( ABSPATH.'/vibe_setts.php' );

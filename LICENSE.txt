@@ -1,12 +1,12 @@
 
-PHPVibe License Agreement
+Haberler License Agreement
 
-This License Agreement (the "Agreement") is entered into by and between MediaVibe Agency, PHPVibe.com, and Marius Patrascu, ("Licensor") and the individual or entity using the PHPVibe Content Management System ("CMS") ("Licensee").
+This License Agreement (the "Agreement") is entered into by and between MediaVibe Agency, Haberler.com, and Marius Patrascu, ("Licensor") and the individual or entity using the Haberler Content Management System ("CMS") ("Licensee").
 
 1. License Grant
 
-a. Personal Use: Licensor grants Licensee a non-exclusive, non-transferable license to use the PHPVibe CMS for personal, non-commercial use.
-For personal use you may enjoy chosen versions of PHPVibe as Open Source and can do the following:
+a. Personal Use: Licensor grants Licensee a non-exclusive, non-transferable license to use the Haberler CMS for personal, non-commercial use.
+For personal use you may enjoy chosen versions of Haberler as Open Source and can do the following:
 1. reproduce the CMS in copies, either alone or as part of a collective work without removing the name, brand and license agreements, other marks, and etiquettes;
 2. translate, adapt, alter, transform, modify, or arrange the CMS, thereby creating derivative works ("Derivative Works") based upon the CMS;
 3. distribute or communicate copies of the CMS and Derivative Works to the public, with the proviso that copies of CMS or Derivative Works that You distribute or communicate shall be licensed under this License Agreement;
@@ -18,16 +18,16 @@ b. Commercial Use: For any commercial or business-related use, including but not
 2. Restrictions
 
 a. Licensee may not sublicense, sell, or lease, to any third party.
-b. Licensee may not create and distribute derivative works based on the PHPVibe CMS under his/her/its own name and brand.
-c. Licensee may modify, adapt, translate, reverse engineer, decompile, and disassemble the PHPVibe CMS for study and other reasons without removing the brand and license agreements, marks, and etiquettes.
+b. Licensee may not create and distribute derivative works based on the Haberler CMS under his/her/its own name and brand.
+c. Licensee may modify, adapt, translate, reverse engineer, decompile, and disassemble the Haberler CMS for study and other reasons without removing the brand and license agreements, marks, and etiquettes.
 
 3. Resale Rights
 
-The licensee agrees not to sell, resell, redistribute, or otherwise transfer the PHPVibe CMS or any part thereof, whether for profit or not, without a commercial license or the express written consent of the Licensor.
+The licensee agrees not to sell, resell, redistribute, or otherwise transfer the Haberler CMS or any part thereof, whether for profit or not, without a commercial license or the express written consent of the Licensor.
 
 4. Support and Updates
 
-a. Licensor may, at its discretion, provide support and updates to the PHPVibe CMS.
+a. Licensor may, at its discretion, provide support and updates to the Haberler CMS.
 b. Support and updates may be subject to additional fees for the Licensee.
 
 5. Termination
@@ -36,11 +36,11 @@ This Agreement is effective until terminated. Licensor may terminate this Agreem
 
 6. Disclaimer of Warranty
 
-The PHPVibe CMS is provided "as is," without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement.
+The Haberler CMS is provided "as is," without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement.
 
 7. Limitation of Liability
 
-In no event shall Licensor be liable for any damages, including but not limited to direct, indirect, special, incidental, or consequential damages, arising out of the use or inability to use the PHPVibe CMS.
+In no event shall Licensor be liable for any damages, including but not limited to direct, indirect, special, incidental, or consequential damages, arising out of the use or inability to use the Haberler CMS.
 
 8. Governing Law
 
@@ -48,11 +48,11 @@ This Agreement shall be governed by and construed under the laws of Dolj County,
 
 9. Entire Agreement
 
-This Agreement constitutes the entire agreement between the parties and supersedes all prior agreements, whether oral or written, to the PHPVibe CMS.
+This Agreement constitutes the entire agreement between the parties and supersedes all prior agreements, whether oral or written, to the Haberler CMS.
 
 10. Contact Information
 
 For any inquiries regarding this Agreement, please contact:
-MediaVibe Agency, PHPVibe.com
+MediaVibe Agency, Haberler.com
 
-More about PHPVibe's licensing https://phpvibe.com/
+More about Haberler's licensing https://Haberler.com/

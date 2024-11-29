@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Youtube Data API V3 for PHPVibe
+ * Youtube Data API V3 for Haberler
  * @version 3.4
  */
 class YoutubeLite
@@ -327,7 +327,7 @@ class YoutubeLite
     function youtube_import($video = array(), $cat = null, $owner = null)
     {
         global $db;
-        /* Import a Youtube video to PHPVibe */
+        /* Import a Youtube video to Haberler */
         if (is_null($owner)) {
             $owner = user_id();
         }

@@ -1,6 +1,6 @@
 <?php
 /**
- * upload.php (Customised for PHPVibe.com)
+ * upload.php (Customised for Haberler.com)
  *
  * Copyright 2013, Moxiecode Systems AB
  * Released under GPL License.

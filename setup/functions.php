@@ -82,16 +82,16 @@ function get_domain($url)
 }
 function hasA_license() {
 	global $site_url;
-if( !defined( 'phpVibeKey')) {
+if( !defined( 'HaberlerKey')) {
 	return false;
 } else {
-	$test = phpVibeKey;
+	$test = HaberlerKey;
 	if(empty($test) || is_null($test) || (strpos($test, '-') === false) || (substr_count($test, '-') < 2)) {
 	return false;
 	}	
 }
 
-return validatekey(phpVibeKey, get_domain($site_url));
+return validatekey(HaberlerKey, get_domain($site_url));
 }
 function validatekey($key, $domain){
 	if($domain == "localhost") {return true;}

@@ -6,7 +6,7 @@
 .jwplayer .jw-display-icon-container{ pointer-events:none }
 /* End players on mobile */
  }
-/* PHPVibe's player ads styling*/
+/* Haberler's player ads styling*/
  .plAd {opacity:0.45; z-index:999999; position:absolute;  background:#191919; color:#fff; padding:3px; border-radius: 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; -ms-border-radius: 3px; }
  .plAd.plTopleft {top:5%; left:15px;}
  .plAd.plBotleft {bottom:17%; left:15px;}

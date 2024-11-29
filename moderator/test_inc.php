@@ -1,4 +1,4 @@
-<?php namespace PHPVibe\Video;
+<?php namespace Haberler\Video;
 class SingleVideo {
 	private $id;
     public function __construct($id)     { 

@@ -31,8 +31,8 @@ $playlist = $db->get_row("SELECT a.*, b.name as usersname FROM ".DB_PREFIX."play
 	global $playlist;
 		return _cut(strip_tags(stripslashes($playlist->title.':'.$playlist->description)), 160);
 	}
-	add_filter( 'phpvibe_title', 'modify_title' );
-	add_filter( 'phpvibe_desc', 'modify_desc' );
+	add_filter( 'Haberler_title', 'modify_title' );
+	add_filter( 'Haberler_desc', 'modify_desc' );
 	/*Now to the actual channel page */
 	if (!is_ajax_call()) { 
 	the_header();

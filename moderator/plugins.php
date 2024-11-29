@@ -155,10 +155,10 @@ echo "<small>".$app["Description"]."</small>";
 </div>
 
 <div class="row plugins plugins-small">
-<h3>Available at PHPVibe.com</h3>
+<h3>Available at Haberler.com</h3>
 <ul class="list-group plugins-list">	
 <?php 
-$upd = json_decode(getpb("https://labs.phpvibe.com/server/api.php"), true);
+$upd = json_decode(getpb("https://labs.Haberler.com/server/api.php"), true);
 if(not_empty($upd)) {
 	foreach ($upd as $recent) {
 		if(!in_array($recent["compatible"],$checkplg)) {

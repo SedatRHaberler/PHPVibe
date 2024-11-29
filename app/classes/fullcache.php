@@ -1,4 +1,4 @@
-<?php /* Transforms your PHPVibe 
+<?php /* Transforms your Haberler
 website to 
 fast-serving static html pages */
 /** Static pages configuration **/

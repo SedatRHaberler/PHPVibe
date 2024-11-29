@@ -530,7 +530,7 @@
 			return ($all) ? $this->num_queries : $this->conn_queries;
 		}
 		/**********************************************************************
-		*  DELETE phpVIBE's Cache
+		*  DELETE Haberler's Cache
 		*/
 		function clean_cache($full=false) {
         $cache_dir = ABSPATH.'/storage/cache/*';

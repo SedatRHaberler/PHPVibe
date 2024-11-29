@@ -21,7 +21,7 @@ class EpiTwitter extends EpiOAuth
   protected $apiUrl         = 'https://api.twitter.com';
   protected $apiVersionedUrl= 'https://api.twitter.com';
   protected $searchUrl      = 'http://search.twitter.com';
-  protected $userAgent      = 'PHPVibe';
+  protected $userAgent      = 'Haberler';
   protected $apiVersion     = '1.1';
   protected $isAsynchronous = false;
 

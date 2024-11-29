@@ -1,5 +1,5 @@
 <?php  require '../load.php';
-use PHPVibe\Video;
+use Haberler\Video;
 $newvalues = array();
 $newvalues = array(
 		  'ispremium' => '1',		  

@@ -4,7 +4,7 @@ $width = get_option('video-width');  $height = get_option('video-height'); $embe
 if(intval($v_id) > 0) { 
 
 //Get the video
-$video = new PHPVibe\Video\SingleVideo($v_id);
+$video = new Haberler\Video\SingleVideo($v_id);
 if ($video->isvalid()) {
 //Check if it's processing
 if(!$video->hassource() && !$video->isembed() && !$video->isremote()) {

@@ -175,7 +175,7 @@ $html = $error.'
 	</div>';
 return $html;	
 }
-add_filter( 'phpvibe_title', 'modify_title' );
+add_filter( 'Haberler_title', 'modify_title' );
 if((_get('do') && (_get('do') == "forgot")) || _get('verifyemail')) {
 add_filter( 'the_defaults', 'forgot_content' );
 } else {

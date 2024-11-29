@@ -6,7 +6,7 @@ function removeComTags($input){
  	return preg_replace('/\b('.implode('|',$commonWords).')\b/','',$input);
 }
 /* End Spicy*/
-function PHPVibeSources() {
+function HaberlerSources() {
          $hostings = array(		     
              'youtube',
              'vimeo',
@@ -88,7 +88,7 @@ function PHPVibeSources() {
      //Providers
      public function Hostings()
          {
-			return PHPVibeSources(); 
+			return HaberlerSources(); 
 		 }
      // decide video provider
      private function decideVideoProvider()

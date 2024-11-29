@@ -33,7 +33,7 @@ if(!isset($_SESSION['admpin']) || ( $_SESSION['admpin'] <> $adpin) ) {redirect(a
 }}/* End  pins */
 
 if (is_admin()) {  admin_header();
-  do_action( 'phpviberun');
+  do_action( 'Haberlerrun');
  echo ' <div id="haberler-content"> 
 <div class="container-fluid"> 
 ';

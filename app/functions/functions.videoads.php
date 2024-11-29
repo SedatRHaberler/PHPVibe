@@ -1,14 +1,14 @@
 <?php /*!
-* phpVibe v5.9
+* Haberler v5.9
 *
 * Copyright Media Vibe Solutions
-* http://www.phpvibe.com
-* phpVibe IS NOT A FREE SOFTWARE
+* http://www.Haberler.com
+* Haberler IS NOT A FREE SOFTWARE
 * If you have downloaded this CMS from a website other
 * than www.haberler.com if you have received
-* this CMS from someone who is not a representative of phpVibe, you are involved in an illegal activity.
-* The phpVibe team takes actions against all unlincensed websites using Google, local authorities and 3rd party agencies.
-* Designed and built exclusively for sale @ phpVibe.com.
+* this CMS from someone who is not a representative of Haberler, you are involved in an illegal activity.
+* The Haberler team takes actions against all unlincensed websites using Google, local authorities and 3rd party agencies.
+* Designed and built exclusively for sale @ Haberler.com.
 */
 function _jwads() {
 global $cachedb;

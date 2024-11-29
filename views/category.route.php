@@ -24,8 +24,8 @@ global $channel;
     return _cut(strip_tags(stripslashes($channel->cat_desc)), 160);
 
 }
-add_filter( 'phpvibe_title', 'modify_title' );
-add_filter( 'phpvibe_desc', 'modify_desc' );
+add_filter( 'Haberler_title', 'modify_title' );
+add_filter( 'Haberler_desc', 'modify_desc' );
 /*Now to the actual channel page */
 if (!is_ajax_call()) { 
 the_header();

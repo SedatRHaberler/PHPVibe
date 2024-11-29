@@ -13,7 +13,7 @@ return '<div id="coments" class="fb-comments" data-href="'.canonical().'" data-w
 	
 }	
 } else {
-/* Local PHPVibe comments system */	
+/* Local Haberler comments system */
 if(is_null($iden) && isset($video)) {$cobj = 'video_'.$video->id();	} else {  $cobj = $iden;}	 
 return show_comments($cobj, $p);
 }

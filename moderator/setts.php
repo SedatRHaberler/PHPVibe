@@ -215,7 +215,7 @@ include_once('setheader.php');
                         <label class="control-label"><i class="icon-comments"></i>Choose</label>
                         <div class="controls">
                             <label class="radio inline"><input type="radio" name="video-coms" class="styled" value="1" <?php if(get_option('video-coms') == 1 ) { echo "checked"; } ?>>Facebook</label>
-                            <label class="radio inline"><input type="radio" name="video-coms" class="styled" value="0" <?php if(get_option('video-coms') <> 1 ) { echo "checked"; } ?>>PHPVibe</label>
+                            <label class="radio inline"><input type="radio" name="video-coms" class="styled" value="0" <?php if(get_option('video-coms') <> 1 ) { echo "checked"; } ?>>Haberler</label>
                             <span class="help-block" id="limit-text">What comment system to use.</span>
                         </div>
                     </div>

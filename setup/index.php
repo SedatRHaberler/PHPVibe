@@ -17,8 +17,8 @@ function glob_recursive(string $baseDir, string $pattern, int $flags = GLOB_NOSO
     return $paths;
 }
 // security
-if( !defined( 'in_phpvibe' ) )
-	define( 'in_phpvibe', true);
+if( !defined( 'in_Haberler' ) )
+	define( 'in_Haberler', true);
 // physical path of your root
 if( !defined( 'ABSPATH' ) )
 	define( 'ABSPATH', str_replace( '\\', '/',  dirname(dirname( __FILE__ ) ))  );
@@ -76,7 +76,7 @@ echo '
  <html dir="ltr" lang="en-US">  
 <head>  
 <meta http-equiv="content-type" content="text/html;charset=UTF-8">
-<title>PHPVibe :: Setup</title>
+<title>Haberler :: Setup</title>
 <meta charset="UTF-8">  
 <link rel="stylesheet" type="text/css" href="'.$base_href.'setup.style.css" media="screen" />
 <script type="text/javascript" src="'.$base_href.'jquery.js"></script>
@@ -91,7 +91,7 @@ echo '
 		<div class="logo">
 		<img src="logobig.png"><br> 
 		<p style="margin:30px 0 0">
-		<h1>PHPVibe</h1>
+		<h1>Haberler</h1>
 		</p>
 		</div>
 </div>
@@ -122,7 +122,7 @@ switch ($handler) {
         echo '
 		<div class="row head-row">
 		
-		<p style="display:block; text-align:left; line-height:20px">PHPVibe is a dynamic and versatile video sharing platform, empowering users to create, share, and monetize their multimedia content with ease. </p>
+		<p style="display:block; text-align:left; line-height:20px">Haberler is a dynamic and versatile video sharing platform, empowering users to create, share, and monetize their multimedia content with ease. </p>
         
 				
 			<div class="row text-left top30 bb">
@@ -167,7 +167,7 @@ switch ($handler) {
 		echo '<div class="lilbox col-12 pad20 shadow">'.$aerror.' The url <pre> '.SITE_URL.' </pre> defined seems wrong</div>';
 		_error();
 		} else {
-		echo '<div class="lilbox col-12 pad20 shadow">'.$passed.'You are installing PHPVibe at <pre>'.SITE_URL.'</pre></div>';			
+		echo '<div class="lilbox col-12 pad20 shadow">'.$passed.'You are installing Haberler at <pre>'.SITE_URL.'</pre></div>';
 		}
 		if(substr(SITE_URL, -1) !== '/') {
 		echo '<div class="lilbox col-12 pad20 shadow">'.$aerror.' The url is missing the ending slash "/".
@@ -176,7 +176,7 @@ switch ($handler) {
 		}
 		$parse = parse_url($site_url); 
 		if($parse['path'] != "/") {
-			echo '<div class="lilbox col-12 pad20 shadow">'.$caution.' PHPVibe seems to be installed in a folder! <br> <pre>We suggest you avoid that for a smooth experience.</pre>  
+			echo '<div class="lilbox col-12 pad20 shadow">'.$caution.' Haberler seems to be installed in a folder! <br> <pre>We suggest you avoid that for a smooth experience.</pre>  
 			<br> <strong>Else</strong> : 
 			<br> 1.) Edit the root .htaccess file and change <strong>RewriteBase /</strong> to <br> <strong>RewriteBase /yourfoldername</strong> <br> (the folder name is probably '.$parse['path'].')
 			<br>	2.)	Uncomment and change "Base path" in the index.php file like this: 
@@ -527,5 +527,5 @@ switch ($handler) {
 echo '
 		</div>
 		</div> <br style="clear:both">
-			<strong class="grey-text" style="font-weight: 300;">&copy; Copyright 2010 - '.date('Y').' Marius Patrascu, PHPVibe.com</strong>';
+			<strong class="grey-text" style="font-weight: 300;">&copy; Copyright 2010 - '.date('Y').' Marius Patrascu, Haberler.com</strong>';
 ?>

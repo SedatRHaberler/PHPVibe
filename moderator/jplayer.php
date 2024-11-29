@@ -19,7 +19,7 @@ $all_options = get_all_options();
 	<label class="control-label"><i class="icon-play"></i>Default Player <br /> <i>HTML5</i></label>
 	<div class="controls">
 	<label class="radio inline"><input type="radio" name="choosen-player" class="styled" value="5" <?php if(get_option('choosen-player') == 5 ) { echo "checked"; } ?>>Easy Video Player</label>
-	<label class="radio inline"><input type="radio" name="choosen-player" class="styled" value="4" <?php if(get_option('choosen-player') == 4 ) { echo "checked"; } ?>>PHPVibe's Chameleon</label>
+	<label class="radio inline"><input type="radio" name="choosen-player" class="styled" value="4" <?php if(get_option('choosen-player') == 4 ) { echo "checked"; } ?>>Haberler's Chameleon</label>
 	<label class="radio inline"><input type="radio" name="choosen-player" class="styled" value="1" <?php if(get_option('choosen-player') == 1 ) { echo "checked"; } ?>>JwPlayer</i></label>
 	<label class="radio inline"><input type="radio" name="choosen-player" class="styled" value="2" <?php if(get_option('choosen-player') == 2 ) { echo "checked"; } ?>>FlowPlayer HTML5</label>
 	<label class="radio inline"><input type="radio" name="choosen-player" class="styled" value="3" <?php if(get_option('choosen-player') == 3 ) { echo "checked"; } ?>>MediaElement</label>

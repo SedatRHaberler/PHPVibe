@@ -1,6 +1,6 @@
 <?php
 // Veritabanı bağlantısını içe aktar
-include('load.php'); // PHPVibe'nin ana yapılandırma dosyası
+include('load.php'); // Haberler'nin ana yapılandırma dosyası
 
 header("Content-Type: application/xml; charset=utf-8");
 

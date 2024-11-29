@@ -1,8 +1,8 @@
 <?php //security check
-if( !defined( 'in_phpvibe' ) || (in_phpvibe !== true) ) {
+if( !defined( 'in_Haberler' ) || (in_Haberler !== true) ) {
 die();
 }
-/* This is your phpVibe config file.
+/* This is your Haberler config file.
 * Edit this file with your own settings following the comments next to each line
 */
 
@@ -34,7 +34,7 @@ define( 'DB_CACHE', '12' );
 */
 /** License key 
 Create it in the store, under "My Licenses" **/
-define( 'phpVibeKey', 'the key goes here' );
+define( 'HaberlerKey', 'the key goes here' );
 
 /** Site url (with end slash, ex: http://www.domain.com/ ) **/
 define( 'SITE_URL', 'https://www.domain.com/' );

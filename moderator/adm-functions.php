@@ -9,14 +9,14 @@ return site_url().ADMINCP.'/?sk='.$sk;
 function video_importer_links() {
 return apply_filters('importers_menu',false);
 }
-class PHPVibeVersionHelper
+class HaberlerVersionHelper
 {
     var $list         = null;
-    public static $cms = 'PHPVibe';
+    public static $cms = 'Haberler';
 	function __construct() {
     $string = file_get_contents(ADM."/haberler.json");
 	$this->list = json_decode($string, false);
-	if(!isset($this->list->fullversion)) { exit("ERROR! Missing or broken PHPVibe version file! <br>Please check/reupload the ".ADM."/haberler.json file");}
+	if(!isset($this->list->fullversion)) { exit("ERROR! Missing or broken Haberler version file! <br>Please check/reupload the ".ADM."/haberler.json file");}
   }
 	public function cms() {
 		 return (is_empty($this->list->software)? self::$cms : $this->list->software );
@@ -37,7 +37,7 @@ class PHPVibeVersionHelper
         return $this->list->release_date;
     }
 }
-$aboutVibe = new PHPVibeVersionHelper();
+$aboutVibe = new HaberlerVersionHelper();
 /* Usage:
 		echo $aboutVibe->fullversion();
 		echo $aboutVibe->major();
@@ -56,7 +56,7 @@ return '<!DOCTYPE html>
     <title>'.$aboutVibe->cms().' #'.$aboutVibe->major().' - Dashboard</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="PHPVibe.com">
+    <meta name="author" content="Haberler.com">
 	<base href="'.admin_url().'" />  
 <link rel="stylesheet" href="'.admin_url().'css/bootstrap.min.css">
 	<link rel="stylesheet" href="'.admin_url().'css/responsive.css">

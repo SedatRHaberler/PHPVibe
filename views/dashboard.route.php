@@ -2,7 +2,7 @@
 function modify_title( $text ) {
     return get_option("DashboardSEO",_lang("Your Studio"));
 }	
-add_filter( 'phpvibe_title', 'modify_title' );
+add_filter( 'Haberler_title', 'modify_title' );
 function file_up_support($text) {
 $text = '<script type="text/javascript" >
     function readURL(input) {

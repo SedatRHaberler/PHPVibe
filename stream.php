@@ -29,7 +29,7 @@ if (isset($_GET["file"])) {
 
     $file = $path . $filename;
 } elseif (isset($_GET["sk"])) {
-    // Handle PHPVibe 5 file calls
+    // Handle Haberler 5 file calls
     $media = 'media'; // Change if the admin configuration is different
 
     // Validate the 'sk' parameter

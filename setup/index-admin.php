@@ -2,8 +2,8 @@
 if(!isset($_SESSION['user_id'])) {$_SESSION['user_id'] = 0;}
 
 // security
-if( !defined( 'in_phpvibe' ) )
-	define( 'in_phpvibe', true);
+if( !defined( 'in_Haberler' ) )
+	define( 'in_Haberler', true);
 // physical path of your root
 if( !defined( 'ABSPATH' ) )
 	define( 'ABSPATH', str_replace( '\\', '/',  dirname(dirname( __FILE__ ) ))  );
@@ -66,7 +66,7 @@ echo '
  <html dir="ltr" lang="en-US">
 <head>
 <meta http-equiv="content-type" content="text/html;charset=UTF-8">
-<title>PHPVibe 11 :: Setup</title>
+<title>Haberler 11 :: Setup</title>
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" href="' . $sanitized_site_url . ADMINCP . '/css/style.css" media="screen" />
 <link href="' . $sanitized_site_url . ADMINCP . '/css/bootstrap.min.css" rel="stylesheet" />
@@ -92,9 +92,9 @@ echo '
 
 <div class="row" style="text-align:center;">
 <div style="display:block;padding:2%">
-<img src="https://phpvibe.com/assets/images/logobig.png"><br> 
+<img src="https://Haberler.com/assets/images/logobig.png"><br>
 <p style="margin:30px 0 0">
-<h1>PHPVibe</h1>
+<h1>Haberler</h1>
 </p>
 </div>
 </div>
@@ -175,7 +175,7 @@ echo '<section class="panel panel-danger">
 if($checked > 0) {
 echo '<section id="done" class="panel panel-blue">
 <span class="label label-primary">Setup is done</span>
-<div style="padding:25px 15px;">Head to <a href="'.str_replace("setup",ADMINCP,$base_href).'">/'.ADMINCP.'</a> for the admin panel. <br> Thank you for choosing PHPVibe!';
+<div style="padding:25px 15px;">Head to <a href="'.str_replace("setup",ADMINCP,$base_href).'">/'.ADMINCP.'</a> for the admin panel. <br> Thank you for choosing Haberler!';
 echo '<div class="form-group form-material floating">
 <a class="btn btn-large btn-primary pull-right" href="'.$site_url.ADMINCP.'" target="_blank">Setup is complete. Continue</a>
 </div></div></section>';

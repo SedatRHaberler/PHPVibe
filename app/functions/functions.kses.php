@@ -1,6 +1,6 @@
 <?php
 /**
- * phpVibe modification of a small subset from WordPress' KSES implementation.
+ * Haberler modification of a small subset from WordPress' KSES implementation.
  * Straight from the Let's Not Reinvent The Wheel department.
  */
 
@@ -37,7 +37,7 @@
 /* NOTE ABOUT GLOBALS
  * Two globals are defined: $allowedentitynames and $allowedprotocols
  * - $allowedentitynames is used internally in KSES functions to sanitize HTML entities
- * - $allowedprotocols is used in various parts of phpVibe, not just in KSES, albeit being defined here
+ * - $allowedprotocols is used in various parts of Haberler, not just in KSES, albeit being defined here
  * Two globals are not defined and unused at this moment: $allowedtags_all and $allowedtags
  * The code for these vars is here and ready for any future use 
  */
@@ -415,7 +415,7 @@ function kses_allowed_tags_all() {
 /**
  * Kses global for default allowable HTML tags. TODO: trim down to necessary only.
  *
- * Short list of HTML tags used in phpVibe core for display
+ * Short list of HTML tags used in Haberler core for display
  *
  * @since 1.6
  *
