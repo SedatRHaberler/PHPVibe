@@ -10,7 +10,7 @@ $error = '';
 // SEO Filters
 if (isset($_POST['pic-title'])) {
 //var_dump($_FILES);
-    $savePath = ABSPATH . '/storage/' . get_option('mediafolder') . '/';                                # The folder to save the image
+    $savePath = ABSPATH . '/storage/' . get_option('mediafolder') . '/pictures/';                                # The folder to save the image
     $saveName = md5(time()) . '-' . user_id();                                    # Without ext
     $allowedExtArray = explode(',', get_option('alimgext', 'jpg,png,gif,jpeg,bmp'));
     $imageQuality = 100;
@@ -21,12 +21,14 @@ if (isset($_POST['pic-title'])) {
             if (move_uploaded_file($_FILES['play-img']['tmp_name'], $savePath . $saveName . '.' . $ext)) {
                 $thumb = $savePath . $saveName . '.' . $ext;
                 $thumb = str_replace(ABSPATH . '/', '', $thumb);
-                $source = str_replace('storage/' . get_option('mediafolder'), '', $thumb);
+                $source = str_replace('storage/' . get_option('mediafolder'). '/pictures/', '', $thumb);
+                debug_to_console("source: " . $source);
                 $source  = ltrim( $source , '/');
+                debug_to_console("source: " . $source);
                 //Thumnails generator
-
-                $thumbfile = $savePath .'thumb_' .$source ;
+                $thumbfile = $savePath .'thumbs/' .$source ;
                 $original = $savePath . $saveName . '.' . $ext;
+                debug_to_console($thumbfile);
                 $resizer = new ImageResize($original);
                 $resizer->quality_jpg = 95;
                 $resizer->resizeToWidth(460);
