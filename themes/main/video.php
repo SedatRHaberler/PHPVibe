@@ -287,15 +287,15 @@
                     </a>
                 </div>
                 <div class="clearfix"></div>
-                <div class="oboxed ocoms mtop10">
-                    <?php echo _ad('0','top-of-comments');?>
-                    <?php do_action('before-comments'); ?>
-                    <?php 
-					$comsNav = '<nav id="page_nav"><a href="'.$canonical.'?p='.next_page().'"></a></nav>';					
-					echo comments();
-                    ?>
-                    <?php do_action('after-comments'); ?>
-                </div>
+<!--                <div class="oboxed ocoms mtop10">-->
+<!--                    --><?php //echo _ad('0','top-of-comments');?>
+<!--                    --><?php //do_action('before-comments'); ?>
+<!--                    --><?php //
+//					$comsNav = '<nav id="page_nav"><a href="'.$canonical.'?p='.next_page().'"></a></nav>';
+//					echo comments();
+//                    ?>
+<!--                    --><?php //do_action('after-comments'); ?>
+<!--                </div>-->
                 <div class="clearfix"></div>
             </div>
         </div>
