@@ -301,7 +301,7 @@ i.isActive {
 .aaa {
 	 margin: 0 7px;
     text-align: center;
-   justify-content: center;	
+   justify-content: center;
 }
 .user-media-actions {
   display: flex;
@@ -370,7 +370,7 @@ i.isActive {
 .btn-subscribing {
 	position: relative;
     display: inline-block;
-    vertical-align: middle;	
+    vertical-align: middle;
 }
 .btn-subscribing .separator {
     width: 1px;
@@ -459,7 +459,7 @@ i.isActive {
   .likes-bar .aaa {
     flex-basis: 49.5%;
   }
-  
+
   .aaa > a {
     text-align: center;
     flex-direction: column;
@@ -1112,7 +1112,7 @@ a#revealRelated {
     min-height: 180px;
   }
   .video-thumb {
-    min-height: 180px;	
+    min-height: 180px;
   }
   .owl-theme .owl-controls .owl-buttons div {
     opacity: 0.95 !important;
@@ -1211,7 +1211,7 @@ a#revealRelated {
     background: #eee;
     font-size: 0;
     vertical-align: middle;
-   
+
     border-radius: 12px;
 	 aspect-ratio: 16 / 9;
 }
@@ -2237,8 +2237,15 @@ a.logo img {
   width: auto;
   min-width: 30px;
   max-height: 64px;
+
 }
-.logo > span {
+  @media (max-width: 768px) {
+    a.logo img {
+      margin: 8px;
+    }
+  }
+
+  .logo > span {
   font-size: 20px;
   text-align: center;
   margin: 0 auto;
@@ -5193,7 +5200,7 @@ a.top-link:focus:before,
     top: 4.4px;
     color: #111;
     font-size: 20px;
-	
+
 }
 .tags_clear {
   clear: both;
@@ -6842,7 +6849,7 @@ a.song .badge {
 
 /* Editable */
 
-/*! X-editable - v1.5.0 
+/*! X-editable - v1.5.0
 * In-place editing with Twitter Bootstrap, jQuery UI or pure jQuery
 * http://github.com/vitalets/x-editable
 * Copyright (c) 2013 Vitaliy Potapov; Licensed MIT */

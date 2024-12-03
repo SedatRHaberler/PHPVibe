@@ -22,7 +22,7 @@ if(in_array(current_lang(),$lg)) {
 }
 function header_add(){
 global $page;
-$head = render_styles(0);
+$head = render_styles(1);
 $head .= extra_css().'
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 <script>
@@ -134,7 +134,7 @@ $nav = '';
 $nav .= '
 <div class="fixed-top">
 <div class="header row block">
-	<div class="logo-wrapper header-left col-md-3 col-lg-3 col-xs-4">';    
+	<div class="logo-wrapper header-left ">';
 	$nav .= '<a id="show-sidebar" href="javascript:void(0)" title="'._lang('Show sidebar').'"><i class="material-icons">&#xE5D2;</i></a>
 	<a href="'.site_url().'" title="" class="logo">'.show_logo().'</a>
 	<br style="clear:both;"/>

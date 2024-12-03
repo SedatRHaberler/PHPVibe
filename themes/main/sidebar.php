@@ -66,9 +66,9 @@
       <a data-target="#search-now" data-toggle="modal" href="javascript:void(0)" id="show-searched2"> <span class="iconed"> <i class="material-icons">&#xE8B6;</i> </span>'._lang('Search').'</a>
       </a>';
        */
-
       echo '<li class="lihead hlt"><a href="'.list_url(browse).'"><span class="iconed"><i class="material-icons">&#xe04b;</i></span> '._lang('Videos').'</a></li>';
       if(get_option('musicmenu') == 1 ) {
+
           echo '<li class="lihead hlt"><a href="'.music_url(browse).'"><span class="iconed"><i class="material-icons">&#xE1B8;</i></span> '._lang('Music').'</a></li>';	
       }
       if(get_option('imagesmenu') == 1 ) {

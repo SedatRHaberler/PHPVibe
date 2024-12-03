@@ -2,10 +2,10 @@
 $sec = intval(_post('duration'));
 //if is image upload
 if(isset($_FILES['play-img']) && !empty($_FILES['play-img']['name'])){
-$formInputName   = 'play-img';
-	$savePath	     = ABSPATH.'/storage/'.get_option('mediafolder').'/thumbs';
-	$saveName        = md5(time()).'-'.user_id();
-	$allowedExtArray = array('.jpg', '.png', '.gif');
+$formInputName   = 'play-img';							
+	$savePath	     = ABSPATH.'/storage/'.get_option('mediafolder').'/thumbs';	
+	$saveName        = md5(time()).'-'.user_id();									
+	$allowedExtArray = array('.jpg', '.png', '.gif');	
 	$imageQuality    = 100;
 $uploader = new FileUploader($formInputName, $savePath, $saveName , $allowedExtArray);
 if ($uploader->getIsSuccessful()) {
@@ -38,10 +38,12 @@ $thumb = empty($thumbz)? 'storage/uploads/noimage.png' : $thumbz ;
     $owner = $db->escape(_post('owner'));
     $title = $db->escape(toDb(_post('title'))); // Assuming toDb escapes special characters
     $categ = $db->escape(toDb(_post('categ')));
-    $nsfw = $db->escape(toDb( isset($_POST['nsfw']) ? intval($_POST['nsfw']) : 0));
+    $nsfw = $db->escape(toDb(_post('nsfw'))) ;
+    if ($nsfw == '') {$nsfw = 0;}
     $views = intval(_post('views'));
     $featured = intval(_post('featured'));
- debug_to_console($nsfw);
+    debug_to_console($nsfw);
+
 // Insert video (web link case)
     if (_post('type') < 2) {
         $query = "
@@ -82,14 +84,14 @@ $thumb = empty($thumbz)? 'storage/uploads/noimage.png' : $thumbz ;
 save_description($doit->id,_post('description'));
 add_activity('4', $doit->id);
 echo '<div class="msg-info">'._post('title').' '._lang("created successfully.").' <a href="'.admin_url("videos").'">'._lang("Manage videos.").'</a></div>';
-}elseif(_post('vfile') || _post('vremote')) {
+}elseif(_post('vfile') || _post('vremote')) { 
 if(_post('vfile')){
 $vid = new Vibe_Providers();
 if(!$vid->isValid(_post('vfile'))){
 echo '<div class="msg-warning">'._lang("We don't support yet embeds from that website").'</div>';
 die();
 }
-$details = $vid->get_data();
+$details = $vid->get_data();	
 $file = _post('vfile');
 $type = 1;
 }
@@ -151,7 +153,7 @@ $data .='
 	</div>
 	
  ';
-}
+}	
 $data .=' 
 <div class="row">
     <div class="col-md-6 col-xs-6">
@@ -178,7 +180,7 @@ $data .='
 	';
 $categories = $db->get_results("SELECT cat_id as id, cat_name as name FROM  ".DB_PREFIX."channels where type ='1' order by cat_name asc limit 0,10000");
 if($categories) {
-foreach ($categories as $cat) {
+foreach ($categories as $cat) {	
 $data .='	
 	
 	 <option value="'.intval($cat->id).'">'._html($cat->name).'</option> 
@@ -219,14 +221,14 @@ $data.='<select data-placeholder="'._lang("Choose owner:").'" name="owner" id="c
 	';
 $users = $db->get_results("SELECT id, name FROM  ".DB_PREFIX."users order by id asc limit 0,1000");
 if($users) {
-foreach ($users as $cat) {
+foreach ($users as $cat) {	
 $data.='<option value="'.intval($cat->id).'">'._html($cat->name).'</option>';
 	}
 }	else {
 $data.='<option value="">'._lang("No users").'</option>';
 }
 $data.='</select>';
-
+	
 	$data.='
 	</div>
 	</div>
@@ -284,6 +286,6 @@ echo $data;
 	</div>
 	</form>
 </div>
-</div>
+</div>	
 <?php } ?>
-
+	

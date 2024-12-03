@@ -175,17 +175,18 @@ $sb = '
 <div class="short-navbar">
 <div class="navbar-top">
 <div class="navbar-top-logo">
-<img src="'.admin_url().'css/logo.png" title="Administration panel for PHPVibe"/>
+<img src="' . admin_url() . 'css/logo.png" title="Administration panel for PHPVibe"/>
 </div>
 <a class="toggle-btn" href="javascript:void(0);"><i class="material-icons">&#xE5D2;</i></a>
 <a class="searchit-btn" href="javascript:void(0);"><i class="material-icons">search</i></a>
 </div>
 <div class="navbar-jump">
-<a class="menu__jumps tipW" href="'.admin_url().'" title="Admin Dashboard"><i class="material-icons">home</i></a>
-<a class="menu__jumps tipW" href="'.admin_url("clean-cache").'" title="Purge cache"><i class="material-icons">sync</i></a>
-<a class="menu__jumps tipW" href="'.admin_url("videos").'" title="Manager"><i class="material-icons">view_carousel</i></a>
-<a class="menu__jumps tipW" href="'.admin_url('add-video').'" title="Add video"><i class="material-icons">add_to_queue</i></a>
-<a class="menu__jumps tipW" href="'.site_url().'" title="Exit to website"><i class="material-icons">power_settings_new</i></a>
+<a class="menu__jumps tipW" href="' . admin_url() . '" title="Admin Dashboard"><i class="material-icons">home</i></a>
+<a class="menu__jumps tipW" href="' . admin_url("clean-cache") . '" title="Purge cache"><i class="material-icons">sync</i></a>
+<a class="menu__jumps tipW" href="' . (admin_url("videos") . '" title="Manager"><i class="material-icons">view_carousel</i></a>
+'//<a class="menu__jumps tipW" href="'.admin_url('add-video').'" title="Add video"><i class="material-icons">add_to_queue</i></a>
+        . '
+<a class="menu__jumps tipW" href="') .site_url().'" title="Exit to website"><i class="material-icons">power_settings_new</i></a>
 </div>
 
 </div>
@@ -219,13 +220,15 @@ $sb = '
                   
                     <ul>
                      <li> <a  href="'.admin_url('videos').'"><div class="lidot"></div> Videos</a></li>
-                      <li><a  href="'.admin_url('images').'"><div class="lidot"></div> Pictures</a></li>
-					  <li><a  href="'.admin_url('music').'"><div class="lidot"></div> Music</a></li>	
-                 <li><a href="'.admin_url('playlists').'"><div class="lidot"></div> Collections</a>
-				 <li><a href="'.admin_url('channels').'"><div class="lidot"></div> Categories</a>
-                    
-					  <li><a href="'.admin_url('comments').'"><div class="lidot"></div> Comments</a>
-                  </li>
+                     '
+//                      <li><a  href="'.admin_url('images').'"><div class="lidot"></div> Pictures</a></li>
+//					  <li><a  href="'.admin_url('music').'"><div class="lidot"></div> Music</a></li>
+//                 <li><a href="'.admin_url('playlists').'"><div class="lidot"></div> Collections</a>
+//				 <li><a href="'.admin_url('channels').'"><div class="lidot"></div> Categories</a>
+//
+//					  <li><a href="'.admin_url('comments').'"><div class="lidot"></div> Comments</a>
+//                  </li>
+   .'
 					<li class="nav-split">-</li>  
 					<li> <a  href="'.admin_url('unvideos').'"><div class="lidot"></div> Unpublished media</a></li>
 					<li> <a  href="'.admin_url('unimages').'"><div class="lidot"></div> Unpublished images</a></li>

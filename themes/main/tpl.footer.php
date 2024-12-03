@@ -191,8 +191,9 @@ $lg = '<!-- Start Login Modal -->
 </div>
 <button type="submit" class="btn btn-primary btn-block mtop20">'._lang("Sign In").'</button>
 </form>
-<p class="mtop10">'._lang("Still no account? Please go to").' <a data-target="#register-now" data-toggle="modal" href="javascript:void(0)">'._lang("Sign up").'</a></p>
-</div>
+'
+    //<p class="mtop10">'._lang("Still no account? Please go to").' <a data-target="#register-now" data-toggle="modal" href="javascript:void(0)">'._lang("Sign up").'</a></p>
+.'</div>
 </div>
 </div>
 <div class="modal-footer">

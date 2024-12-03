@@ -180,12 +180,12 @@ function top_nav(){
         $nav .= ' <a id="openusr" class=" hidden-xs uav no-user top-link"  href="javascript:showLogin()"
 	data-animation="scale-up" role="button" title="'._lang('Login').'">
 	<i class="material-icons">account_circle</i>
-	</a>
-	<a id="uploadNow" data-target="#login-now" data-toggle="modal" href="javascript:void(0)" class="hidden-xs top-link btn-upload" title="'._lang("Login to upload").'">
-	<i class="material-icons">&#xE2C6;</i>
-	</a>
-	<a href="javascript:showLogin()" class="btn btn-primary btn-small btn-block">'._lang("Join").'</a>
-	';
+	</a>';
+//	<a id="uploadNow" data-target="#login-now" data-toggle="modal" href="javascript:void(0)" class="hidden-xs top-link btn-upload" title="'._lang("Login to upload").'">
+//	<i class="material-icons">&#xE2C6;</i>
+//	</a>
+//	<a href="javascript:showLogin()" class="btn btn-primary btn-small btn-block">'._lang("Join").'</a>
+
 	}
     $nav .= '
 	<a data-target="#search-now" data-toggle="modal" href="javascript:void(0)" class="top-link" id="show-search"><i class="material-icons">&#xE8B6;</i></a>

@@ -2,7 +2,7 @@
 // Degugging?
 $sttime = microtime(true);
 // Security
-				if( !defined( 'in_phpvibe' ) )
+if( !defined( 'in_phpvibe' ) )
 	define( 'in_phpvibe', true);
 // Root
 if( !defined( 'ABSPATH' ) )
@@ -122,16 +122,16 @@ ob_start();
 /* End folder check */
 do_action('VibePermalinks');
 $router->map('/', 'home', array('methods' => 'GET', 'filters' => array('id' => '(\d+)')));
-$router->map('/payment/:section', 'payment', array('methods' => 'GET,PUT,POST', 'filters' => array('section' => '(.*)')));
+//$router->map('/payment/:section', 'payment', array('methods' => 'GET,PUT,POST', 'filters' => array('section' => '(.*)')));
 $router->map(get_option('profile-seo-url','/profile/:name/:id/'), 'profile', array('methods' => 'GET,PUT,POST', _makeUrlArgs(get_option('profile-seo-url','/profile/:name/:id/'))));
 $router->map('/'.premiumhub.'/:section', 'premiumhub', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/'.videos.'/:section', 'videolist', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
-$router->map('/images/:section', 'imageslist', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
-$router->map('/music/:section', 'musiclist', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
-$router->map('/music/:section', 'musiclist', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
+//$router->map('/images/:section', 'imageslist', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
+//$router->map('/music/:section', 'musiclist', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
+//$router->map('/music/:section', 'musiclist', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map(get_option('channel-seo-url','/category/:name/:id/'), 'category', array('methods' => 'GET', 'filters' => _makeUrlArgs(get_option('channel-seo-url','/category/:name/:id/'))));
-$router->map(get_option('music-channel-seo-url','/musicfilter/:name/:id/'), 'categorymusic', array('methods' => 'GET', 'filters' => _makeUrlArgs(get_option('channel-seo-url','/category/:name/:id/'))));
-$router->map(get_option('image-channel-seo-url','/imagefilter/:name/:id/'), 'categoryimage', array('methods' => 'GET', 'filters' => _makeUrlArgs(get_option('channel-seo-url','/category/:name/:id/'))));
+//$router->map(get_option('music-channel-seo-url','/musicfilter/:name/:id/'), 'categorymusic', array('methods' => 'GET', 'filters' => _makeUrlArgs(get_option('channel-seo-url','/category/:name/:id/'))));
+//$router->map(get_option('image-channel-seo-url','/imagefilter/:name/:id/'), 'categoryimage', array('methods' => 'GET', 'filters' => _makeUrlArgs(get_option('channel-seo-url','/category/:name/:id/'))));
 $router->map('/playlist/:name/:id/:section', 'playlist', array('methods' => 'GET,POST', 'filters' => array('id' => '(\d+)','section' => '(.*)')));
 $router->map(get_option('page-seo-url','/read/:name/:id'), 'page', array('methods' => 'GET', 'filters' => _makeUrlArgs(get_option('page-seo-url','/read/:name/:id'))));
 $router->map('/'.me.':section', 'manager', array('methods' => 'GET,PUT,POST', 'filters' => array('section' => '(.*)')));
@@ -141,17 +141,17 @@ $router->map('/'.playlists.'/:section', 'playlists', array('methods' => 'GET', '
 $router->map('/'.albums.'/:section', 'albums', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/'.album.'/:section', 'album', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/'.blogcat.'/:name/:id/:section', 'blogcat', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
-$router->map(get_option('article-seo-url','/read/:name/:id'), 'post', array('methods' => 'GET', 'filters' => _makeUrlArgs(get_option('article-seo-url','/read/:name/:id'))));
+//$router->map(get_option('article-seo-url','/read/:name/:id'), 'post', array('methods' => 'GET', 'filters' => _makeUrlArgs(get_option('article-seo-url','/read/:name/:id'))));
 $router->map('/forward/:section',  'forward', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/msg/:section',  'msg', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/conversation/:id',  'conversation', array('methods' => 'GET', 'filters' => array('id' => '(\d+)')));
 $router->map('/login/:section', 'login',  array('methods' => 'GET,PUT,POST', 'filters' => array('section' => '(.*)')));
-$router->map('/register/:section', 'register', array('methods' => 'GET,PUT,POST', 'filters' => array('section' => '(.*)')));
+//$router->map('/register/:section', 'register', array('methods' => 'GET,PUT,POST', 'filters' => array('section' => '(.*)')));
 $router->map('/'.buzz.'/:section', 'buzz', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/'.buzz.'/:section', 'buzz', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/'.thetags.'/:section', 'tag', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/'.show.'/:section', 'search', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
-$router->map('/'.imgsearch.'/:section', 'searchimages', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
+//$router->map('/'.imgsearch.'/:section', 'searchimages', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/'.pplsearch.'/:section', 'searchppl', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/'.playlistsearch.'/:section', 'searchpaylist', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/api/:section', 'api', array('methods' => 'GET,PUT,POST', 'filters' => array('section' => '(.*)')));
@@ -165,7 +165,7 @@ $router->map('/dashboard/:section', 'dashboard', array('methods' => 'GET,PUT,POS
 /* Single video or song */
 $router->map(get_option('video-seo-url','/video/:id/:name'), 'video', array('methods' => 'GET', 'filters' => _makeUrlArgs(get_option('video-seo-url','/video/:id/:name'))));
 /* Single image */
-$router->map(get_option('image-seo-url','/image/:id/:name'), 'image', array('methods' => 'GET', 'filters' => _makeUrlArgs(get_option('image-seo-url','/image/:id/:name'))));
+//$router->map(get_option('image-seo-url','/image/:id/:name'), 'image', array('methods' => 'GET', 'filters' => _makeUrlArgs(get_option('image-seo-url','/image/:id/:name'))));
 //Match
 $route = $router->matchCurrentRequest();
 //end routing
