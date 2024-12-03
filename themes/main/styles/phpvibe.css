@@ -1779,7 +1779,7 @@ input[type="submit"] {
   text-decoration: none;
 }
 .sidebar-nav a:hover {
-  color: #666;
+  color: #FB0D1B;
 }
 .sidebar-nav li > a > span {
   float: left;
@@ -1790,7 +1790,9 @@ input[type="submit"] {
   border: #eaeaea;
 }
 .sidebar-nav li.active a,
-.sidebar-nav li.active .icon {
+.sidebar-nav li.active .icon,
+.sidebar-nav li.active span
+{
   color: #e56c74;
 }
 .sidebar-nav li:hover > a > img {

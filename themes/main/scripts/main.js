@@ -475,6 +475,7 @@ $("#insertChat").emojioneArea({
         tab.addEventListener('mouseenter', () => {
             // Sadece o li içerisindeki ikona "active" sınıfını ekle
             const icon = tab.querySelector('i');
+
             if (icon) {
                 icon.classList.add('active');
             }
@@ -483,6 +484,7 @@ $("#insertChat").emojioneArea({
         tab.addEventListener('mouseleave', () => {
             // Sadece o li içerisindeki ikondan "active" sınıfını kaldır
             const icon = tab.querySelector('i');
+
             if (icon) {
                 icon.classList.remove('active');
             }
