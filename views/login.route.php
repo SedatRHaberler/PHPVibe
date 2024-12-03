@@ -124,10 +124,7 @@ global $error, $socials,$registerhere;
 if(_get('return')) { $rt ='&'._get('return'); } else { $rt = '';}; 
 return $error.'
 <div class="row text-center clearfix odet mbot20 mtop20">
-'.((_get("justlogin") ? _lang("<h1>Thank you for joining!</h1>") : "")).'
-<h2>'._lang("Login now").'</h2>
-'._lang("Sign in to your account").' 
- <a class="btn btn-primary btn-block mtop20" href="javascript:showLogin()">'._lang("Show login box").'</a>
+'.((_get("justlogin") ? "Moderatörünüzle Görüşün" : "")).'
 </div>
 ';
 }

@@ -145,7 +145,7 @@ $router->map('/'.blogcat.'/:name/:id/:section', 'blogcat', array('methods' => 'G
 $router->map('/forward/:section',  'forward', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/msg/:section',  'msg', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/conversation/:id',  'conversation', array('methods' => 'GET', 'filters' => array('id' => '(\d+)')));
-//$router->map('/login/:section', 'login',  array('methods' => 'GET,PUT,POST', 'filters' => array('section' => '(.*)')));
+$router->map('/login/:section', 'login',  array('methods' => 'GET,PUT,POST', 'filters' => array('section' => '(.*)')));
 //$router->map('/register/:section', 'register', array('methods' => 'GET,PUT,POST', 'filters' => array('section' => '(.*)')));
 $router->map('/'.buzz.'/:section', 'buzz', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/'.buzz.'/:section', 'buzz', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
