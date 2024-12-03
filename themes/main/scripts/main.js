@@ -308,6 +308,19 @@ $(window).scroll(function() {
     }
 });
 /* Doc ready*/
+document.addEventListener("DOMContentLoaded", function () {
+    // LocalStorage'deki "login" değerini kontrol et
+    const loginStatus = localStorage.getItem("login");
+
+    // Eğer "login" 1 ise sekmeyi göster
+    if (loginStatus === "1") {
+        document.getElementById("openusr").style.display = "block";
+    } else {
+        // Aksi halde sekmeyi gizle
+        document.getElementById("openusr").style.display = "none";
+    }
+});
+
 $(document).ready(function() {
 	$('.icon-material,button:not(".vjs-control"):not(".vjs-button"), a.btn').ripple();
 	if($(window).width() < 1000) {
