@@ -470,8 +470,27 @@ $("#insertChat").emojioneArea({
      moreLink: '<a href="#" class="readmore">'+ $('#media-description').data("small") +' <i class="material-icons">&#xE313;</i></a>',
 	 lessLink: '<a href="#" class="readmore">'+ $('#media-description').data("big") +' <i class="material-icons">&#xE316;</i></a>'
     });
-	
-     //Mobi Share
+    // Tablar için tıklama olayını dinle
+    document.querySelectorAll('.sidebar-nav ul li').forEach(tab => {
+        tab.addEventListener('mouseenter', () => {
+            // Sadece o li içerisindeki ikona "active" sınıfını ekle
+            const icon = tab.querySelector('i');
+            if (icon) {
+                icon.classList.add('active');
+            }
+        });
+
+        tab.addEventListener('mouseleave', () => {
+            // Sadece o li içerisindeki ikondan "active" sınıfını kaldır
+            const icon = tab.querySelector('i');
+            if (icon) {
+                icon.classList.remove('active');
+            }
+        });
+    });
+
+
+    //Mobi Share
     $("#social-share").click(function() {
         $(".sharing-icos").toggleClass('hide');
     });

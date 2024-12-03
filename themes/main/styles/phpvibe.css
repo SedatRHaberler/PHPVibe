@@ -16,11 +16,11 @@ body {
   margin: 0;
 }
 body {
-  font-family: "Roboto", "Noto Sans", sans-serif;
+  font-family:/* "Roboto", "Noto Sans",*/ sans-serif;
   font-size: 14px;
   font-weight: 300;
   line-height: 1.57142857;
-  color: #888888;
+  color: #000000;
   background-color: #f7f8f9;
   -webkit-font-smoothing: antialiased;
   font-variant-ligatures: none;
@@ -584,7 +584,7 @@ a#revealRelated {
 .video-player-sidebar .data .title a {
   display: block;
   font-weight: 600;
-  font-family: "Montserrat", sans-serif;
+  font-family:/* "Montserrat",*/ sans-serif;
   font-size: 14px;
   color: #4e4d4d;
   max-height: 2.6em;
@@ -631,7 +631,7 @@ a#revealRelated {
   color: #6e6e6e;
   font-size: 14px;
   font-weight: 400;
-  font-family: "Montserrat", sans-serif;
+  font-family:/* "Montserrat", */sans-serif;
 }
 .video-player-sidebar .inner {
   position: relative;
@@ -765,7 +765,7 @@ a#revealRelated {
 }
 .video-related .data .title a {
   font-weight: 600;
-  font-family: "Montserrat", sans-serif;
+  font-family:/* "Montserrat",*/ sans-serif;
   font-size: 15px;
   color: #4e4d4d;
 }
@@ -1342,7 +1342,7 @@ a.grcreative > i {
 }
 .video h4 a {
   font-weight: 700;
-  font-family: "Montserrat", sans-serif;
+  font-family: /*"Montserrat",*/ sans-serif;
   font-size: 15px;
   color: #4e4d4d;
 }
@@ -1748,9 +1748,9 @@ input[type="submit"] {
   font-weight: 400;
   padding: 9px 0 9px 4px;
 }
-.sidebar-nav li.hlt i {
-  color: #e56c74;
-}
+/*.sidebar-nav li.hlt i {*/
+/*  color: #e56c74;*/
+/*}*/
 .sidebar-nav ul li i {
   vertical-align: middle;
   color: #888888;
@@ -1760,12 +1760,17 @@ input[type="submit"] {
   line-height: 24px;
   margin: -3px 18px 0 3px;
 }
-.sidebar-nav a {
+  .sidebar-nav ul li i.active {
+    color: #FB0D1B;
+  }
+
+
+  .sidebar-nav a {
   vertical-align: middle;
-  font-family: "Montserrat", sans-serif;
+  font-family:/*"Montserrat",*/ sans-serif;
   display: block;
   line-height: 24px;
-  color: #888888;
+  color: #000000;
   outline: none;
   float: none;
   text-transform: none;
@@ -4345,7 +4350,7 @@ img.img-selected {
 }
 .emoj .emoj-picker .emoj-scroll-area .emoj-category-title {
   display: block;
-  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-family: /*Arial, "Helvetica Neue", Helvetica,*/ sans-serif;
   font-size: 13px;
   font-weight: 400;
   color: #b2b2b2;
@@ -6609,7 +6614,7 @@ a.song .badge {
 .playlist-listing-title {
   font-size: 38px;
   color: #444;
-  font-family: "Montserrat", sans-serif;
+  font-family:/*"Montserrat",*/, sans-serif;
   margin: 0;
   font-weight: 700;
 }
