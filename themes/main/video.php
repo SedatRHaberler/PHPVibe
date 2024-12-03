@@ -217,14 +217,14 @@
                             </div>
 
                             <?php } ?>
-                            <div class="aaa">
-                                <a class="tipS" title=" <?php echo _lang('Report');?>" data-target="#report-it" data-toggle="modal" href="javascript:void(0)"  title=" <?php echo _lang('Report media');?>">
-                                   <i class="material-icons">&#xE153;</i>
-								   <span class="hidden-md hidden-lg visible-xs">
-                                        <?php echo _lang('Report');?>
-                                    </span>
-                                </a>
-                            </div>
+<!--                            <div class="aaa">-->
+<!--                                <a class="tipS" title=" --><?php //echo _lang('Report');?><!--" data-target="#report-it" data-toggle="modal" href="javascript:void(0)"  title=" --><?php //echo _lang('Report media');?><!--">-->
+<!--                                   <i class="material-icons">&#xE153;</i>-->
+<!--								   <span class="hidden-md hidden-lg visible-xs">-->
+<!--                                        --><?php //echo _lang('Report');?>
+<!--                                    </span>-->
+<!--                                </a>-->
+<!--                            </div>-->
 							</div>
 							<br style="clear:both">
 							</div>

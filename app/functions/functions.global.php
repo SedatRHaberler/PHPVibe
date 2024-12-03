@@ -893,8 +893,8 @@ function subscribe_box($user, $btnc = '', $counter = true)
     echo '<div class="btn-subscribing">';
     if (!is_user()) {
 //It's guest
-        $btnc = "btn btn-labled social-google-plus subscriber";
-        echo '<a class="' . $btnc . '" href="javascript:showLogin()"><i class="icon icon-plus"></i>' . _lang('Subscribe') . ' ' . $ktool . '</a>';
+//        $btnc = "btn btn-labled social-google-plus subscriber";
+//        echo '<a class="' . $btnc . '" href="javascript:showLogin()"><i class="icon icon-plus"></i>' . _lang('Subscribe') . ' ' . $ktool . '</a>';
     } elseif ($user <> user_id()) {
 //If it's not you
         $check = $db->get_row("SELECT count(*) as nr from " . DB_PREFIX . "users_friends where uid ='" . $user . "' and fid='" . user_id() . "'");
