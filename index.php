@@ -2,7 +2,7 @@
 // Degugging?
 $sttime = microtime(true);
 // Security
-if( !defined( 'in_phpvibe' ) )
+				if( !defined( 'in_phpvibe' ) )
 	define( 'in_phpvibe', true);
 // Root
 if( !defined( 'ABSPATH' ) )
