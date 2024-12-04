@@ -28,6 +28,9 @@ body {
 .clearfix {
   clear: both;
 }
+.dropdown-menu-right{
+  top: auto !important;
+}
 ul.dropdown-menu li:last-of-type {
   border-bottom: none;
 }

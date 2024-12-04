@@ -2,7 +2,7 @@
       /* Most liked , Most viewed time sorting */
       $st = '
 <div class="inline-block pull-right relative">
-       <a data-toggle="dropdown" class="btn dropdown-toogle text-uppercase"><i class="material-icons">&#xE152;</i> '._lang("Refine").'</a>
+       <a data-toggle="dropdown" class="btn dropdown-toogle text-uppercase" ><i class="material-icons">&#xE152;</i> '._lang("Refine").'</a>
 			<ul class="dropdown-menu dropdown-menu-right bullet">
 			<li title="'._lang("This Week").'"><a href="'.site_url().show.url_split.str_replace(array(" "),array("-"),$key).'?sort=w"><i class="icon material-icons">&#xE425;</i>'._lang("This Week").'</a></li>
 			<li title="'._lang("This Month").'"><a href="'.site_url().show.url_split.str_replace(array(" "),array("-"),$key).'?sort=m"><i class="icon material-icons">&#xE425;</i>'._lang("This Month").'</a></li>

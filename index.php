@@ -147,8 +147,8 @@ $router->map('/msg/:section',  'msg', array('methods' => 'GET', 'filters' => arr
 $router->map('/conversation/:id',  'conversation', array('methods' => 'GET', 'filters' => array('id' => '(\d+)')));
 $router->map('/login/:section', 'login',  array('methods' => 'GET,PUT,POST', 'filters' => array('section' => '(.*)')));
 //$router->map('/register/:section', 'register', array('methods' => 'GET,PUT,POST', 'filters' => array('section' => '(.*)')));
-$router->map('/'.buzz.'/:section', 'buzz', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
-$router->map('/'.buzz.'/:section', 'buzz', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
+//$router->map('/'.buzz.'/:section', 'buzz', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
+//$router->map('/'.buzz.'/:section', 'buzz', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/'.thetags.'/:section', 'tag', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/'.show.'/:section', 'search', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 //$router->map('/'.imgsearch.'/:section', 'searchimages', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));

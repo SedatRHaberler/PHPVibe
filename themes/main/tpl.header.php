@@ -233,10 +233,10 @@ function top_nav(){
 <div class="header-right">
 <div class="user-quick">';
     $topsep = false;
-    if(get_option('showfirelink','1') == 1 ) {
-        $nav .=  '<a class="top-link" href="'.site_url().buzz.'/" title="'._lang('What\'s new').'"><i class="material-icons">&#xE80E;</i></a>';
-        $topsep = true;
-    }
+//    if(get_option('showfirelink','1') == 1 ) {
+//        $nav .=  '<a class="top-link" href="'.site_url().buzz.'/" title="'._lang('What\'s new').'"><i class="material-icons">&#xE80E;</i></a>';
+//        $topsep = true;
+//    }
     if(get_option('showbuzzlink','1') == 1 ) {
         $nav .=  '<a class="top-link" href="'.list_url(browse).'" title="'._lang('Videos').'"><i class="material-icons">&#xe064;</i></a>';
         $topsep = true;
