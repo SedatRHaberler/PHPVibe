@@ -151,6 +151,10 @@ function PHPVibeSources() {
              }
          return $videoId;
          }
+     function isMobile() {
+         return preg_match('/(android|iphone|ipad|ipod|blackberry|bb|playbook|windows phone|webos|opera mini|iemobile|mobile)/i', $_SERVER['HTTP_USER_AGENT']);
+     }
+
      public function remotevideo($url)
      {
          //TODO
@@ -180,7 +184,11 @@ function PHPVibeSources() {
              $mobile_supported = array("mp4", "mp3", "webm", "ogv", "m3u8", "ts", "tif");
              if (!in_array($ext, $mobile_supported)) {
                  /*force jwplayer always on non-mobi formats, as others are just html5 */
-                 $choice = 6;
+                 $choice = 1;
+             }
+             if ($this->isMobile()) {
+                 // Mobil cihaz için farklı bir player seçimi yapabilirsiniz
+                 $choice = 5; // Örnek olarak VideoJS
              }
              if ($choice == 1) {
                  $embedCode = _jwplayer($url, $video->thumb(), thumb_fix(get_option('player-logo')), $ext);

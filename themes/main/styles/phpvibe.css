@@ -39,7 +39,7 @@ ul.dropdown-menu li a {
 }
 /* Page formats */
 #wrapper {
-  margin-top: 75px !important;
+  margin-top: 50px !important;
   background: transparent;
   position: relative;
   clear: both;
@@ -1481,6 +1481,8 @@ input[type="submit"] {
 /* Fix for carousel on large screens */
 #home-content {
   max-width: 1640px;
+  margin-left: 16px;
+  margin-right: 16px;
 }
 /* Toastr notifications */
 .toast-title {
@@ -2437,6 +2439,7 @@ a#show-sidebar {
 }
 .searchWidget .search-button button {
   background: none;
+  height: 100% !important;
   border: 0;
   box-shadow: none;
   outline: 0;

@@ -5,11 +5,11 @@
 <?php } ?>
     <div class="<?php if(!has_list()){ echo "col-md-8 col-xs-12";} else {echo "row block player-in-list";}?> ">
         <div id="video-content" class="<?php if(has_list()){ echo "col-md-8 col-xs-12";} else {echo "row block";}?>">
-            <div class="video-player pull-left 
+            <div class="video-player pull-left
                 <?php rExternal() ?>">
                 <?php do_action('before-videoplayer');
                       echo _ad('0','before-videoplayer');
-                      echo the_embed(); 
+                      echo the_embed();
                       echo _ad('0','after-videoplayer');
                       do_action('after-videoplayer');
                 ?>
@@ -22,11 +22,11 @@
             <?php do_action('before-listrelated'); ?>
             <div class="video-player-sidebar pull-left">			
                 <div class="items">
-                  <?php 
+                  <?php
 				  echo fakePlace(7,'videolist').'
 					<div class="ajaxreqList" data-url="playlist/?list='._get('list').'&idowner='.$video->owner().'&videoowner&videoid='.$video->id().'&sorter='._get('sorter').'"> </div>
 					';
-                  ?>                  
+                  ?>
                </div>
 				</div>
                 <?php do_action('after-listrelated'); ?>
