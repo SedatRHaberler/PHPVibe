@@ -155,6 +155,7 @@ $router->map('/'.show.'/:section', 'search', array('methods' => 'GET', 'filters'
 $router->map('/'.pplsearch.'/:section', 'searchppl', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/'.playlistsearch.'/:section', 'searchpaylist', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/api/:section', 'api', array('methods' => 'GET,PUT,POST', 'filters' => array('section' => '(.*)')));
+$router->map('/api/add-video', 'apiAddVideo', array('methods' => 'POST'));
 $router->map('/embed/:section', 'embed', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/feed/:section', 'feed', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/share/:section', 'share', array('methods' => 'GET,PUT,POST', 'filters' => array('section' => '(.*)')));
