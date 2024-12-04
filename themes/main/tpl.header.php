@@ -204,14 +204,17 @@ function top_nav(){
 					</button>
 					</span>
 					<div class="search-target">
-					<a id="switch-search" class="dropdown-toggle"  data-toggle="dropdown" href="#" aria-expanded="false" data-animation="scale-up" role="button">
+					<a id="switch-search" ' /*class="dropdown-toggle"  data-toggle="dropdown"*/.' href="#" aria-expanded="false" data-animation="scale-up" role="button" disabled>
 					<i class="icon material-icons explainer">&#xe152</i><i class="icon material-icons">&#xe04b</i></a>
 					<input type="text" id="switch-com" class="hide" name="component" value ="video">
 					<ul class="dropdown-menu dropdown-left bullet" role="menu">
-					<li role="presentation"><a id="s-video" href="javascript:SearchSwitch(\'video\')"><i class="icon material-icons">&#xe04b</i>'._lang("Videos and music").'</a></li>
-					<li role="presentation"><a id="s-picture" href="javascript:SearchSwitch(\'picture\')"><i class="icon material-icons">&#xe3f4;</i>'._lang("Pictures").'</a></li>
-					<li role="presentation"><a id="s-channel" href="javascript:SearchSwitch(\'channel\')"><i class="icon material-icons">&#xe7fd;</i>'._lang("Channels").'</a></li>
-					<li role="presentation"><a id="s-playlist" href="javascript:SearchSwitch(\'playlist\')"><i class="icon material-icons">&#xE431;</i>'._lang("Collections").'</a></li>
+					<li role="presentation"><a id="s-video" href="javascript:SearchSwitch(\'video\')"><i class="icon material-icons">&#xe04b</i>'._lang("Videos").'</a></li>
+					'
+//					<li role="presentation"><a id="s-picture" href="javascript:SearchSwitch(\'picture\')"><i class="icon material-icons">&#xe3f4;</i>'._lang("Pictures").'</a></li>
+//					<li role="presentation"><a id="s-channel" href="javascript:SearchSwitch(\'channel\')"><i class="icon material-icons">&#xe7fd;</i>'._lang("Channels").'</a></li>
+//					<li role="presentation"><a id="s-playlist" href="javascript:SearchSwitch(\'playlist\')"><i class="icon material-icons">&#xE431;</i>'._lang("Collections").'</a></li>
+//
+					.'
 					</ul>
 					</div>
                     <div class="form-control-wrap">
