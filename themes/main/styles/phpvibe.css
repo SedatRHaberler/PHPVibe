@@ -98,7 +98,7 @@ body.body-video.isdevice #wrapper {
   display: block;
   line-height: 26px;
   font-size: 26px;
-  font-weight: 500;
+  font-weight: 700;
   text-transform: uppercase;
 }
 /* Video page sizing */
@@ -1022,6 +1022,8 @@ a#revealRelated {
   vertical-align: top;
   word-wrap: break-word;
   aspect-ratio: 16 / 9;
+  margin-left: 13px !important;
+  margin-right: 13px !important;
 }
 
 .owl-item .video {
@@ -1033,11 +1035,15 @@ a#revealRelated {
 .owl-item {
   max-width: 403px !important;
 }
-@media (min-width: 1200px) and (max-width: 1599px) {
+@media (min-width: 460px) and (max-width: 1599px) {
+  .video{
+    margin-left: 13px !important;
+    margin-right: 13px !important;
+  }
+}
+  @media (min-width: 1200px) and (max-width: 1599px) {
   .video {
-    margin-left: 0.2% !important;
     width: 24.5%;
-    margin-right: 0.2% !important;
   }
   .video-thumb {
     height: 160px;
@@ -1045,9 +1051,7 @@ a#revealRelated {
 }
 @media (min-width: 946px) and (max-width: 1199px) {
   .video {
-    margin-left: 0.2% !important;
     width: 32.5%;
-    margin-right: 0.2% !important;
   }
   .video-thumb img {
     height: 100% !important;
@@ -1059,9 +1063,8 @@ a#revealRelated {
 }
 @media (min-width: 670px) and (max-width: 945px) {
   .video {
-    margin-left: 0.2% !important;
     width: 32.5%;
-    margin-right: 0.2% !important;
+
   }
   .video-thumb img {
     height: 100% !important;
@@ -1070,9 +1073,7 @@ a#revealRelated {
 }
 @media (min-width: 460px) and (max-width: 669px) {
   .video {
-    margin-left: 0.2% !important;
     width: 49.5%;
-    margin-right: 0.2% !important;
   }
   .video-thumb {
     height: 100px !important;
