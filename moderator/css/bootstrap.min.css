@@ -69,7 +69,7 @@ hr{margin-top:22px;margin-bottom:22px;border:0;border-top:1px solid #e4eaec}
 [role=button]{cursor:pointer} 
 .h1,.h2,.h3,.h4,.h5,.h6,h1,h2,h3,h4,h5,h6{font-weight:300;line-height:1.2;color:#76838f} 
 .h1,.h2,.h3,h1,h2,h3{margin-top:12px;margin-bottom:21px; font-weight:500} 
-.h4,.h5,.h6,h4,h5,h6{margin-top:11px;margin-bottom:11px} 
+.h4,.h5,.h6,h4,h5,h6{margin-top:11px;margin-bottom:16px}
 .h1,h1{font-size:30px} 
 .h2,h2{font-size:26px} 
 .h3,h3{font-size:22px} 
