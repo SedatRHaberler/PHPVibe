@@ -26,9 +26,10 @@
                               break;
                       }
                   } elseif($box->type == 1) {
+
                       // Html box
                       echo '<div class="row">
-	<h1 class="loop-heading">'._html($box->title).'</h1>
+	<h2 class="loop-heading">'._html($box->title).'</h2>
 	<div class="'.$box->querystring.'">
 	'._html($box->ident).'
 	</div>

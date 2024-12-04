@@ -46,7 +46,6 @@ function PHPVibeSources() {
          {
          $this->link    = $videoLink;
          $videoProvider = $this->decideVideoProvider();
-             debug_to_console($videoProvider);
          if (!empty($videoProvider) && $videoProvider != "")
              {
              return true;
@@ -59,7 +58,7 @@ function PHPVibeSources() {
      // getEmbedCode
      public function getEmbedCode($videoLink, $width = null, $height = null)
          {
-             debug_to_console("getEmbedCode");
+
          $this->setDimensions($width, $height);
          if ($videoLink != "")
              {
@@ -177,7 +176,6 @@ function PHPVibeSources() {
              $pieces_array = explode('.', $url);
              $ext = end($pieces_array);
              $choice = get_option('remote-player', 1);
-             debug_to_console($choice);
 
              $mobile_supported = array("mp4", "mp3", "webm", "ogv", "m3u8", "ts", "tif");
              if (!in_array($ext, $mobile_supported)) {
@@ -199,10 +197,8 @@ function PHPVibeSources() {
      // generate video embed code via using standart templates
      private function generateEmbedCode($videoProvider)
          {
-             debug_to_console("generateEmbedCode");
          global $video,$qualities;
          $embedCode = "";
-         debug_to_console($videoProvider);
          switch ($videoProvider)
          {  case 'up':
 					$token = $video->token();

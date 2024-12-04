@@ -46,8 +46,9 @@ var startNextVideo,moveToNext,nextPlayUrl;
 }
 
 function meta_add(){
+    $language = isset($_SESSION['phpvibe-language']) ? preg_replace('/[^a-zA-Z0-9_-]/', '', $_SESSION['phpvibe-language']) : '';
     $meta = '<!doctype html>
-<html prefix="og: http://ogp.me/ns#" dir="ltr" lang="en-US">
+<html prefix="og: http://ogp.me/ns#" dir="ltr" lang="'.$language.'">
 <head>
 <meta http-equiv="content-type" content="text/html;charset=UTF-8">
 <title>'.seo_title().'</title>

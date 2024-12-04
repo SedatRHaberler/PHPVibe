@@ -3,7 +3,7 @@ if(!nullval($vq)) { $videos = $db->get_results($vq); } else {$videos = false;}
 if(!isset($st)){ $st = ''; }
 if(!isset($blockclass)){ $blockclass = ''; }
 if(!isset($blockextra)){ $blockextra = ''; }
-if(isset($heading) && !empty($heading)) { echo '<h1 class="loop-heading"><span>'._html($heading).'</span>'.$st.'</h1>';}
+if(isset($heading) && !empty($heading)) { echo '<h2 class="loop-heading"><span>'._html($heading).'</span>'.$st.'</h2>';}
 if(isset($heading_meta) && !empty($heading_meta)) { echo $heading_meta;}
 if(isset($heading_plus) && !empty($heading_plus)) { echo '<small class="videod">'.$heading_plus.'</small>';}
 if ($videos) {

@@ -42,7 +42,7 @@ $thumb = empty($thumbz)? 'storage/uploads/noimage.png' : $thumbz ;
     if ($nsfw == '') {$nsfw = 0;}
     $views = intval(_post('views'));
     $featured = intval(_post('featured'));
-    debug_to_console($nsfw);
+
 
 // Insert video (web link case)
     if (_post('type') < 2) {
