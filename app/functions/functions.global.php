@@ -1668,9 +1668,9 @@ function lang_menu()
         foreach ($row as $l) {
             if ($l->lang_code == current_lang()) {
                 $cr = $l->lang_name;
-                $ico = '<i class="material-icons">gps_fixed</i>';
+              //  $ico = '<i class="material-icons">gps_fixed</i>';
             } else {
-                $ico = '<i class="material-icons">gps_not_fixed</i>';
+             //   $ico = '<i class="material-icons">gps_not_fixed</i>';
             }
             $menu .= '<li><a rel="nofollow" href="' . canonical() . '?clang=' . $l->lang_code . '"><span class="iconed">' . $ico . '</span> ' . $l->lang_name . '</a></li>';
         }
