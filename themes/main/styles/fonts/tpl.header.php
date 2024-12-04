@@ -178,10 +178,10 @@ if(get_option('showfirelink','1') == 1 ) {
 if(get_option('showbuzzlink','1') == 1 ) {
 	$nav .=  '<a class="top-link" href="'.list_url(browse).'" title="'._lang('Videos').'"><i class="material-icons">&#xe064;</i></a>';
 }
-$nav .= '</div></div>
-<div class="header-right col-md-3 col-lg-2 col-xs-5 pull-right">
-<div class="user-quick">
-<a data-target="#search-now" data-toggle="modal" href="javascript:void(0)" class="top-link" id="show-search"><i class="material-icons">&#xE8B6;</i></a>';
+//$nav .= '</div></div>
+//<div class="header-right col-md-3 col-lg-2 col-xs-5 pull-right">
+//<div class="user-quick">
+//<a data-target="#search-now" data-toggle="modal" href="javascript:void(0)" class="top-link" id="show-search"><i class="material-icons">&#xE8B6;</i></a>';
 
 if(!is_user()) {
 $nav .= ' <a id="uploadNow" data-target="#login-now" data-toggle="modal" href="javascript:void(0)" class="btn btn-upload" title="'._lang("Login to upload").'">	

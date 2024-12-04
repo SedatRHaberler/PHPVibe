@@ -1153,4 +1153,15 @@ $(".ajaxed").pusher({
   }
 });
 reset169()
+    //close modal
+    $(document).ready(function() {
+        // Modal dışında tıklamayı dinle
+        $(document).on('click', function(event) {
+            var target = $(event.target);
+            if (!target.closest('.modal-content').length && target.closest('#search-now').length) {
+                $('#search-now').modal('hide'); // Modalı kapat
+            }
+        });
+    });
+
 });

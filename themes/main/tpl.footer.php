@@ -159,7 +159,8 @@ $socials .= '<div class="social-login google-login">
 }
 $lg = '<!-- Start Login Modal -->
 <div class="modal fade" id="login-now" aria-hidden="true" aria-labelledby="login-now" role="dialog" tabindex="-1">
-<div class="modal-dialog modal-sidebar modal-sm">
+<div class="modal-dialog 
+modal-sidebar modal-sm">
 <div class="modal-content">
 <div class="modal-header">
 <button type="button" class="close" data-dismiss="modal" aria-label="Close">

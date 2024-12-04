@@ -426,7 +426,7 @@ i.isActive {
 }
 @media (max-width: 990px) {
   .video-under h1 {
-    font-size: 28px !important;
+    font-size: 20px !important;
   }
   .user-media-actions {
     flex-direction: column;
@@ -6779,7 +6779,8 @@ a.song .badge {
 }
 /* Fixes */
 .modal-sidebar {
-  max-width: 100%;
+  top: 100px !important;
+  height: fit-content !important;
 }
 @media screen and (max-width: 760px) {
   .playlist-listing {
