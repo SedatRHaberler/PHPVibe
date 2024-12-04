@@ -125,53 +125,19 @@
 				
                     
 					<div class="user-media-actions">
-					
-                    
+
+
 					<div class="like-views">
 					<?php do_action('before-video-title'); ?>
                     <h1>
                         <?php echo $video->title();?>
                     </h1>
                     <?php do_action('after-video-title'); ?>
-                    
+
                     </div>
                           <div class="interaction-icons">
-                <div class="likes-bar">
-						
-                            <?php if($is_liked) { ?>
-                            <div class="aaa">
-                                <a href="javascript:RemoveLike(<?php echo $video->id();?>)" id="i-like-it" class="isLiked pv_tip likes" title=" <?php echo _lang('Remove liked');?>">
-                                    <i class="material-icons">&#xE8DC;</i>
-                                    <span><?php echo $video->likes();?></span>
-                                </a>
-                            </div>
-                            <?php } else { ?>
-                            <div class="aaa">
-                                <a href="javascript:iLikeThis(<?php echo $video->id();?>)" id="i-like-it" class="pv_tip likes" title=" <?php echo _lang('Like');?>">
-                                    <i class="material-icons">&#xE8DC;</i>									
-                                    <span><?php echo number_format($video->likes());?></span>
-                                </a>
-                            </div>
-                            <?php } ?>
-							  <div class="aaa ">
-                                <a href="javascript:iHateThis(<?php echo $video->id();?>)" id="i-dislike-it" class="pv_tip dislikes <?php if($is_disliked) { echo 'isLiked'; }?>" data-toggle="tooltip" data-placement="top" title="<?php if($is_disliked) { echo 'Remove '; }?> <?php echo _lang('Dislike');?>">
-                                    <i class="material-icons">&#xE8DB;</i>
-                                   <span> <?php echo number_format($video->dislikes()); ?></span>
-                                </a>
-                            </div>
-                            <div class="like-box">
-                                
-                                <div class="like-progress">
-                                    <div class="likes-success" style="width: 
-                                        <?php echo $likes_percent;?>%;">
-                                    </div>
-                                    <div class="likes-danger second" style="width: 
-                                        <?php echo $dislikes_percent;?>%;">
-                                    </div>
-                                </div>
-                            </div>
-						   </div>               						  
-                           
+
+
                             <div class="aaa">
                                 <a id="social-sharer" data-target="#sharing-it" data-toggle="modal" href="javascript:void(0)"  title=" <?php echo _lang('Share or Embed');?>">
                                    <i class="material-icons">&#xE80d;</i>
@@ -183,10 +149,10 @@
                             <?php if (is_user()) { ?>
                             <div class="aaa">
                                 <a data-toggle="dropdown" id="dLabel" data-target="#" class="pv_tip dropdown-toogle" title=" <?php echo _lang('Add To');?>">
-                                    <i class="material-icons">&#xe7e5;</i>   
+                                    <i class="material-icons">&#xe7e5;</i>
 									<span class="hidden-md hidden-lg visible-xs">
                                         <?php echo _lang('Add To');?>
-                                    </span>									
+                                    </span>
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="dLabel">
              <?php  $playlists=$cachedb->get_results("SELECT * from ".DB_PREFIX."playlists where owner='".user_id()."' and ptype = 1 and picture not in ('[likes]', '[history]', '[later]') limit 0,100");
