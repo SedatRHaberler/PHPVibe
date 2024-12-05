@@ -214,7 +214,7 @@ return $ini.$jp;
     $embed = "<script type=\"text/javascript\">
 			$(document).ready(function() {
 			  if ($(window).width() < 600) {	
-			  var containerWidth = $(window).width() - 6;
+			  var containerWidth = $(window).width() ;
 			  } else {
 			var containerWidth = $('.video-player').width();
 			  }

@@ -20,7 +20,8 @@ function checkAuth() {
 }
 function apiAddVideo() {
     global $db; // Veritabanı bağlantısı
-
+    file_put_contents('log.txt', 'apiAddVideo çalıştı: ' . date('Y-m-d H:i:s') . PHP_EOL, FILE_APPEND);
+    echo json_encode(['success' => true, 'message' => 'Fonksiyon tetiklendi.']);
     // Token kontrolü
     checkAuth();
     // POST verilerini kontrol et

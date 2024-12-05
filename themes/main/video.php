@@ -18,7 +18,7 @@
             <div class="clearfix"></div>
         </div>
         <?php if(has_list()){ ?>
-        <div id="ListRelated" class="video-under-right nomargin pull-right col-md-4 col-xs-12">
+        <div id="ListRelated" class="video-under-right  pull-right col-md-4 ">
             <?php do_action('before-listrelated'); ?>
             <div class="video-player-sidebar pull-left">			
                 <div class="items">
@@ -119,7 +119,7 @@
             </div>
             <?php do_action('after-related'); ?>
         </div>
-        <div class="video-under col-md-8 col-xs-12">
+        <div class="video-under col-md-8 ">
             <div class="oboxed odet">
                 <div class="row vibe-interactions">
 				
@@ -192,11 +192,11 @@
 <!--                                </a>-->
 <!--                            </div>-->
 							</div>
-							<br style="clear:both">
+<!--							<br style="clear:both">-->
 							</div>
                         
                     </div>
-                    <div class="clearfix"></div>
+<!--                    <div class="clearfix"></div>-->
                 </div>
            
                 <div class="user-container full top20 bottom20">

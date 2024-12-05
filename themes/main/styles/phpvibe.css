@@ -1,6 +1,10 @@
 /* PHPVibe CMS  */
 /* Licensing and terms at PHPVibe.com  */
 /* Commons */
+
+body, h1, h2, h3, h4, h5, h6, p,a{
+  color: black !important;
+}
 img {
   max-width: 100%;
   width: auto;
@@ -39,7 +43,7 @@ ul.dropdown-menu li a {
 }
 /* Page formats */
 #wrapper {
-  margin-top: 75px !important;
+  margin-top: 55px !important;
   background: transparent;
   position: relative;
   clear: both;
@@ -74,9 +78,7 @@ body.body-video.isdevice #wrapper {
   }
 }
 @media screen and (max-width: 800px) {
-  #wrapper {
-    padding: 0 3px !important;
-  }
+
   body.body-video.isdevice.noheader #video-content {
     position: fixed;
     top: 0;
@@ -448,7 +450,7 @@ i.isActive {
     flex-basis: 100%;
     width: 100%;
     clear: both;
-    margin: 15px 0 0;
+    margin: 0px 0 0;
   }
   .user-media-actions .like-views,
   .user-media-actions .interaction-icons,
@@ -517,7 +519,7 @@ i.isActive {
   font-size: 20px;
   color: #111;
   display: block;
-  margin: 0 0 8px;
+  margin: 0 0 0px;
 }
 .video-under,
 .video-under-right {
@@ -525,13 +527,18 @@ i.isActive {
   margin-left: 0 !important;
   margin-right: 0 !important;
 }
+@media screen and (max-width: 700px) {
+  .video-under {
+    margin: 0 16px 0 16px !important;
+  }
+}
 @media screen and (min-width: 990px) and (max-width: 1295px) {
   .video-under-right {
     width: 32% !important;
   }
 }
 .odet {
-  padding: 15px 0 5px;
+  padding: 0px 0 5px;
 }
 .user-box-numbers, #media-info .achip {
 	color: #575757;
@@ -1033,8 +1040,6 @@ a#revealRelated {
   vertical-align: top;
   word-wrap: break-word;
   aspect-ratio: 16 / 9;
-  margin-left: 13px !important;
-  margin-right: 13px !important;
 }
 
 .owl-item .video {
@@ -2756,6 +2761,9 @@ li.song > .media {
   }
   #songlist .nav > li > a {
     padding: 10px !important;
+  }
+  #videolist-content {
+   margin: 0 16px 0 16px !important;
   }
 }
 /* Songs & Video quickies */
@@ -6802,8 +6810,6 @@ a.song .badge {
   .container-fluid,
   .playlist-listing-head,
   #playlist-content {
-    margin-right: 0 !important;
-    margin-left: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
