@@ -105,17 +105,12 @@ $footer .='</div>
 <div class="modal fade" id="search-now" aria-hidden="true" data-backdrop="false" aria-labelledby="search-now" role="dialog" tabindex="-1">
 <div class="modal-dialog modal-sidebar modal-searcher">
 <div class="modal-content">
-<div class="modal-header">
-<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-<span aria-hidden="true">×</span>
-</button>
 </div>
 <div class="modal-body">
 <div class="panel panel-transparent">
 <div class="row search-now-clone">
 
 
-</div>
 </div>
 </div>
 </div>

@@ -1,4 +1,5 @@
-<?php  error_reporting(0); /* E_ALL - for Debugging*/
+<?php global $filters;
+error_reporting(0); /* E_ALL - for Debugging*/
 // Degugging?
 $sttime = microtime(true);
 // Security
@@ -121,6 +122,14 @@ ob_start();
 // $router->setBasePath('/video-folder'));
 /* End folder check */
 do_action('VibePermalinks');
+$route = $router->matchCurrentRequest();
+
+if ($route) {
+	$page = $route->getTarget();
+	file_put_contents('route_log.txt', 'Matched route: ' . $page . PHP_EOL, FILE_APPEND);
+} else {
+	file_put_contents('route_log.txt', 'No route matched.' . PHP_EOL, FILE_APPEND);
+}
 $router->map('/', 'home', array('methods' => 'GET', 'filters' => array('id' => '(\d+)')));
 //$router->map('/payment/:section', 'payment', array('methods' => 'GET,PUT,POST', 'filters' => array('section' => '(.*)')));
 $router->map(get_option('profile-seo-url','/profile/:name/:id/'), 'profile', array('methods' => 'GET,PUT,POST', _makeUrlArgs(get_option('profile-seo-url','/profile/:name/:id/'))));
@@ -154,6 +163,7 @@ $router->map('/'.show.'/:section', 'search', array('methods' => 'GET', 'filters'
 //$router->map('/'.imgsearch.'/:section', 'searchimages', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/'.pplsearch.'/:section', 'searchppl', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/'.playlistsearch.'/:section', 'searchpaylist', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
+$router->map('/api/add-video','apiAddVideo', array('methods' => 'GET,PUT,POST'));
 $router->map('/api/:section', 'api', array('methods' => 'GET,PUT,POST', 'filters' => array('section' => '(.*)')));
 $router->map('/embed/:section', 'embed', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));
 $router->map('/feed/:section', 'feed', array('methods' => 'GET', 'filters' => array('section' => '(.*)')));

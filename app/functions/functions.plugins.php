@@ -36,7 +36,6 @@ function add_filter( $hook, $function_name, $priority = 10, $accepted_args = NUL
 	global $filters;
 	// At this point, we cannot check if the function exists, as it may well be defined later (which is OK)
 	$id = filter_unique_id( $hook, $function_name, $priority );
-	
 	$filters[ $hook ][ $priority ][ $id ] = array(
 		'function'      => $function_name,
 		'accepted_args' => $accepted_args,
@@ -328,7 +327,8 @@ class theShortcodes
      *
      * @var shortcode_tags
      */
-    protected static $shortcode_tags = array();
+    static $shortcode_tags = array();
+
 
     /**
      * Protected constructor since this is a static class.

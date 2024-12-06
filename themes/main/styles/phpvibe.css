@@ -2,8 +2,27 @@
 /* Licensing and terms at PHPVibe.com  */
 /* Commons */
 
-body, h1, h2, h3, h4, h5, h6, p,a{
+body, h1, h2, h3, h4, h5, h6, p,.uploaderlink a{
   color: black !important;
+}
+.video-title a{
+ color: black !important;
+}
+.user-box-txt h3 {
+  margin: 0 !important;
+}
+
+.loop-heading span {
+  font-size: 26px !important;
+  font-weight: 700;
+}
+.modal-body{
+  padding: 0 !important;
+  height: 60px !important;
+}
+.videod{
+  font-size: 16px;
+  font-weight: 700;
 }
 img {
   max-width: 100%;
@@ -15,7 +34,7 @@ img {
 }
 html,
 body {
-  min-height: 100vh;
+  /*min-height: 100vh;*/
   -webkit-font-smoothing: antialiased;
   margin: 0;
 }
@@ -55,7 +74,8 @@ ul.dropdown-menu li a {
   }
 }
 body.body-video.isdevice .fixed-top {
-  position: relative;
+  position: fixed;
+  margin-bottom: 50px;
 }
 body.body-video.isdevice #wrapper {
   margin-top: 100px !important;
@@ -64,11 +84,13 @@ body.body-video.isdevice #wrapper {
   body.body-video.isdevice #wrapper {
     margin-top: 20px !important;
   }
+  body.body-video.isdevice .video-player{
+    margin-top: 64px !important;
+  }
 }
 @media screen and (max-width: 1000px) {
   .body-video .fixed-top {
-    position: relative;
-    z-index: 1;
+    position: fixed;
   }
   .logo-wrapper {
     z-index: 10;
@@ -475,7 +497,7 @@ i.isActive {
     flex-direction: column;
   }
   .user-media-actions {
-    padding: 2px 0 10px;
+    padding: 0px 0 0px;
   }
   .user-media-actions i {
     font-size: 35px;
@@ -498,7 +520,7 @@ i.isActive {
   .user-container.bottom20.top20 {
     padding-bottom: 8px !important;
     padding-top: 8px !important;
-    border-bottom: 1px solid #e8e8e8;
+    /*border-bottom: 1px solid #e8e8e8;*/
   }
 }
 .video-player {
@@ -1051,6 +1073,10 @@ a#revealRelated {
 .owl-item {
   max-width: 403px !important;
 }
+.video{
+  margin-left: 13px  !important;
+  margin-right: 13px  !important;
+}
 @media (min-width: 460px) and (max-width: 1599px) {
   .video{
     margin-left: 13px !important;
@@ -1243,6 +1269,7 @@ a#revealRelated {
   bottom: 5px;
   margin-top: 0;
   margin-right: 10px;
+  margin-bottom: 10px;
   padding: 2px;
   font-size: 13px;
   color: #fafafa !important;
@@ -1723,8 +1750,9 @@ input[type="submit"] {
   text-align: left;
   padding: 14px 6px 0 8px;
   width: 224px;
-  z-index: 9;
+  z-index: 1000;
   background: #fbfbfb;
+  transition: left 0.3s ease; /* Yumuşak açılma/kapanma geçişi */
   color: #888888;
   font-weight: 400;
   -webkit-box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.08);
@@ -1779,8 +1807,11 @@ input[type="submit"] {
   line-height: 24px;
   margin: -3px 18px 0 3px;
 }
-  .sidebar-nav ul li i.active {
-    color: #FB0D1B;
+  .sidebar-nav ul li i.active,.sidebar-nav ul li a.active {
+    color: #FB0D1B !important;
+  }
+  .sidebar ul li i.active,.sidebar-nav ul li a.active {
+    color: #FB0D1B !important;
   }
 
 
@@ -2197,7 +2228,9 @@ li.indanger {
   align-items: center;
   /* justify-content: flex-start */
 }
-.header-right {
+
+
+  .header-right {
   text-align: right;
   align-items: center;
   justify-content: flex-end;
@@ -2770,7 +2803,7 @@ li.song > .media {
 #videolist-content {
   display: block;
   clear: both;
-  text-align: center;
+  text-align: start;
   margin: 0 auto;
 }
 #imagelist-content > h1.loop-heading,
@@ -3315,6 +3348,7 @@ a.cats-link {
 }
 .row-socials,
 .row-rights {
+  z-index: -1;
   padding-left: 15px;
 }
 ul.socialfooter {
@@ -6800,7 +6834,7 @@ a.song .badge {
 /* Fixes */
   @media screen and (max-width: 760px) {
 .modal-sidebar {
-  top: 100px !important;
+  top: 65px !important;
   height: fit-content !important;
 }
 

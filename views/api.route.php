@@ -26,7 +26,7 @@ exit();
 } elseif(!is_user() && (token() == "noty")) {
 	$count["buzz"] = 0;
 	$count["msg"] = 0;
-echo json_encode($count);	
+echo json_encode($count);
 }
 if(token() == "categories") {
 $list = _get('list');

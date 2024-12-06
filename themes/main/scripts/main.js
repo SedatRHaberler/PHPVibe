@@ -475,7 +475,11 @@ $("#insertChat").emojioneArea({
         tab.addEventListener('mouseenter', () => {
             // Sadece o li içerisindeki ikona "active" sınıfını ekle
             const icon = tab.querySelector('i');
+            const text = tab.querySelector('a');
 
+            if (text){
+                text.classList.add('active');
+            }
             if (icon) {
                 icon.classList.add('active');
             }
@@ -484,12 +488,17 @@ $("#insertChat").emojioneArea({
         tab.addEventListener('mouseleave', () => {
             // Sadece o li içerisindeki ikondan "active" sınıfını kaldır
             const icon = tab.querySelector('i');
+            const text = tab.querySelector('a');
 
+            if (text){
+                text.classList.remove('active');
+            }
             if (icon) {
                 icon.classList.remove('active');
             }
         });
     });
+
 
 
     //Mobi Share
@@ -500,56 +509,111 @@ $("#insertChat").emojioneArea({
     $(".page-aside-switch , page-aside-switch > i").click(function() {
         $(".page-aside").toggleClass('open');
     });
-    //Sidebar 
-    $("#show-sidebar").click(function() {
+    function toggleSidebar() {
         $("#sidebar").toggleClass('hide');
-        $("#wrapper").toggleClass('haside');
-        if (!$("#sidebar").hasClass("hide")) {
-            var sideSpace = parseInt($("#wrapper").offset().left);			
-			var wraReduced = (parseInt($(window).width()) - 260) + "px";
-			if($(window).width() < 1024) {
-				var wraReduced = '100%';
-			}
-            if (sideSpace < 240) {
-                $("#wrapper").css({
-                    "margin-left": "240px",
-                    "padding-right": 0,
-					"margin-right": 0,
-					"width": wraReduced,
-					
-                });
-            }
-        } else {
-            var sideSpace = $("#wrapper").offset().left;
-			var wraReduced = (parseInt($(window).width()) - 260) + "px";
-			if($(window).width() < 1024) {
-				var wraReduced = '100%';
-			}
-            if (sideSpace == 240) {
-                $("#wrapper").css({
-                    "margin-left": "auto",
-                    "margin-right": "auto",			
-					"width": wraReduced,
-                });
+        //$("#wrapper").toggleClass('haside');
+
+        // if (!$("#sidebar").hasClass("hide")) {
+        //     adjustWrapperForSidebarOpen();
+        // } else {
+        //     adjustWrapperForSidebarClosed();
+        // }
+    }
+    function deactivateHeader() {
+        if (!$header.hasClass(scrollClass)) {
+            $header.addClass(scrollClass);
+            $('body').addClass('noheader');
+            // Sidebar açıksa kapat
+            if (!$("#sidebar").hasClass("hide")) {
+                toggleSidebar(); // Sidebar'ı kapatır
             }
         }
+    }
+
+    function activateHeader() {
+        if ($header.hasClass(scrollClass)) {
+            $header.removeClass(scrollClass);
+            $('body').removeClass('noheader');
+
+        }
+    }
+
+    $(window).scroll(function() {
+        if($(window).scrollTop() > activateAtY) {
+            deactivateHeader();
+        } else {
+            activateHeader();
+        }
     });
-    if (!$("#sidebar").hasClass("hide")) {
+    // Sidebar dışına tıklanınca sidebar'ı kapat
+    $(document).click(function (event) {
+        // Tıklanan öğe sidebar'ın kendisi veya içeriği değilse
+        const element = document.querySelector('.video-holder');
+
+        if ($(window).width() < 1200 || element) {
+        if (!$(event.target).closest("#sidebar, #show-sidebar").length) {
+            if (!$("#sidebar").hasClass("hide")) {
+                toggleSidebar(); // Sidebar'ı kapat
+            }
+        }    }
+    });
+
+    function adjustWrapperForSidebarOpen() {
+        var sideSpace = parseInt($("#wrapper").offset().left);
+        var wraReduced = (parseInt($(window).width()) - 260) + "px";
+
+        if ($(window).width() < 1024) {
+            wraReduced = '100%';
+        }
+
+        if (sideSpace < 240) {
+            $("#wrapper").css({
+                "margin-left": "240px",
+                "padding-right": 0,
+                "margin-right": 0,
+                "width": wraReduced,
+            });
+        }
+    }
+
+    function adjustWrapperForSidebarClosed() {
         var sideSpace = $("#wrapper").offset().left;
         var wraReduced = (parseInt($(window).width()) - 260) + "px";
-		if($(window).width() < 1024) {
-				var wraReduced = '100%';
-			}
-            if (sideSpace < 240) {
-                $("#wrapper").css({
-                    "margin-left": "240px",
-                    "padding-right": 0,
-					"margin-right": 0,
-					"width": wraReduced
-					
-                });
-			} 
-    } 
+
+        if ($(window).width() < 1024) {
+            wraReduced = '100%';
+        }
+
+        if (sideSpace == 240) {
+            $("#wrapper").css({
+                "margin-left": "auto",
+                "margin-right": "auto",
+                "width": wraReduced,
+            });
+        }
+    }
+
+    function initializeSidebar() {
+        if (!$("#sidebar").hasClass("hide")) {
+            adjustWrapperForSidebarOpen();
+        }
+    }
+
+// Sidebar toggle işlemini istediğiniz zaman çağırabilirsiniz
+    $("#show-sidebar").click(function() {
+        toggleSidebar();
+        // if ($(window).scrollTop() !== 0) {
+        //
+        //     // Sayfayı en üste kaydır
+        //     $('html, body').animate({ scrollTop: 0 }, 300, function () {
+        //         // Scroll işlemi tamamlanınca sidebar'ı aç/kapat
+        //
+        //     });
+        // }
+    });
+
+// Sayfa yüklendiğinde sidebar durumunu kontrol etmek için
+    initializeSidebar();
     //End sidebar
   
     //VideoPlayer Container

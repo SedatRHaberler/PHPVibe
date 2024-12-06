@@ -207,9 +207,15 @@
                         </a>
 						<div class="user-box-txt">
 						<a class="" href="'.profile_url($video->owner(),$video->rawauthor()).'" title="'.addslashes($video->rawauthor()).'">
-                                <h3>'.$video->author().' '.group_creative($video->authorgroup()).'</h3>
+                                <h3 style="
+    font-size: 14px; /* Yazı boyutu */
+    line-height: 20px; /* Simgenin yüksekliğiyle aynı */
+    display: flex;
+    align-items: self-end; /* Dikey ortalama */
+    gap: 5px; /* Boşluk */"
+>'.$video->author().' '.group_creative($video->authorgroup()).'</h3>
                             </a> 
-							<p class="user-box-numbers">  <span class="mright20">'.number_format($video->views()).' '._lang("views").'</span> '.time_ago($video->added()).'</p>
+							<p class="user-box-numbers">  <span class="mright10">'.number_format($video->views()).' '._lang("views").'</span> '.time_ago($video->added()).'</p>
 						</div>';?>
 						
                         <div class="pull-right"><?php subscribe_box($video->owner());?></div>
