@@ -313,6 +313,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const loginStatus = localStorage.getItem("login");
 
     // Eğer "login" 1 ise sekmeyi göster
+
     if (loginStatus === "1") {
         document.getElementById("openusr").style.display = "block";
     } else {

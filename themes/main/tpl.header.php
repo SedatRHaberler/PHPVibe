@@ -138,6 +138,7 @@ function top_nav(){
 	<div class="user-express">
 	<div class="user-quick">';
 	if(is_user()) {
+
 		$nav .= '
 		<a id="openusr" class="top-link uav dropdown-toggle"  data-toggle="dropdown" href="#" aria-expanded="false" hidden
 	data-animation="scale-up" role="button" title="'._lang('Dashboard').'">
