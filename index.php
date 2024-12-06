@@ -124,12 +124,7 @@ ob_start();
 do_action('VibePermalinks');
 $route = $router->matchCurrentRequest();
 
-if ($route) {
-	$page = $route->getTarget();
-	file_put_contents('route_log.txt', 'Matched route: ' . $page . PHP_EOL, FILE_APPEND);
-} else {
-	file_put_contents('route_log.txt', 'No route matched.' . PHP_EOL, FILE_APPEND);
-}
+
 $router->map('/', 'home', array('methods' => 'GET', 'filters' => array('id' => '(\d+)')));
 //$router->map('/payment/:section', 'payment', array('methods' => 'GET,PUT,POST', 'filters' => array('section' => '(.*)')));
 $router->map(get_option('profile-seo-url','/profile/:name/:id/'), 'profile', array('methods' => 'GET,PUT,POST', _makeUrlArgs(get_option('profile-seo-url','/profile/:name/:id/'))));
